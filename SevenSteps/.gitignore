@@ -44,3 +44,11 @@ project/.sbtserver
 
 # Application
 yourgame.log
+
+
+
+# General
+
+.cache-main
+.cache-test
+.project
