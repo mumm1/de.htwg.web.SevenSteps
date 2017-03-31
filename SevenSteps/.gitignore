@@ -50,5 +50,5 @@ yourgame.log
 # General
 
 .cache-main
-.cache-test
+.cache-tests
 .project
