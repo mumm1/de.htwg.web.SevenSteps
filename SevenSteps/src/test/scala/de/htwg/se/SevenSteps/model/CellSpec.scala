@@ -6,12 +6,15 @@ import org.scalatest.Matchers._
 import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
-class StoneSpec extends WordSpec{
-  "A Stone" should{
-    val stone = Stone("a")
+class CellSpec extends WordSpec{
+  "A Cell" should{
+    val student = Cell("a",2)
     
   "have a color" in {
-    stone.color should be("a")
+    student.color should be("a")
+  }
+  "have a height" in {
+    student.height should be(2)
   }
 }
 }

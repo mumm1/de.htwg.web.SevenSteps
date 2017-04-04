@@ -1,6 +1,6 @@
 package de.htwg.se.SevenSteps.model
 
 // Stone
-class Stone(color: String) {
+case class Stone(color: String) {
   
 }

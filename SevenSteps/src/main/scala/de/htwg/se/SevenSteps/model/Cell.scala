@@ -1,5 +1,5 @@
 package de.htwg.se.SevenSteps.model
 
-class Cell {
-  
+case class Cell(color: String,height: Int) {
 }
+
