@@ -6,7 +6,7 @@ import org.scalatest.Matchers._
 import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
-class StudentSpec extends WordSpec{
+class StoneSpec extends WordSpec{
   "A Student" should{
     val student = Student("Your Name")
     
