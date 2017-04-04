@@ -6,15 +6,13 @@ import org.scalatest.Matchers._
 import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
-class CellSpec extends WordSpec{
-  "A Cell" should{
-    val cell = Cell("a",2)
+class GridSpec extends WordSpec{
+  "A Grid" should{
+    val grid = Grid(3,2)
     
-  "have a color" in {
-    cell.color should be("a")
-  }
-  "have a height" in {
-    cell.height should be(2)
+  "have the right dimensions" in {
+    grid.cols should be(2)
+    grid.rows should be(3)
   }
 }
 }
