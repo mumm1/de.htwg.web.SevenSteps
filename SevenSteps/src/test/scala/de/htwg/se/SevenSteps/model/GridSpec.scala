@@ -7,12 +7,15 @@ import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
 class GridSpec extends WordSpec{
-  "A Grid" should{
-    val grid = Grid(3,2)
+  "A new Grid with 1 empty Cell" should{
+    val grid = Grid(1,1)
     
   "have the right dimensions" in {
-    grid.cols should be(2)
-    grid.rows should be(3)
+    grid.cols should be(1)
+    grid.rows should be(1)
   }
+  "generate a string of the form" in {
+      grid.toString should be("\n+---+\n|   |\n+---+\n")
+    }
 }
 }

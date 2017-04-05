@@ -16,5 +16,8 @@ class CellSpec extends WordSpec{
   "have a height" in {
     cell.height should be(2)
   }
+  "generate a string in the form" in {
+    cell.toString should be("a 2")
+  }
 }
 }
