@@ -18,10 +18,10 @@ class GridSpec extends WordSpec{
       grid.toString should be("\n+---+\n|   |\n+---+\n")
     }
   "set a color to the cell" in {
-    grid.setColor(0,0,"b").getCell(0, 0).color should be("b")
+    grid.set(0,0,'b').cell(0, 0).color should be('b')
   }
   "generate a colored string of the form" in {
-    grid.setColor(0,0,"b").toString should be("\n+---+\n|b 0|\n+---+\n")
+    grid.set(0,0,'b').set(0,0,3).toString should be("\n+---+\n|b 3|\n+---+\n")
     }
 }
 }
