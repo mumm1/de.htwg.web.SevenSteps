@@ -17,7 +17,8 @@ case class Grid(rows: Int,cols: Int,cells: Option[Vector[Cell]] = None) {
     }
     strGrid
   }
-  def setColor(row: Int, col: Int, color: String):Grid={copy(cells=Option(grid.updated(getIndex(row,col), new Cell(color,0))))}
-
+  def set(row: Int, col: Int,color: String):Grid={copy(cells=Option(grid.updated(getIndex(row,col),getCell(row,col).copy(color=color  ))))}
+  def set(row: Int, col: Int,height: Int):  Grid={copy(cells=Option(grid.updated(getIndex(row,col),getCell(row,col).copy(height=height))))}
+  
 }
 
