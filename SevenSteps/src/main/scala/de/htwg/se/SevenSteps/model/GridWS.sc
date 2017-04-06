@@ -27,4 +27,11 @@ object GridWS {
                                                   //| |   |   |   |   |
                                                   //| +---+---+---+---+
                                                   //| 
+   var grid3 = new Grid(2,1)                      //> grid3  : de.htwg.se.SevenSteps.model.Grid = 
+                                                  //| +---+
+                                                  //| |   |
+                                                  //| +---+
+                                                  //| |   |
+                                                  //| +---+
+                                                  //| 
 }

@@ -17,5 +17,8 @@ class GridSpec extends WordSpec{
   "generate a string of the form" in {
       grid.toString should be("\n+---+\n|   |\n+---+\n")
     }
+//  "set a color to the cell" in {
+//    grid.setColor(0,0,"b")
+//  }
 }
 }
