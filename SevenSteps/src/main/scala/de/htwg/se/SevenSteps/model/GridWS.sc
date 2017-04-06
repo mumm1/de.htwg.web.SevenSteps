@@ -2,36 +2,29 @@ package de.htwg.se.SevenSteps.model
 
 object GridWS {
   println("Welcome to the Scala worksheet")       //> Welcome to the Scala worksheet
-  var grid = new Grid(2,2)                        //> grid  : de.htwg.se.SevenSteps.model.Grid = 
-                                                  //| +---+---+
-                                                  //| |   |   |
-                                                  //| +---+---+
-                                                  //| |   |   |
-                                                  //| +---+---+
+  var grid = new Grid(2,5)                        //> grid  : de.htwg.se.SevenSteps.model.Grid = 
+                                                  //| +---+---+---+---+---+
+                                                  //| |   |   |   |   |   |
+                                                  //| +---+---+---+---+---+
+                                                  //| |   |   |   |   |   |
+                                                  //| +---+---+---+---+---+
                                                   //| 
                                                 
-  var grid2 = new Grid(7,4)                       //> grid2  : de.htwg.se.SevenSteps.model.Grid = 
-                                                  //| +---+---+---+---+
-                                                  //| |   |   |   |   |
-                                                  //| +---+---+---+---+
-                                                  //| |   |   |   |   |
-                                                  //| +---+---+---+---+
-                                                  //| |   |   |   |   |
-                                                  //| +---+---+---+---+
-                                                  //| |   |   |   |   |
-                                                  //| +---+---+---+---+
-                                                  //| |   |   |   |   |
-                                                  //| +---+---+---+---+
-                                                  //| |   |   |   |   |
-                                                  //| +---+---+---+---+
-                                                  //| |   |   |   |   |
-                                                  //| +---+---+---+---+
+  grid.rows                                       //> res0: Int = 2
+  grid=grid.setColor(0,0,"c").setColor(0,2,"c")
+  grid                                            //> res1: de.htwg.se.SevenSteps.model.Grid = 
+                                                  //| +---+---+---+---+---+
+                                                  //| |c 0|   |c 0|   |   |
+                                                  //| +---+---+---+---+---+
+                                                  //| |   |   |   |   |   |
+                                                  //| +---+---+---+---+---+
                                                   //| 
-   var grid3 = new Grid(2,1)                      //> grid3  : de.htwg.se.SevenSteps.model.Grid = 
-                                                  //| +---+
-                                                  //| |   |
-                                                  //| +---+
-                                                  //| |   |
-                                                  //| +---+
+  grid=grid.setColor(1,2,"c")
+  grid                                            //> res2: de.htwg.se.SevenSteps.model.Grid = 
+                                                  //| +---+---+---+---+---+
+                                                  //| |c 0|   |c 0|   |   |
+                                                  //| +---+---+---+---+---+
+                                                  //| |   |   |c 0|   |   |
+                                                  //| +---+---+---+---+---+
                                                   //| 
 }
