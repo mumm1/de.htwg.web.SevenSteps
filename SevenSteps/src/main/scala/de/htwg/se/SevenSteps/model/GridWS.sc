@@ -28,4 +28,8 @@ object GridWS {
                                                   //| +---+---+---+---+---+
                                                   //| 
   val cell = new Cell('b',2)                      //> cell  : de.htwg.se.SevenSteps.model.Cell = b 2
+  val cmap = new ColorMap(Vector('a','b','c'))    //> cmap  : de.htwg.se.SevenSteps.model.ColorMap = ColorMap(a, b, c)
+  for (c <- cmap){
+  	c
+  }
 }
