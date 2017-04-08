@@ -52,3 +52,4 @@ yourgame.log
 .cache-main
 .cache-tests
 .project
+/htwg-scala-seed.iml
