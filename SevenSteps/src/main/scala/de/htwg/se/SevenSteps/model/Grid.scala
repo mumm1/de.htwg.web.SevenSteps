@@ -2,6 +2,13 @@ package de.htwg.se.SevenSteps.model
 
 case class Grid(rows: Int,cols: Int,cells: Option[Vector[Cell]] = None) {
 
+  def this(colors:String,cols:Int) = {
+    this(math.ceil(colors.length()/cols.toFloat).toInt,cols,
+       cells={
+      val empty = " "*(math.ceil(colors.length()/cols.toFloat).toInt*cols-colors.length())
+      val cCells = for(c <- (colors+empty).toList)yield {Cell(c.toChar)}
+      Option(cCells.toVector)})}
+  
   val grid = cells getOrElse Vector.fill(rows*cols)(new Cell)
 
   
@@ -19,6 +26,5 @@ case class Grid(rows: Int,cols: Int,cells: Option[Vector[Cell]] = None) {
   }
   def set(row: Int, col: Int,color: Char):Grid={copy(cells=Option(grid.updated(getIndex(row,col),cell(row,col).copy(color=color  ))))}
   def set(row: Int, col: Int,height: Int):  Grid={copy(cells=Option(grid.updated(getIndex(row,col),cell(row,col).copy(height=height))))}
-  
 }
 
