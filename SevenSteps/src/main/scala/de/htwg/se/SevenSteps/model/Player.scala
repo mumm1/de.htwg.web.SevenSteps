@@ -1,6 +1,6 @@
 package de.htwg.se.SevenSteps.model
 
-case class Player (name : String, points : Int) {
+case class Player (name : String, points : Int=0) {
 
 	private val colors =Array ('a','b','c','g')
 
