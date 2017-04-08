@@ -12,13 +12,23 @@ class ControllerSpec extends WordSpec{
   
   "A Controller in game phase prepare" should{
     var controller = Controller(new Grid("aabbcc",2))
-  "add a Players" in {
+    "add Players and print the info" in {
       controller.addPlayer(new Player("Hugo"))
       controller.addPlayer(new Player("Tom"))
-      "print them" in {
-        controller.toString() should be("")
-      }
+      controller.players.length should be(2)
+      controller.toString()
     }
-    
+    "color the grid" in {
+      controller.color(0,1,'z')
+      controller.grid.cell(0, 1).color should be('z')
+    }
+  "A Controller in game phase play" should{
+    var controller = Controller(new Grid("aabbcc",2))
+    controller.addPlayer(new Player("Hugo"))
+    controller.addPlayer(new Player("Tom"))
+    "set a stone" in {
+      
+    }
+  }
   }
 }

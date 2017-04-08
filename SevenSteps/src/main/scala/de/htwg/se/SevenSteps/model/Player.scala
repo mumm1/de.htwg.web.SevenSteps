@@ -19,7 +19,9 @@ case class Player (name : String, points : Int=0) {
 
 	override def toString = {
 			val sb = new StringBuilder
-					for ((k,v) <- map){ sb.append(k + " --> " + v + "\n")}
+			sb.append(name+": ")
+					for ((k,v) <- map){ sb.append(k + "=" + v + ", ")}
+			sb.append("Points="+points)
 			sb.toString()
 
 	}
