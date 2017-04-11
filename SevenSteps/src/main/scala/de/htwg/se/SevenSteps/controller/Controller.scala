@@ -5,10 +5,10 @@ import de.htwg.se.SevenSteps.model._
 case class Controller(var grid:Grid,var players:List[Player]=Nil) {
   
   var curPlayer:Player=null;
+  var gameState = Prepare(this)
+  
   def addPlayer(player: Player){
-    players=players:+player
-    if (players.length==1)
-      curPlayer=player
+    gameState.ecploreCommand(new AddPlayer(player))
   }
   def color(row:Int,col:Int,color:Char){grid=grid.set(row, col, color)}
   

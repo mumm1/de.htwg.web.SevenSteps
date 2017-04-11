@@ -35,10 +35,10 @@ object GridWS {
                                                   //| +---+---+
                                                   //| 
   con.addPlayer(new Player("Hans"))
-  con.addPlayer(new Player("Peter"))
+  con.addPlayer(new Player("Peterrr"))
   con.toString                                    //> res2: String = "
                                                   //| -> Hans: g=0, b=0, a=0, c=0, Points=0
-                                                  //|    Peter: g=0, b=0, a=0, c=0, Points=0
+                                                  //|    Peterrr: g=0, b=0, a=0, c=0, Points=0
                                                   //| 
                                                   //| +---+---+
                                                   //| |a 0|a 0|
