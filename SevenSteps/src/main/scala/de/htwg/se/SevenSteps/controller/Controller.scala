@@ -5,7 +5,7 @@ import de.htwg.se.SevenSteps.model._
 case class Controller(var grid:Grid=new Grid(1,1),var players:List[Player]=Nil) {
   
   var curPlayer:Player=null;
-  var gameState = Prepare(this)
+  var gameState:GameState = Prepare(this)
   
   def exploreCommand(com: Command){gameState.ecploreCommand(com)}
   

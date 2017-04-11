@@ -12,6 +12,9 @@ object Hello {
     println(con.toString)
     con.exploreCommand(new NewGrid("ab sdd",3))
     println(con.toString)
+    con.exploreCommand(new StartGame())
+    con.exploreCommand(new AddPlayer("Hugo"))
+    
 
   }
 }

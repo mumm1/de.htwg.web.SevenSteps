@@ -17,6 +17,11 @@ case class NewGrid(colors:String,cols:Int) extends Command{
   override def undoIt(c:Controller){c.grid=oldGrid}
 }
 
+case class StartGame() extends Command{
+  override def doIt(c:Controller){c.curPlayer=c.players(0);c.gameState=new Play(c)}
+  override def undoIt(c:Controller){c.curPlayer=null;c.gameState=new Prepare(c)}
+}
+
 trait GameState {def ecploreCommand(com: Command)}
 
 case class Prepare(c:Controller) extends GameState{
@@ -24,6 +29,7 @@ case class Prepare(c:Controller) extends GameState{
     com match {
       case command:AddPlayer =>  command.doIt(c)
       case command:NewGrid   =>  command.doIt(c)
+      case command:StartGame =>  command.doIt(c)
       case _                 =>  println("ILLEGEL COMMAND")
     }
   }
