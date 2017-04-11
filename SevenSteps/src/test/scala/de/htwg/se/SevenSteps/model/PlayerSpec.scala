@@ -25,7 +25,7 @@ class PlayerSpec extends WordSpec {
 		}
 
 		"toString look like" in {
-			p.toString should be (for ((k,v) <- p.map){ (k + " --> " + v + "\n")})
+			p.toString should be ("Julius: g=0, b=0, a=0, c=0, Points=50")
 			}
 
 		

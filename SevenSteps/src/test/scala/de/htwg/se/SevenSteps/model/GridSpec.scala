@@ -24,6 +24,7 @@ class GridSpec extends WordSpec{
       grid.set(0,0,'b').set(0,0,3).toString should be("\n+---+\n|b 3|\n+---+\n")
       }
   }
+  
   "A Grid" should {
     "be possible to create empty" in {
     Grid(3,2)
@@ -34,4 +35,13 @@ class GridSpec extends WordSpec{
     new Grid(colors="abc  abc",cols=3)
     }
   }
+ 
+  
+  "A colored Grid" should {
+    val grid=new Grid("abcab abcddd",3)
+    "have the right color" in {
+    grid.cellsToString() should be("abcab abcddd")
+  }
+  }
+
 }

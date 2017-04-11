@@ -2,14 +2,14 @@ package de.htwg.se.SevenSteps.controller
 
 import de.htwg.se.SevenSteps.model._
 
-case class Controller(var grid:Grid,var players:List[Player]=Nil) {
+case class Controller(var grid:Grid=new Grid(1,1),var players:List[Player]=Nil) {
   
   var curPlayer:Player=null;
   var gameState = Prepare(this)
   
-  def addPlayer(player: Player){
-    gameState.ecploreCommand(new AddPlayer(player))
-  }
+  def exploreCommand(com: Command){gameState.ecploreCommand(com)}
+  
+  
   def color(row:Int,col:Int,color:Char){grid=grid.set(row, col, color)}
   
   override def toString = {

@@ -26,5 +26,6 @@ case class Grid(rows: Int,cols: Int,cells: Option[Vector[Cell]] = None) {
   }
   def set(row: Int, col: Int,color: Char):Grid={copy(cells=Option(grid.updated(getIndex(row,col),cell(row,col).copy(color=color  ))))}
   def set(row: Int, col: Int,height: Int):  Grid={copy(cells=Option(grid.updated(getIndex(row,col),cell(row,col).copy(height=height))))}
+  def cellsToString():String={var text="";grid.foreach(cell => text+=cell.color.toString());text}
 }
 

@@ -26,24 +26,4 @@ object GridWS {
                                                   //| |w 0|d 0|c 0|   |
                                                   //| +---+---+---+---+
                                                   //| 
-  var con = new Controller(new Grid("aabb",2))    //> con  : de.htwg.se.SevenSteps.controller.Controller = 
-                                                  //| 
-                                                  //| +---+---+
-                                                  //| |a 0|a 0|
-                                                  //| +---+---+
-                                                  //| |b 0|b 0|
-                                                  //| +---+---+
-                                                  //| 
-  con.addPlayer(new Player("Hans"))
-  con.addPlayer(new Player("Peterrr"))
-  con.toString                                    //> res2: String = "
-                                                  //| -> Hans: g=0, b=0, a=0, c=0, Points=0
-                                                  //|    Peterrr: g=0, b=0, a=0, c=0, Points=0
-                                                  //| 
-                                                  //| +---+---+
-                                                  //| |a 0|a 0|
-                                                  //| +---+---+
-                                                  //| |b 0|b 0|
-                                                  //| +---+---+
-                                                  //| "
 }
