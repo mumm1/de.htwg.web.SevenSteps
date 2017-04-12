@@ -20,7 +20,7 @@ case class Controller(var grid:Grid=new Grid(1,1),var players:List[Player]=Nil) 
   def undo(){
     if (undoStack.length>0){
       val temp=undoStack.pop() 
-      temp.undoIt(this)
+      temp.undo(this)
       redoStack.push(temp)}
     }
   def redo(){
