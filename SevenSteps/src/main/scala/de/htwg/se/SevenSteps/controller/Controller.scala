@@ -21,6 +21,12 @@ case class Controller(var grid:Grid=new Grid(1,1),var players:List[Player]=Nil) 
       temp.undoIt(this)
       redoStack.push(temp)}
     }
+  def redo(){
+    if (redoStack.length>0){
+      val temp=redoStack.pop() 
+      temp.doIt(this)
+      undoStack.push(temp)}
+    }
   
   
   def color(row:Int,col:Int,color:Char){grid=grid.set(row, col, color)}
