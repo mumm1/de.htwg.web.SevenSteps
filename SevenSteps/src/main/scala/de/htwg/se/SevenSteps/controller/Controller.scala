@@ -11,9 +11,11 @@ case class Controller(var grid:Grid=new Grid(1,1),var players:List[Player]=Nil) 
   var undoStack:Stack[Command] = Stack()
   var redoStack:Stack[Command] = Stack()
   
-  def exploreCommand(com: Command){gameState.ecploreCommand(com) match {
-  case Success(s) => println(s); undoStack.push(com);redoStack.clear()
-  case Failure(e) => println(e.getMessage);}}
+  def exploreCommand(com: Command){
+    undoStack.push(com);
+    gameState.ecploreCommand(com) match {
+    case Success(s) => redoStack.clear();println(s); 
+    case Failure(e) => undoStack.pop();println(e.getMessage);}}
   
   def undo(){
     if (undoStack.length>0){
@@ -27,9 +29,6 @@ case class Controller(var grid:Grid=new Grid(1,1),var players:List[Player]=Nil) 
       temp.doIt(this)
       undoStack.push(temp)}
     }
-  
-  
-  def color(row:Int,col:Int,color:Char){grid=grid.set(row, col, color)}
   
   override def toString = {
     var text = "\n"

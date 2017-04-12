@@ -19,7 +19,10 @@ case class NewGrid(colors:String,cols:Int) extends Command{
 }
 
 case class StartGame() extends Command{
-  override def doIt(c:Controller):Try[String]={c.curPlayer=c.players(0);c.gameState=new Play(c);Success("Started the game")}
+  override def doIt(c:Controller):Try[String]={
+    if (c.players.length>0){
+      c.curPlayer=c.players(0);c.gameState=new Play(c);c.undoStack.clear();Success("Started the game")
+    }else{Failure(new Exception("Can't start the game: Not enough Players"))}}
   override def undoIt(c:Controller){c.curPlayer=null;c.gameState=new Prepare(c)}
 }
 

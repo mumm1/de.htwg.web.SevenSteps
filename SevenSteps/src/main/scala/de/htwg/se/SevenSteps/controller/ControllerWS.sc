@@ -12,7 +12,19 @@ object ControllerWS {
                                                   //| 
   con.exploreCommand(new AddPlayer("Hans"))       //> Added Player: Hans: g=0, b=0, a=0, c=0, Points=0
   con.exploreCommand(new AddPlayer("PeteRrs"))    //> Added Player: PeteRrs: g=0, b=0, a=0, c=0, Points=0
+  con.exploreCommand(new NewGrid("ab sdd",3))     //> Build new Grid
   con.toString                                    //> res0: String#240 = "
+                                                  //|    Hans: g=0, b=0, a=0, c=0, Points=0
+                                                  //|    PeteRrs: g=0, b=0, a=0, c=0, Points=0
+                                                  //| 
+                                                  //| +---+---+---+
+                                                  //| |a 0|b 0|   |
+                                                  //| +---+---+---+
+                                                  //| |s 0|d 0|d 0|
+                                                  //| +---+---+---+
+                                                  //| "
+  con.undo()
+  con.toString                                    //> res1: String#240 = "
                                                   //|    Hans: g=0, b=0, a=0, c=0, Points=0
                                                   //|    PeteRrs: g=0, b=0, a=0, c=0, Points=0
                                                   //| 
@@ -21,15 +33,8 @@ object ControllerWS {
                                                   //| +---+
                                                   //| "
   con.undo()
-  con.toString                                    //> res1: String#240 = "
-                                                  //|    Hans: g=0, b=0, a=0, c=0, Points=0
-                                                  //| 
-                                                  //| +---+
-                                                  //| |   |
-                                                  //| +---+
-                                                  //| "
-  con.undo()
   con.toString()                                  //> res2: String#240 = "
+                                                  //|    Hans: g=0, b=0, a=0, c=0, Points=0
                                                   //| 
                                                   //| +---+
                                                   //| |   |
@@ -42,8 +47,10 @@ object ControllerWS {
                                                   //|    Hans: g=0, b=0, a=0, c=0, Points=0
                                                   //|    PeteRrs: g=0, b=0, a=0, c=0, Points=0
                                                   //| 
-                                                  //| +---+
-                                                  //| |   |
-                                                  //| +---+
+                                                  //| +---+---+---+
+                                                  //| |a 0|b 0|   |
+                                                  //| +---+---+---+
+                                                  //| |s 0|d 0|d 0|
+                                                  //| +---+---+---+
                                                   //| "
 }
