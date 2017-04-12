@@ -12,10 +12,12 @@ class ControllerSpec extends WordSpec{
   
   "A Controller in game phase prepare" should{
     var controller = Controller()
-    "add Players" in {
+    "add Players and undo this" in {
       controller.exploreCommand(new AddPlayer("Hans"))
       controller.exploreCommand(new AddPlayer("Peter"))
       controller.players.length should be(2)
+      controller.undo()
+      controller.players.length should be(1)
     }
     "generate a new Grid" in {
       controller.exploreCommand(new NewGrid("ab sdd",3))
