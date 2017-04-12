@@ -11,11 +11,11 @@ case class Controller(var grid:Grid=new Grid(1,1),var players:List[Player]=Nil) 
   var undoStack:Stack[Command] = Stack()
   var redoStack:Stack[Command] = Stack()
   
-  def exploreCommand(com: Command){
-    undoStack.push(com);
-    gameState.ecploreCommand(com) match {
-    case Success(s) => redoStack.clear();println(s); 
-    case Failure(e) => undoStack.pop();println(e.getMessage);}}
+  def exploreCommand(com: Command):Try[String]={ val explored=gameState.ecploreCommand(com)
+    explored match {
+    case Success(s) => undoStack.push(com);redoStack.clear(); 
+    case Failure(e) => }
+    explored;}
   
   def undo(){
     if (undoStack.length>0){

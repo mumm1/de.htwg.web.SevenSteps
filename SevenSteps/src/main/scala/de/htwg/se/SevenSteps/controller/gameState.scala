@@ -23,7 +23,7 @@ case class StartGame() extends Command{
     if (c.players.length>0){
       c.curPlayer=c.players(0);c.gameState=new Play(c);c.undoStack.clear();Success("Started the game")
     }else{Failure(new Exception("Can't start the game: Not enough Players"))}}
-  override def undo(c:Controller){c.curPlayer=null;c.gameState=new Prepare(c)}
+  override def undo(c:Controller){c.undoStack.clear()}
 }
 
 trait GameState {def ecploreCommand(com: Command):Try[String]}
