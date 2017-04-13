@@ -21,21 +21,23 @@ case class Controller(var grid:Grid=new Grid(0,0),var players:List[Player]=Nil) 
   
   def undo(){
     if (undoStack.length>0){
-      val temp=undoStack.pop() 
-      temp.undo(this)
+      val temp = undoStack.pop() 
+      message = "Undo: "+temp.undo(this)
       redoStack.push(temp)
-      message="Used undo!"}
+    }
     else
-      message="Can't undo that!"
+      message="Can't undo now!"
     }
   def redo(){
     if (redoStack.length>0){
       val temp=redoStack.pop() 
-      temp.doIt(this)
-      undoStack.push(temp)
-      message="Used redo!"}
+      temp.doIt(this) match {
+        case Success(s) => message="Redo: "+s
+        case Failure(e) => message=e.getMessage()
+      }
+      undoStack.push(temp)}
     else
-      message="Can't redo that!"
+      message="Can't redo now!"
     }
   
   override def toString = {
@@ -55,18 +57,18 @@ case class Controller(var grid:Grid=new Grid(0,0),var players:List[Player]=Nil) 
 // ##################### Controller Commands ####################### 
 
 trait Command {def doIt(c:Controller):Try[String] 
-               def undo(c:Controller)}
+               def undo(c:Controller):String}
 
 case class AddPlayer(name:String) extends Command{
   val player= Player(name)
-  override def doIt(c:Controller):Try[String]={c.players=c.players:+player;Success("Added Player: "+name)}
-  override def undo(c:Controller){c.players=c.players.take(c.players.length - 1)}
+  override def doIt(c:Controller):Try[String]={c.players=c.players:+player;Success("Added Player "+name)}
+  override def undo(c:Controller):String={val temp=c.players.last;c.players=c.players.take(c.players.length - 1);"Deleted Player "+temp.name}
 }
 
 case class NewGrid(colors:String,cols:Int) extends Command{
   var oldGrid:Grid = null
   override def doIt(c:Controller):Try[String]={oldGrid=c.grid;c.grid=new Grid(colors,cols);Success("Build new Grid")}
-  override def undo(c:Controller){c.grid=oldGrid}
+  override def undo(c:Controller):String={c.grid=oldGrid;"Deleted new Grid"}
 }
 
 case class StartGame() extends Command{
@@ -74,12 +76,12 @@ case class StartGame() extends Command{
     if (c.players.length>0){
       c.gameState=new Play(c);c.undoStack.clear();Success("Started the game")
     }else{Failure(new Exception("Can't start the game: Not enough Players"))}}
-  override def undo(c:Controller){c.undoStack.clear()}
+  override def undo(c:Controller):String={c.undoStack.clear();"You can't undo the start of the game!"}
 }
 
 case class NextPlayer() extends Command{
-  override def doIt(c:Controller):Try[String]={c.curPlayer+=1;c.curPlayer=c.curPlayer%c.players.length;Success("Player: "+c.getCurPlayer.name+" it is your turn!")}
-  override def undo(c:Controller){c.undoStack.clear()}
+  override def doIt(c:Controller):Try[String]={c.curPlayer+=1;c.curPlayer=c.curPlayer%c.players.length;Success("Player "+c.getCurPlayer.name+" it is your turn!")}
+  override def undo(c:Controller):String={c.undoStack.clear();"You can't undo to previous player!"}
 }
 
 

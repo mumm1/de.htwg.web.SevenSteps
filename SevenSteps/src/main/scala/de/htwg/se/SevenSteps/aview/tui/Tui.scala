@@ -6,8 +6,14 @@ class Tui(var con: Controller){
   printTui
   def update = printTui
   def printTui = {
+    println("\n"*30)
     println(con.toString)
-    println("Enter command: q-Quit, u-Undo, r-Redo, a-AddPlayer [Name], g-Grid [ColorString] [ColsInt], s-StartGame, n-NextPlayer")
+    println("Enter command: q-Quit, u-Undo, r-Redo")
+    if (con.gameState.isInstanceOf[Prepare])
+      println("               a-AddPlayer [Name], g-Grid [ColorString] [ColsInt], s-StartGame")  
+    if (con.gameState.isInstanceOf[Play])
+      println("               n-NextPlayer")  
+
     
   }
   def Str2Int(s:String,default:Int):Int={try{s.toInt}catch{ case e:Exception => default}}

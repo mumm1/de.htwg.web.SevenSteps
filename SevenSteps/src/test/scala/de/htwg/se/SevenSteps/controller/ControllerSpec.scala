@@ -24,7 +24,7 @@ class ControllerSpec extends WordSpec{
       c.exploreCommand(new NewGrid("ab sdd",3)).isSuccess should be(true)
       c.grid.cellsToString() should be("ab sdd")
       c.undo()
-      c.grid.cellsToString() should be(" ")
+      c.grid.cellsToString() should be("")
     }
     "start the game (minimum 1 Player) and can't undo that" in {
       var c = Controller()
@@ -53,7 +53,15 @@ class ControllerSpec extends WordSpec{
       c.players.length should be(2)  
       c.redo()
     }
+    "generate a cool String" in {
+      var c = Controller()
+      c.exploreCommand(new AddPlayer("Hans")).isSuccess should be(true)
+      c.toString()
+    }
   }
+//  "A Controller in game phase play" should{
+//    ""
+//  }
   
   
 }
