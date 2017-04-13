@@ -6,11 +6,12 @@ import scala.util._
 
 case class Controller(var grid:Grid=new Grid(1,1),var players:List[Player]=Nil) {
   
-  var curPlayer:Player=null;
+  var curPlayer:Int=0;
   var gameState:GameState = Prepare(this)
   var undoStack:Stack[Command] = Stack()
   var redoStack:Stack[Command] = Stack()
   
+  def getCurPlayer(){players(curPlayer)}
   def exploreCommand(com: Command):Try[String]={ val explored=gameState.ecploreCommand(com)
     explored match {
     case Success(s) => undoStack.push(com);redoStack.clear(); 
@@ -33,7 +34,7 @@ case class Controller(var grid:Grid=new Grid(1,1),var players:List[Player]=Nil) 
   override def toString = {
     var text = "\n"
     for(player <- players){
-      if(player==curPlayer)
+      if(player==players(curPlayer))
         text+="-> "+player.toString()+"\n"
       else
         text+="   "+player.toString()+"\n"

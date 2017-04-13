@@ -3,6 +3,8 @@ package de.htwg.se.SevenSteps.controller
 import de.htwg.se.SevenSteps.model._
 import scala.util._
 
+// ##################### Commands ####################### 
+
 trait Command {def doIt(c:Controller):Try[String] 
                def undo(c:Controller)}
 
@@ -21,10 +23,18 @@ case class NewGrid(colors:String,cols:Int) extends Command{
 case class StartGame() extends Command{
   override def doIt(c:Controller):Try[String]={
     if (c.players.length>0){
-      c.curPlayer=c.players(0);c.gameState=new Play(c);c.undoStack.clear();Success("Started the game")
+      c.gameState=new Play(c);c.undoStack.clear();Success("Started the game")
     }else{Failure(new Exception("Can't start the game: Not enough Players"))}}
   override def undo(c:Controller){c.undoStack.clear()}
 }
+
+case class NextPlayer() extends Command{
+  override def doIt(c:Controller):Try[String]={c.curPlayer+=1;c.curPlayer=c.curPlayer%c.players.length;Success("Player: "+c.getCurPlayer+" it is your turn!")}
+  override def undo(c:Controller){c.undoStack.clear()}
+}
+
+
+// ##################### Finate State Machine ####################### 
 
 trait GameState {def ecploreCommand(com: Command):Try[String]}
 
@@ -42,7 +52,8 @@ case class Prepare(c:Controller) extends GameState{
 case class Play(c:Controller) extends GameState{
   override def ecploreCommand(com: Command):Try[String]={
     com match {
-      case _                => Failure(new Exception("ILLEGEL COMMAND"))
+      case command:NextPlayer =>  command.doIt(c)      
+      case _                  => Failure(new Exception("ILLEGEL COMMAND"))
     }
   }
 }
