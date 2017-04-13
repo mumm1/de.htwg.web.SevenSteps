@@ -22,7 +22,7 @@ class Tui(var con: Controller){
       case _ => {
         input.split(" ").toList match {
           case "a" :: player :: Nil          => con.exploreCommand(new AddPlayer(player))
-          case "n" :: colors :: cols:: Nil   => con.exploreCommand(new NewGrid(colors,cols.toInt))
+          case "n" :: colors :: cols:: Nil   => con.exploreCommand(new NewGrid(colors.replace('-', ' '),cols.toInt))
           case _                             => println("False Input!!!")
         }
       }
