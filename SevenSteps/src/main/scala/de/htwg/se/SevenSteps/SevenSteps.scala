@@ -6,7 +6,6 @@ import de.htwg.se.SevenSteps.model._
 
 object Hello {
   def main(args: Array[String]): Unit = {
-    println("Welcome to SevenSteps")
     val con = new Controller()
     val tui = new Tui(con)
   

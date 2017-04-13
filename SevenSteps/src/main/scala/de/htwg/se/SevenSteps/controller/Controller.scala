@@ -4,7 +4,7 @@ import de.htwg.se.SevenSteps.model._
 import scala.collection.mutable.Stack
 import scala.util._
 
-case class Controller(var grid:Grid=new Grid(1,1),var players:List[Player]=Nil) {
+case class Controller(var grid:Grid=new Grid(0,0),var players:List[Player]=Nil) {
   
   var curPlayer:Int=0;
   var gameState:GameState = Prepare(this)
@@ -23,13 +23,19 @@ case class Controller(var grid:Grid=new Grid(1,1),var players:List[Player]=Nil) 
     if (undoStack.length>0){
       val temp=undoStack.pop() 
       temp.undo(this)
-      redoStack.push(temp)}
+      redoStack.push(temp)
+      message="Used undo!"}
+    else
+      message="Can't undo that!"
     }
   def redo(){
     if (redoStack.length>0){
       val temp=redoStack.pop() 
       temp.doIt(this)
-      undoStack.push(temp)}
+      undoStack.push(temp)
+      message="Used redo!"}
+    else
+      message="Can't redo that!"
     }
   
   override def toString = {
