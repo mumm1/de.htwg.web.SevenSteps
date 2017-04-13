@@ -87,6 +87,20 @@ case class NextPlayer() extends Command{
   override def undo(c:Controller):Try[String]={c.undoStack.clear();Failure(new Exception("You can't undo to previous player!"))}
 }
 
+case class SetStonde(row:Int,col:Int) extends Command{
+  override def doIt(c:Controller):Try[String]={
+    try{
+      val cell=c.grid.cell(row,col)
+      c.grid=c.grid.set(row, col, cell.height+1)
+      Success("Set the Stone")
+      }catch{ case e:Exception => Failure(new Exception("You can't set a Stone here"))}
+    
+    }
+  override def undo(c:Controller):Try[String]={    
+    val cell=c.grid.cell(row,col)
+    c.grid=c.grid.set(row, col, cell.height-1);Success("Take the Stone")}
+}
+
 
 // ##################### Finate State Machine ####################### 
 
@@ -106,8 +120,9 @@ case class Prepare(c:Controller) extends GameState{
 case class Play(c:Controller) extends GameState{
   override def ecploreCommand(com: Command):Try[String]={
     com match {
-      case command:NextPlayer =>  command.doIt(c)      
-      case _                  => Failure(new Exception("ILLEGEL COMMAND"))
+      case command:NextPlayer =>  command.doIt(c)     
+      case command:SetStonde  =>  command.doIt(c)
+      case _                  =>  Failure(new Exception("ILLEGEL COMMAND"))
     }
   }
 }

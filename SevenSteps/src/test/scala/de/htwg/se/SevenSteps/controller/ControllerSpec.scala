@@ -61,7 +61,8 @@ class ControllerSpec extends WordSpec{
     }
     "can only use prepare commands" in {
       var c = Controller()
-      c.exploreCommand(new NextPlayer()).isSuccess should be(false)      
+      c.exploreCommand(new NextPlayer()).isSuccess should be(false)
+      c.exploreCommand(new SetStonde(0,0)).isSuccess should be(false)
     }
   }
   "A Controller in game phase play" should{
@@ -87,6 +88,21 @@ class ControllerSpec extends WordSpec{
       c.exploreCommand(new AddPlayer("Hans")).isSuccess should be(false)   
       c.exploreCommand(new NewGrid("ab sdd",3)).isSuccess should be(false) 
       c.exploreCommand(new StartGame()).isSuccess should be(false)
+    }
+    "allow a player to set a stone on the grid" in{
+      var c = Controller() 
+      c.exploreCommand(new AddPlayer("Hans")).isSuccess should be(true)
+      c.exploreCommand(new NewGrid("a",1)).isSuccess should be(true)
+      c.exploreCommand(new StartGame()).isSuccess should be(true)
+      
+      c.exploreCommand(new SetStonde( 0, 0)).isSuccess should be(true)
+      c.grid.cell(0,0).height should be(1)
+      c.exploreCommand(new SetStonde( 1, 0)).isSuccess should be(false)
+      c.exploreCommand(new SetStonde( 0, 1)).isSuccess should be(false)
+      c.exploreCommand(new SetStonde(-1, 0)).isSuccess should be(false)
+      c.exploreCommand(new SetStonde( 0,-1)).isSuccess should be(false)
+      c.grid.cell(0,0).height should be(1)      
+      
     }
   }
   

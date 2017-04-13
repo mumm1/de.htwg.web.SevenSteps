@@ -12,7 +12,7 @@ class Tui(var con: Controller){
     if (con.gameState.isInstanceOf[Prepare])
       println("               a-AddPlayer [Name], g-Grid [ColorString] [ColsInt], s-StartGame")  
     if (con.gameState.isInstanceOf[Play])
-      println("               n-NextPlayer")  
+      println("               SetStone [row] [col], n-NextPlayer")  
 
     
   }
@@ -29,7 +29,8 @@ class Tui(var con: Controller){
         input.split(" ").toList match {
           case "a" :: player :: Nil          => con.exploreCommand(new AddPlayer(player))
           case "g" :: colors :: cols:: Nil   => con.exploreCommand(new NewGrid(colors.replace('-', ' '),Str2Int(cols,5)))
-          case _                             => println("False Input!!!")
+          case row :: col:: Nil              => con.exploreCommand(new SetStonde(Str2Int(row,-1),Str2Int(col,-1)))
+          case _                             => con.message="False Input!!!"
         }
       }
     }
