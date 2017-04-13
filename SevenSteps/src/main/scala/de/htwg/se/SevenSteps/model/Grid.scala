@@ -15,7 +15,7 @@ case class Grid(rows: Int,cols: Int,cells: Option[Vector[Cell]] = None) {
   private def getIndex(row: Int,col: Int): Int= {cols*row+col}
   def cell(row: Int,col:Int):Cell={grid(getIndex(row,col))}
   override def toString = {
-    if (cols==0 | rows==0 )
+    if (grid.length==0 )
       "\n"
     else{
       val linesep = "+---"*cols+"+\n"
