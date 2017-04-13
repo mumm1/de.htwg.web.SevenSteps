@@ -6,9 +6,7 @@ class Tui(var con: Controller){
   printTui
   def update = printTui
   def printTui = {
-    println("\n############ SevenSteps ############")
     println(con.toString)
-    println("####################################\n")
     println("Enter command: q-Quit, u-Undo, r-Redo, a-AddPlayer [Name], g-Grid [ColorString] [ColsInt], s-StartGame, n-NextPlayer")
     
   }

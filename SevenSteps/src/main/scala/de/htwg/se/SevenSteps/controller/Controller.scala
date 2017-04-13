@@ -10,12 +10,13 @@ case class Controller(var grid:Grid=new Grid(1,1),var players:List[Player]=Nil) 
   var gameState:GameState = Prepare(this)
   var undoStack:Stack[Command] = Stack()
   var redoStack:Stack[Command] = Stack()
+  var message="Welcome to SevenSteps"
   
-  def getCurPlayer(){players(curPlayer)}
+  def getCurPlayer():Player={players(curPlayer)}
   def exploreCommand(com: Command):Try[String]={ val explored=gameState.ecploreCommand(com)
     explored match {
-    case Success(s) => undoStack.push(com);redoStack.clear(); 
-    case Failure(e) => }
+    case Success(s) => undoStack.push(com);redoStack.clear();message=s; 
+    case Failure(e) => message=e.getMessage}
     explored;}
   
   def undo(){
@@ -32,14 +33,15 @@ case class Controller(var grid:Grid=new Grid(1,1),var players:List[Player]=Nil) 
     }
   
   override def toString = {
-    var text = "\n"
+    var text = "############  "+message+"  ############\n\n"
+    val len = text.length()
     for(player <- players){
       if(player==players(curPlayer))
         text+="-> "+player.toString()+"\n"
       else
         text+="   "+player.toString()+"\n"
     }
-    text+grid.toString()
+    text+grid.toString()+"#"*(len-2)+"\n"
   }
 
 }

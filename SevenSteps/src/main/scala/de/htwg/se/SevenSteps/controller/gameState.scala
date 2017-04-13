@@ -10,7 +10,7 @@ trait Command {def doIt(c:Controller):Try[String]
 
 case class AddPlayer(name:String) extends Command{
   val player= Player(name)
-  override def doIt(c:Controller):Try[String]={c.players=c.players:+player;Success("Added Player: "+player)}
+  override def doIt(c:Controller):Try[String]={c.players=c.players:+player;Success("Added Player: "+name)}
   override def undo(c:Controller){c.players=c.players.take(c.players.length - 1)}
 }
 
@@ -29,7 +29,7 @@ case class StartGame() extends Command{
 }
 
 case class NextPlayer() extends Command{
-  override def doIt(c:Controller):Try[String]={c.curPlayer+=1;c.curPlayer=c.curPlayer%c.players.length;Success("Player: "+c.getCurPlayer+" it is your turn!")}
+  override def doIt(c:Controller):Try[String]={c.curPlayer+=1;c.curPlayer=c.curPlayer%c.players.length;Success("Player: "+c.getCurPlayer.name+" it is your turn!")}
   override def undo(c:Controller){c.undoStack.clear()}
 }
 
