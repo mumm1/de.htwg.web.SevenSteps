@@ -2,11 +2,13 @@ package de.htwg.se.SevenSteps.controller
 
 import de.htwg.se.SevenSteps.model._
 import scala.collection.mutable.Stack
+import scala.collection.mutable.ListBuffer
 import scala.util._
 
-case class Controller(var grid:Grid=new Grid(0,0),var players:List[Player]=Nil) {
+case class Controller(var grid:Grid=new Grid(0,0),var players:ListBuffer[Player]=ListBuffer()) {
   
   var curPlayer:Int=0;
+  var curHeight:Int=0;
   var gameState:GameState = Prepare(this)
   var undoStack:Stack[Command] = Stack()
   var redoStack:Stack[Command] = Stack()
@@ -48,7 +50,7 @@ case class Controller(var grid:Grid=new Grid(0,0),var players:List[Player]=Nil) 
     val len = text.length()
     for(player <- players){
       if(player==players(curPlayer))
-        text+="-> "+player.toString()+"\n"
+        text+="-> "+player.toString()+" CurHeight="+curHeight+"\n"
       else
         text+="   "+player.toString()+"\n"
     }
@@ -87,22 +89,36 @@ case class StartGame() extends Command{
 }
 
 case class NextPlayer() extends Command{
-  override def doIt(c:Controller):Try[String]={c.curPlayer+=1;c.curPlayer=c.curPlayer%c.players.length;Success("Player "+c.getCurPlayer.name+" it is your turn!")}
+  override def doIt(c:Controller):Try[String]={c.curPlayer+=1;c.curPlayer=c.curPlayer%c.players.length;c.curHeight=0;Success("Player "+c.getCurPlayer.name+" it is your turn!")}
   override def undo(c:Controller):Try[String]={c.undoStack.clear();Failure(new Exception("You can't undo to previous player!"))}
 }
 
 case class SetStonde(row:Int,col:Int) extends Command{
   override def doIt(c:Controller):Try[String]={
     try{
-      val cell=c.grid.cell(row,col)
-      c.grid=c.grid.set(row, col, cell.height+1)
-      Success("Set the Stone")
-      }catch{ case e:Exception => Failure(new Exception("You can't set a Stone here"))}
-    
+      val cell  =c.grid.cell(row,col)
+      c.getCurPlayer().map.get(cell.color) match {
+        case None         => Failure(new Exception("You can't place here!"))
+        case Some(0)      => Failure(new Exception("You don't have Stones from color '"+cell.color+"'"))
+        case Some(stones) => {  val dif   =c.curHeight-cell.height
+                                if (dif==0 | dif==1){                                                            
+                                  c.grid=c.grid.set(row, col, cell.height+1)
+                                  c.players(c.curPlayer)=c.getCurPlayer().copy(points=c.getCurPlayer().points+cell.height+1)
+                                  c.players(c.curPlayer)=c.getCurPlayer().setColor(cell.color,stones-1)
+                                  c.curHeight=cell.height+1
+                                  Success("You set a stone")
+                                }else{Failure(new Exception("You have to set a Stone on height "+(c.curHeight-1)+" or " +c.curHeight))}
+        }
+      }}catch{ case e:IndexOutOfBoundsException => Failure(new Exception("You can't set a Stone here"))}
     }
   override def undo(c:Controller):Try[String]={    
     val cell=c.grid.cell(row,col)
-    c.grid=c.grid.set(row, col, cell.height-1);Success("Take the Stone")}
+    c.grid=c.grid.set(row, col, cell.height-1)
+    c.players(c.curPlayer)=c.getCurPlayer().copy(points=c.getCurPlayer().points-cell.height)
+    c.players(c.curPlayer)=c.getCurPlayer().setColor(cell.color,c.getCurPlayer().map.get(cell.color).get+1)    
+    c.curHeight=cell.height-1
+    
+    ;Success("Take the Stone")}
 }
 
 

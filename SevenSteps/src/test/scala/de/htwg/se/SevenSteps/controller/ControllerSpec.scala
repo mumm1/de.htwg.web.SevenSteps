@@ -109,6 +109,11 @@ class ControllerSpec extends WordSpec{
       c.exploreCommand(new SetStonde( 0,-1)).isSuccess should be(false)
       c.grid.cell(0,0).height should be(1)           
     }
+    "give on Transition Prepare -> Play the Players colors with 0 stones" in {
+      before(new Play(c))  
+      c.grid.getColors should be(List('a','b'))
+      c.getCurPlayer().map.toList should be(List(('b',0),('a',0)))
+    }
   }
   
   
