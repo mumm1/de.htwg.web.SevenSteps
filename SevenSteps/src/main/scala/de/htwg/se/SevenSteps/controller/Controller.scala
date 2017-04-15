@@ -2,6 +2,7 @@ package de.htwg.se.SevenSteps.controller
 
 import de.htwg.se.SevenSteps.model._
 import scala.collection.mutable.Stack
+import scala.collection.mutable.ListBuffer
 import scala.util._
 
 case class Controller(var grid:Grid=new Grid(0,0),var players:List[Player]=Nil) {
@@ -42,6 +43,12 @@ case class Controller(var grid:Grid=new Grid(0,0),var players:List[Player]=Nil) 
     else{
       message="Can't redo now!";Failure(new Exception(message))}
     }
+  
+  def getColorFromGrid:List[Char]={
+    var list:ListBuffer[Char]=ListBuffer()
+    grid.cellsToString.foreach(c => if(!list.contains(c)){list+=c})
+    list.toList
+  }
   
   override def toString = {
     var text = "############  "+message+"  ############\n\n"

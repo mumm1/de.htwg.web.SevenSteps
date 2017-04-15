@@ -2,13 +2,14 @@ package de.htwg.se.SevenSteps.model
 
 case class Player (name : String, points : Int=0) {
 
-	private val colors =Array ('a','b','c','g')
+	val map = collection.mutable.ListMap[Char, Int]()
+	def setColors(colors:List[Char]){
+	  map.clear()
+		for ((c) <- colors){  
+			map += (c -> 0)
+		}	  
+	}
 
-	 val map = collection.mutable.ListMap[Char, Int]()
-
-			for ((c) <- colors){  
-				map += (c -> 0)
-			}
 
 
 

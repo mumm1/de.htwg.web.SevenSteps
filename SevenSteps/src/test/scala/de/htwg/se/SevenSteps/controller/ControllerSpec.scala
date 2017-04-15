@@ -71,7 +71,7 @@ class ControllerSpec extends WordSpec{
       c.exploreCommand(new AddPlayer("Peter")).isSuccess should be(true)
       c.toString()
     }
-    "can only use prepare commands" in {
+    " only use prepare commands" in {
       before(new Prepare(c))
       c.exploreCommand(new NextPlayer()).isSuccess should be(false)
       c.exploreCommand(new SetStonde(0,0)).isSuccess should be(false)
@@ -108,6 +108,9 @@ class ControllerSpec extends WordSpec{
       c.exploreCommand(new SetStonde(-1, 0)).isSuccess should be(false)
       c.exploreCommand(new SetStonde( 0,-1)).isSuccess should be(false)
       c.grid.cell(0,0).height should be(1)           
+    }
+    "have generated the colors for the game" in{
+      c.getColorFromGrid should be(List('a','b'))
     }
   }
   

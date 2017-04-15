@@ -13,19 +13,20 @@ class PlayerSpec extends WordSpec {
 
 		val p = new Player("Julius",50)
 
-				"have a name" in {
+		"have a name" in {
 			Player("Julius", 50).name should be("Julius")
 		}
 		"have points" in {
 			Player ("Julius", 50).points should be (50)
 		}
 
-		"have a char in map" in {
+		"can set colors" in {
+		  p.setColors(List('g','b','a','c'))
 			p.map.contains('g') should be (true)
 		}
 
 		"toString look like" in {
-			p.toString should be ("Julius: g=0, b=0, a=0, c=0, Points=50")
+			p.toString should be ("Julius: c=0, b=0, g=0, a=0, Points=50")
 			}
 
 		
