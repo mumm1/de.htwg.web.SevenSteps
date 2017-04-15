@@ -36,5 +36,10 @@ case class Grid(rows: Int,cols: Int,cells: Option[Vector[Cell]] = None) {
     cellsToString.foreach(c => if(!list.contains(c)&c!=' '){list+=c})
     list.toList
   }
+  def getHeights:List[Int]={
+    var list:ListBuffer[Int]=ListBuffer()
+    grid.foreach(cell =>list+=cell.height)
+    list.toList
+  }
 }
 

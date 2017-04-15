@@ -114,6 +114,38 @@ class ControllerSpec extends WordSpec{
       c.grid.getColors should be(List('a','b'))
       c.getCurPlayer().map.toList should be(List(('b',0),('a',0)))
     }
+    "set the first stone everywhere on height 0" in {
+      before(new Play(c))  
+      c.grid.getHeights should be(List(0,0,0,0))
+      c.doIt(new SetStonde( 0, 0)).isSuccess should be(true)
+      c.grid.getHeights should be(List(1,0,0,0));             
+      c.undo().isSuccess should be(true)
+      
+      c.doIt(new SetStonde( 0, 1)).isSuccess should be(true)
+      c.grid.getHeights should be(List(0,1,0,0));             
+      c.undo().isSuccess should be(true)
+      
+      c.doIt(new SetStonde( 1, 0)).isSuccess should be(true)
+      c.grid.getHeights should be(List(0,0,1,0));             
+      c.undo().isSuccess should be(true)
+      
+      c.doIt(new SetStonde( 1, 1)).isSuccess should be(true)
+      c.grid.getHeights should be(List(0,0,0,1));             
+    }
+    "set the second Stone neighboring to the first stone" in {
+      before(new Play(c))  
+      c.doIt(new SetStonde( 0, 0)).isSuccess should be(true)
+      c.doIt(new SetStonde( 0, 1)).isSuccess should be(true)
+      c.grid.getHeights should be(List(1,1,0,0)) 
+      c.undo().isSuccess should be(true)
+      
+      c.doIt(new SetStonde( 1, 0)).isSuccess should be(true)
+      c.grid.getHeights should be(List(1,0,1,0)) 
+      c.undo().isSuccess should be(true)
+      
+      c.doIt(new SetStonde( 1, 1)).isSuccess should be(false)
+      c.grid.getHeights should be(List(1,0,0,0)) 
+    }
   }
   
   

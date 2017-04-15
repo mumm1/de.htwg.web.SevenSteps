@@ -60,5 +60,8 @@ class GridSpec extends WordSpec{
     "generate a List of colors without the white space" in{
       grid.getColors should be(List('a','b','c','d'))
     }
+     "generate a List of heights" in{
+      grid.set(0, 0, 0).set(0, 1, 1).set(1, 0, 2).set(1, 1, 3).set(2, 0, 4).set(2, 1, 5).getHeights should be(List(0,1,2,3,4,5))
+    }
   }
 }

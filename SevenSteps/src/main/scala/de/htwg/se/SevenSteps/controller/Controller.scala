@@ -9,6 +9,7 @@ case class Controller(var grid:Grid=new Grid(0,0),var players:ListBuffer[Player]
   
   var curPlayer:Int=0;
   var curHeight:Int=0;
+  var lastcell:(Int,Int)=null
   var gameState:GameState = Prepare(this)
   var undoStack:Stack[Command] = Stack()
   var redoStack:Stack[Command] = Stack()
@@ -89,14 +90,22 @@ case class StartGame() extends Command{
 }
 
 case class NextPlayer() extends Command{
-  override def doIt(c:Controller):Try[String]={c.curPlayer+=1;c.curPlayer=c.curPlayer%c.players.length;c.curHeight=0;Success("Player "+c.getCurPlayer.name+" it is your turn!")}
+  override def doIt(c:Controller):Try[String]={c.curPlayer+=1;c.curPlayer=c.curPlayer%c.players.length;c.curHeight=0;c.lastcell=null;Success("Player "+c.getCurPlayer.name+" it is your turn!")}
   override def undo(c:Controller):Try[String]={c.undoStack.clear();Failure(new Exception("You can't undo to previous player!"))}
 }
 
 case class SetStonde(row:Int,col:Int) extends Command{
+  var lastCell:(Int,Int)=null
+  def isNeighbour(row:Int,col:Int,c:Controller):Boolean={
+    (math.abs(row-c.lastcell._1)+math.abs(col-c.lastcell._2))==1
+  }
   override def doIt(c:Controller):Try[String]={
     try{
       val cell  =c.grid.cell(row,col)
+      if (c.lastcell!=null)
+        if  (!isNeighbour(row,col,c))
+          return Failure(new Exception("You have to set a Stone neughboring to the last Stone"))
+      
       c.getCurPlayer().map.get(cell.color) match {
         case None         => Failure(new Exception("You can't place here!"))
         case Some(0)      => Failure(new Exception("You don't have Stones from color '"+cell.color+"'"))
@@ -106,6 +115,8 @@ case class SetStonde(row:Int,col:Int) extends Command{
                                   c.players(c.curPlayer)=c.getCurPlayer().copy(points=c.getCurPlayer().points+cell.height+1)
                                   c.players(c.curPlayer)=c.getCurPlayer().setColor(cell.color,stones-1)
                                   c.curHeight=cell.height+1
+                                  lastCell=c.lastcell
+                                  c.lastcell=(row,col)
                                   Success("You set a stone")
                                 }else{Failure(new Exception("You have to set a Stone on height "+(c.curHeight-1)+" or " +c.curHeight))}
         }
@@ -117,7 +128,7 @@ case class SetStonde(row:Int,col:Int) extends Command{
     c.players(c.curPlayer)=c.getCurPlayer().copy(points=c.getCurPlayer().points-cell.height)
     c.players(c.curPlayer)=c.getCurPlayer().setColor(cell.color,c.getCurPlayer().map.get(cell.color).get+1)    
     c.curHeight=cell.height-1
-    
+    c.lastcell=lastCell
     ;Success("Take the Stone")}
 }
 
