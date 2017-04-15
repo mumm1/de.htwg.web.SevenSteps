@@ -12,7 +12,7 @@ case class Grid(rows: Int,cols: Int,cells: Option[Vector[Cell]] = None) {
   val grid = cells getOrElse Vector.fill(rows*cols)(new Cell)
 
   
-  private def getIndex(row: Int,col: Int): Int= {cols*row+col}
+  private def getIndex(row: Int,col: Int): Int= {if(row>=rows|col>=cols){-1}else{cols*row+col}}
   def cell(row: Int,col:Int):Cell={grid(getIndex(row,col))}
   override def toString = {
     if (grid.length==0 )

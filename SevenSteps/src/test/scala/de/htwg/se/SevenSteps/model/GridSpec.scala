@@ -35,7 +35,6 @@ class GridSpec extends WordSpec{
     new Grid(colors="abc  abc",cols=3)
     }
   }
- 
   
   "A colored Grid" should {
     val grid=new Grid("abcab abcddd",3)
@@ -43,5 +42,18 @@ class GridSpec extends WordSpec{
     grid.cellsToString() should be("abcab abcddd")
   }
   }
-
+  
+  "A colored Grid" should {
+    val grid=new Grid("abcd",2)
+    "get the cells " in {
+    grid.cell(0, 0).color should be('a')
+    grid.cell(0, 1).color should be('b')
+    grid.cell(1, 0).color should be('c')
+    grid.cell(1, 1).color should be('d')
+    intercept[IndexOutOfBoundsException] {grid.cell(-1, 0).isInstanceOf[Exception]}
+    intercept[IndexOutOfBoundsException] {grid.cell( 0,-1).isInstanceOf[Exception]}
+    intercept[IndexOutOfBoundsException] {grid.cell( 3, 0).isInstanceOf[Exception]}
+    intercept[IndexOutOfBoundsException] {grid.cell( 0, 3).isInstanceOf[Exception]}
+  }
+  }
 }

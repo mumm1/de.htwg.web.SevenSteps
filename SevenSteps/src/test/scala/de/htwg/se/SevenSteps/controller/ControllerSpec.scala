@@ -18,7 +18,7 @@ class ControllerSpec extends WordSpec{
       case p:Play    => { c.exploreCommand(new AddPlayer("Hans")).isSuccess should be(true)
                           c.exploreCommand(new AddPlayer("Peter")).isSuccess should be(true)
                           c.exploreCommand(new AddPlayer("Alex")).isSuccess should be(true)
-                          c.exploreCommand(new NewGrid("a",1)).isSuccess should be(true)
+                          c.exploreCommand(new NewGrid("aabb",2)).isSuccess should be(true)
                           c.exploreCommand(new StartGame()).isSuccess should be(true)   }
     }}
 
@@ -103,8 +103,8 @@ class ControllerSpec extends WordSpec{
       before(new Play(c))
       c.exploreCommand(new SetStonde( 0, 0)).isSuccess should be(true)
       c.grid.cell(0,0).height should be(1)
-      c.exploreCommand(new SetStonde( 1, 0)).isSuccess should be(false)
-      c.exploreCommand(new SetStonde( 0, 1)).isSuccess should be(false)
+      c.exploreCommand(new SetStonde( 2, 0)).isSuccess should be(false)
+      c.exploreCommand(new SetStonde( 0, 2)).isSuccess should be(false)
       c.exploreCommand(new SetStonde(-1, 0)).isSuccess should be(false)
       c.exploreCommand(new SetStonde( 0,-1)).isSuccess should be(false)
       c.grid.cell(0,0).height should be(1)           
