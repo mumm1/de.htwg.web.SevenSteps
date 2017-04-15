@@ -26,4 +26,5 @@ object GridWS {
                                                   //| |w 0|d 0|c 0|   |
                                                   //| +---+---+---+---+
                                                   //| 
+  new Grid("ab  cd",2).getColors                  //> res2: List[Char] = List(a, b, c, d)
 }

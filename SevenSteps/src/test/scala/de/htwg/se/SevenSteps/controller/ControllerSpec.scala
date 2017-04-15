@@ -109,9 +109,6 @@ class ControllerSpec extends WordSpec{
       c.exploreCommand(new SetStonde( 0,-1)).isSuccess should be(false)
       c.grid.cell(0,0).height should be(1)           
     }
-    "have generated the colors for the game" in{
-      c.getColorFromGrid should be(List('a','b'))
-    }
   }
   
   

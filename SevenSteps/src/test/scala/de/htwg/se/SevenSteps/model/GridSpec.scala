@@ -44,16 +44,21 @@ class GridSpec extends WordSpec{
   }
   
   "A colored Grid" should {
-    val grid=new Grid("abcd",2)
+    val grid=new Grid("ab  cd",2)
     "get the cells " in {
-    grid.cell(0, 0).color should be('a')
-    grid.cell(0, 1).color should be('b')
-    grid.cell(1, 0).color should be('c')
-    grid.cell(1, 1).color should be('d')
-    intercept[IndexOutOfBoundsException] {grid.cell(-1, 0).isInstanceOf[Exception]}
-    intercept[IndexOutOfBoundsException] {grid.cell( 0,-1).isInstanceOf[Exception]}
-    intercept[IndexOutOfBoundsException] {grid.cell( 3, 0).isInstanceOf[Exception]}
-    intercept[IndexOutOfBoundsException] {grid.cell( 0, 3).isInstanceOf[Exception]}
-  }
+      grid.cell(0, 0).color should be('a')
+      grid.cell(0, 1).color should be('b')
+      grid.cell(1, 0).color should be(' ')
+      grid.cell(1, 1).color should be(' ')
+      grid.cell(2, 0).color should be('c')
+      grid.cell(2, 1).color should be('d')
+      intercept[IndexOutOfBoundsException] {grid.cell(-1, 0).isInstanceOf[Exception]}
+      intercept[IndexOutOfBoundsException] {grid.cell( 0,-1).isInstanceOf[Exception]}
+      intercept[IndexOutOfBoundsException] {grid.cell( 4, 0).isInstanceOf[Exception]}
+      intercept[IndexOutOfBoundsException] {grid.cell( 0, 3).isInstanceOf[Exception]}
+    }
+    "generate a List of colors without the white space" in{
+      grid.getColors should be(List('a','b','c','d'))
+    }
   }
 }

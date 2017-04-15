@@ -2,7 +2,6 @@ package de.htwg.se.SevenSteps.controller
 
 import de.htwg.se.SevenSteps.model._
 import scala.collection.mutable.Stack
-import scala.collection.mutable.ListBuffer
 import scala.util._
 
 case class Controller(var grid:Grid=new Grid(0,0),var players:List[Player]=Nil) {
@@ -44,12 +43,6 @@ case class Controller(var grid:Grid=new Grid(0,0),var players:List[Player]=Nil) 
       message="Can't redo now!";Failure(new Exception(message))}
     }
   
-  def getColorFromGrid:List[Char]={
-    var list:ListBuffer[Char]=ListBuffer()
-    grid.cellsToString.foreach(c => if(!list.contains(c)){list+=c})
-    list.toList
-  }
-  
   override def toString = {
     var text = "############  "+message+"  ############\n\n"
     val len = text.length()
@@ -84,7 +77,11 @@ case class NewGrid(colors:String,cols:Int) extends Command{
 case class StartGame() extends Command{
   override def doIt(c:Controller):Try[String]={
     if (c.players.length>0){
-      c.gameState=new Play(c);c.undoStack.clear();Success("Started the game")
+      c.gameState=new Play(c)
+      c.undoStack.clear()
+      val colors=c.grid.getColors
+      c.players.foreach(p=>p.setColors(colors))
+      Success("Started the game")
     }else{Failure(new Exception("Can't start the game: Not enough Players"))}}
   override def undo(c:Controller):Try[String]={c.undoStack.clear();Failure(new Exception("You can't undo the start of the game!"))}
 }
