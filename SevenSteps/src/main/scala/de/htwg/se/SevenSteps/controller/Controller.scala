@@ -15,7 +15,7 @@ case class Controller(var grid:Grid=new Grid(0,0),var players:ListBuffer[Player]
   var message="Welcome to SevenSteps"
   
   def getCurPlayer():Player={players(curPlayer)}
-  def exploreCommand(com: Command):Try[String]={ val explored=gameState.ecploreCommand(com)
+  def doIt(com: Command):Try[String]={ val explored=gameState.ecploreCommand(com)
     explored match {
     case Success(s) => undoStack.push(com);redoStack.clear();message=s; 
     case Failure(e) => message=e.getMessage}

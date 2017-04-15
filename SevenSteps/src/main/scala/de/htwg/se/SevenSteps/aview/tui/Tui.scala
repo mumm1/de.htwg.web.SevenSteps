@@ -21,15 +21,15 @@ class Tui(var con: Controller){
     var continue = true
     input match {
       case "q" => continue = false
-      case "s" => con.exploreCommand(new StartGame())
-      case "n" => con.exploreCommand(new NextPlayer())
+      case "s" => con.doIt(new StartGame())
+      case "n" => con.doIt(new NextPlayer())
       case "u" => con.undo()
       case "r" => con.redo()
       case _ => {
         input.split(" ").toList match {
-          case "a" :: player :: Nil          => con.exploreCommand(new AddPlayer(player))
-          case "g" :: colors :: cols:: Nil   => con.exploreCommand(new NewGrid(colors.replace('-', ' '),Str2Int(cols,5)))
-          case row :: col:: Nil              => con.exploreCommand(new SetStonde(Str2Int(row,-1),Str2Int(col,-1)))
+          case "a" :: player :: Nil          => con.doIt(new AddPlayer(player))
+          case "g" :: colors :: cols:: Nil   => con.doIt(new NewGrid(colors.replace('-', ' '),Str2Int(cols,5)))
+          case row :: col:: Nil              => con.doIt(new SetStonde(Str2Int(row,-1),Str2Int(col,-1)))
           case _                             => con.message="False Input!!!"
         }
       }
