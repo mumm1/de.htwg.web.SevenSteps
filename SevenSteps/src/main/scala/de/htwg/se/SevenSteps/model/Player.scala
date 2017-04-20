@@ -36,9 +36,13 @@ case class Player (name : String, points : Int=0,val map:Map[Char, Int]=Map[Char
 	}
 	def incPoints(delta:Int):Player={copy(points=points+delta)}
 	def incColor(color:Char,delta:Int):Player={copy(map=map.updated(color, map.get(color).get + delta))}
+	def getStoneNumber():Int={
+	  var num = 0;
+	  for ((k,v) <- map)   num += v
+	  return num;
+	}
 
-//	def add_stone (color: Char, number : Int){ map(color) = map.getOrElse(color, 999) + number}
-	//	def add_stone(color: Char ,place : Int ){ }
+
 
 
 	override def toString = {

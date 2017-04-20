@@ -25,6 +25,7 @@ class Tui(var con: Controller){
       case "n" => con.doIt(new NextPlayer())
       case "u" => con.undo()
       case "r" => con.redo()
+      case "dr" => con.doIt(new Draw())
       case _ => {
         input.split(" ").toList match {
           case "a" :: player :: Nil          => con.doIt(new AddPlayer(player))
