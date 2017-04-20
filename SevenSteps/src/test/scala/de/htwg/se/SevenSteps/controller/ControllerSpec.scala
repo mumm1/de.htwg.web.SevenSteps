@@ -146,6 +146,23 @@ class ControllerSpec extends WordSpec{
       c.doIt(new SetStonde( 1, 1)).isSuccess should be(false)
       c.grid.getHeights should be(List(1,0,0,0)) 
     }
+    "not set in one turn a grid cell twice" in {
+      before(new Play(c))  
+      c.doIt(new SetStonde( 0, 0)).isSuccess should be(true)
+      c.doIt(new SetStonde( 0, 1)).isSuccess should be(true)
+      c.doIt(new SetStonde( 1, 1)).isSuccess should be(true)
+      c.doIt(new SetStonde( 1, 0)).isSuccess should be(true)
+      c.grid.getHeights should be(List(1,1,1,1))
+      c.doIt(new SetStonde( 0, 0)).isSuccess should be(false)
+      c.doIt(new SetStonde( 0, 1)).isSuccess should be(false)
+      c.doIt(new SetStonde( 1, 0)).isSuccess should be(false)
+      c.doIt(new SetStonde( 1, 1)).isSuccess should be(false)
+      c.grid.getHeights should be(List(1,1,1,1))
+      
+      c.undo().isSuccess should be(true)
+      c.grid.getHeights should be(List(1,1,0,1))   
+      c.doIt(new SetStonde( 1, 0)).isSuccess should be(true)
+    }
   }
   
   

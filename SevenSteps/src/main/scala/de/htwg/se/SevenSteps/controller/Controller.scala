@@ -11,9 +11,16 @@ case class Controller(var grid:Grid=new Grid(0,0),var players:ListBuffer[Player]
   var curHeight:Int=0;
   var lastcell:(Int,Int)=null
   var gameState:GameState = Prepare(this)
+  var lastStones:Stack[(Int,Int)]=Stack()
   var undoStack:Stack[Command] = Stack()
   var redoStack:Stack[Command] = Stack()
   var message="Welcome to SevenSteps"
+  
+  def prepareNewPlayer() {
+    curHeight=0
+    lastcell=null
+    lastStones.clear()
+  }
   
   def getCurPlayer():Player={players(curPlayer)}
   def doIt(com: Command):Try[String]={ val explored=gameState.ecploreCommand(com)
@@ -81,7 +88,7 @@ case class StartGame() extends Command{
   override def doIt(c:Controller):Try[String]={
     if (c.players.length>0){
       c.gameState=new Play(c)
-      c.undoStack.clear()
+      c.prepareNewPlayer()
       val colors=c.grid.getColors
       c.players.foreach(p=>p.setColors(colors))
       Success("Started the game")
@@ -90,7 +97,7 @@ case class StartGame() extends Command{
 }
 
 case class NextPlayer() extends Command{
-  override def doIt(c:Controller):Try[String]={c.curPlayer+=1;c.curPlayer=c.curPlayer%c.players.length;c.curHeight=0;c.lastcell=null;Success("Player "+c.getCurPlayer.name+" it is your turn!")}
+  override def doIt(c:Controller):Try[String]={c.curPlayer+=1;c.curPlayer=c.curPlayer%c.players.length;c.prepareNewPlayer();Success("Player "+c.getCurPlayer.name+" it is your turn!")}
   override def undo(c:Controller):Try[String]={c.undoStack.clear();Failure(new Exception("You can't undo to previous player!"))}
 }
 
@@ -104,8 +111,10 @@ case class SetStonde(row:Int,col:Int) extends Command{
       val cell  =c.grid.cell(row,col)
       if (c.lastcell!=null)
         if  (!isNeighbour(row,col,c))
-          return Failure(new Exception("You have to set a Stone neughboring to the last Stone"))
-      
+          return Failure(new Exception("You have to set a Stone neughboring to the last Stone!"))
+        if (c.lastStones.contains((row,col)))    
+          return Failure(new Exception("You can't set on a cell twice!"))  
+          
       c.getCurPlayer().map.get(cell.color) match {
         case None         => Failure(new Exception("You can't place here!"))
         case Some(0)      => Failure(new Exception("You don't have Stones from color '"+cell.color+"'"))
@@ -117,6 +126,7 @@ case class SetStonde(row:Int,col:Int) extends Command{
                                   c.curHeight=cell.height+1
                                   lastCell=c.lastcell
                                   c.lastcell=(row,col)
+                                  c.lastStones.push((row,col))
                                   Success("You set a stone")
                                 }else{Failure(new Exception("You have to set a Stone on height "+(c.curHeight-1)+" or " +c.curHeight))}
         }
@@ -129,6 +139,7 @@ case class SetStonde(row:Int,col:Int) extends Command{
     c.players(c.curPlayer)=c.getCurPlayer().setColor(cell.color,c.getCurPlayer().map.get(cell.color).get+1)    
     c.curHeight=cell.height-1
     c.lastcell=lastCell
+    c.lastStones.pop()
     ;Success("Take the Stone")}
 }
 
