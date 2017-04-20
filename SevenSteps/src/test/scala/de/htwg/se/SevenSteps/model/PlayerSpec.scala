@@ -21,12 +21,11 @@ class PlayerSpec extends WordSpec {
 		}
 
 		"can set colors" in {
-		  p.setColors(List('g','b','a','c'))
-			p.map.contains('g') should be (true)
+		  p.setColors(List('g','b','a','c')).map.contains('g') should be (true)
 		}
 
 		"toString look like" in {
-			p.toString should be ("Julius: c=0, b=0, g=0, a=0, Points=50")
+			p.toString should be ("Julius: Points=50")
 			}
 
 		

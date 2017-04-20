@@ -5,10 +5,11 @@ import scala.collection.mutable.Stack
 import scala.collection.mutable.ListBuffer
 import scala.util._
 
-case class Controller(var grid:Grid=new Grid(0,0),var players:ListBuffer[Player]=ListBuffer()) {
+case class Controller(var grid:Grid=new Grid(0,0)) {
   
   var curPlayer:Int=0;
   var curHeight:Int=0;
+  var players=Players()
   var lastcell:(Int,Int)=null
   var gameState:GameState = Prepare(this)
   var lastStones:Stack[(Int,Int)]=Stack()
@@ -22,7 +23,7 @@ case class Controller(var grid:Grid=new Grid(0,0),var players:ListBuffer[Player]
     lastStones.clear()
   }
   
-  def getCurPlayer():Player={players(curPlayer)}
+  def getCurPlayer():Player={players.getCurPlayer()}
   def doIt(com: Command):Try[String]={ val explored=gameState.ecploreCommand(com)
     explored match {
     case Success(s) => undoStack.push(com);redoStack.clear();message=s; 
@@ -56,13 +57,7 @@ case class Controller(var grid:Grid=new Grid(0,0),var players:ListBuffer[Player]
   override def toString = {
     var text = "############  "+message+"  ############\n\n"
     val len = text.length()
-    for(player <- players){
-      if(player==players(curPlayer))
-        text+="-> "+player.toString()+" CurHeight="+curHeight+"\n"
-      else
-        text+="   "+player.toString()+"\n"
-    }
-    text+grid.toString()+"#"*(len-2)+"\n"
+    text+players.toString()+grid.toString()+"#"*(len-2)+"\n"
   }
 
 }
@@ -74,8 +69,8 @@ trait Command {def doIt(c:Controller):Try[String]
 
 case class AddPlayer(name:String) extends Command{
   val player= Player(name)
-  override def doIt(c:Controller):Try[String]={c.players=c.players:+player;Success("Added Player "+name)}
-  override def undo(c:Controller):Try[String]={val temp=c.players.last;c.players=c.players.take(c.players.length - 1);Success("Deleted Player "+temp.name)}
+  override def doIt(c:Controller):Try[String]={c.players=c.players.push(player);Success("Added Player "+name)}
+  override def undo(c:Controller):Try[String]={c.players=c.players.pop();Success("Deleted Player")}
 }
 
 case class NewGrid(colors:String,cols:Int) extends Command{
@@ -86,18 +81,18 @@ case class NewGrid(colors:String,cols:Int) extends Command{
 
 case class StartGame() extends Command{
   override def doIt(c:Controller):Try[String]={
-    if (c.players.length>0){
+    if (c.players.hasMinPlayers){
       c.gameState=new Play(c)
       c.prepareNewPlayer()
       val colors=c.grid.getColors
-      c.players.foreach(p=>p.setColors(colors))
+      c.players=c.players.setColors(colors)
       Success("Started the game")
     }else{Failure(new Exception("Can't start the game: Not enough Players"))}}
   override def undo(c:Controller):Try[String]={c.undoStack.clear();Failure(new Exception("You can't undo the start of the game!"))}
 }
 
 case class NextPlayer() extends Command{
-  override def doIt(c:Controller):Try[String]={c.curPlayer+=1;c.curPlayer=c.curPlayer%c.players.length;c.prepareNewPlayer();Success("Player "+c.getCurPlayer.name+" it is your turn!")}
+  override def doIt(c:Controller):Try[String]={c.players=c.players.next;c.prepareNewPlayer;Success("Player "+c.getCurPlayer.name+" it is your turn!")}
   override def undo(c:Controller):Try[String]={c.undoStack.clear();Failure(new Exception("You can't undo to previous player!"))}
 }
 
@@ -121,8 +116,9 @@ case class SetStonde(row:Int,col:Int) extends Command{
         case Some(stones) => {  val dif   =c.curHeight-cell.height
                                 if (dif==0 | dif==1){                                                            
                                   c.grid=c.grid.set(row, col, cell.height+1)
-                                  c.players(c.curPlayer)=c.getCurPlayer().copy(points=c.getCurPlayer().points+cell.height+1)
-                                  c.players(c.curPlayer)=c.getCurPlayer().setColor(cell.color,stones-1)
+                                  c.players=c.players.updateCurPlayer(c.players.getCurPlayer().incPoints(cell.height+1).incColor(cell.color,-1))
+                                  
+                                  
                                   c.curHeight=cell.height+1
                                   lastCell=c.lastcell
                                   c.lastcell=(row,col)
@@ -135,8 +131,7 @@ case class SetStonde(row:Int,col:Int) extends Command{
   override def undo(c:Controller):Try[String]={    
     val cell=c.grid.cell(row,col)
     c.grid=c.grid.set(row, col, cell.height-1)
-    c.players(c.curPlayer)=c.getCurPlayer().copy(points=c.getCurPlayer().points-cell.height)
-    c.players(c.curPlayer)=c.getCurPlayer().setColor(cell.color,c.getCurPlayer().map.get(cell.color).get+1)    
+    c.players=c.players.updateCurPlayer(c.players.getCurPlayer().incPoints(-cell.height).incColor(cell.color,+1))   
     c.curHeight=cell.height-1
     c.lastcell=lastCell
     c.lastStones.pop()
