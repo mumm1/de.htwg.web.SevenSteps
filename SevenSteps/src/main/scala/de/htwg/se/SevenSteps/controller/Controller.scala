@@ -7,20 +7,17 @@ import scala.util._
 
 case class Controller(var grid:Grid=new Grid(0,0)) {
   
-  var curPlayer:Int=0;
   var curHeight:Int=0;
   var players=Players()
-  var lastcell:(Int,Int)=null
   var gameState:GameState = Prepare(this)
-  var lastStones:Stack[(Int,Int)]=Stack()
+  var lastCells:Stack[(Int,Int)]=Stack()
   var undoStack:Stack[Command] = Stack()
   var redoStack:Stack[Command] = Stack()
   var message="Welcome to SevenSteps"
   
   def prepareNewPlayer() {
     curHeight=0
-    lastcell=null
-    lastStones.clear()
+    lastCells.clear()
   }
   
   def getCurPlayer():Player={players.getCurPlayer()}
@@ -97,17 +94,16 @@ case class NextPlayer() extends Command{
 }
 
 case class SetStonde(row:Int,col:Int) extends Command{
-  var lastCell:(Int,Int)=null
   def isNeighbour(row:Int,col:Int,c:Controller):Boolean={
-    (math.abs(row-c.lastcell._1)+math.abs(col-c.lastcell._2))==1
+    (math.abs(row-c.lastCells(0)._1)+math.abs(col-c.lastCells(0)._2))==1
   }
   override def doIt(c:Controller):Try[String]={
     try{
       val cell  =c.grid.cell(row,col)
-      if (c.lastcell!=null)
+      if (c.lastCells.length>0)
         if  (!isNeighbour(row,col,c))
           return Failure(new Exception("You have to set a Stone neughboring to the last Stone!"))
-        if (c.lastStones.contains((row,col)))    
+        if (c.lastCells.contains((row,col)))    
           return Failure(new Exception("You can't set on a cell twice!"))  
           
       c.getCurPlayer().map.get(cell.color) match {
@@ -117,12 +113,9 @@ case class SetStonde(row:Int,col:Int) extends Command{
                                 if (dif==0 | dif==1){                                                            
                                   c.grid=c.grid.set(row, col, cell.height+1)
                                   c.players=c.players.updateCurPlayer(c.players.getCurPlayer().incPoints(cell.height+1).incColor(cell.color,-1))
-                                  
-                                  
+                                                              
                                   c.curHeight=cell.height+1
-                                  lastCell=c.lastcell
-                                  c.lastcell=(row,col)
-                                  c.lastStones.push((row,col))
+                                  c.lastCells.push((row,col))
                                   Success("You set a stone")
                                 }else{Failure(new Exception("You have to set a Stone on height "+(c.curHeight-1)+" or " +c.curHeight))}
         }
@@ -133,8 +126,7 @@ case class SetStonde(row:Int,col:Int) extends Command{
     c.grid=c.grid.set(row, col, cell.height-1)
     c.players=c.players.updateCurPlayer(c.players.getCurPlayer().incPoints(-cell.height).incColor(cell.color,+1))   
     c.curHeight=cell.height-1
-    c.lastcell=lastCell
-    c.lastStones.pop()
+    c.lastCells.pop()
     ;Success("Take the Stone")}
 }
 
