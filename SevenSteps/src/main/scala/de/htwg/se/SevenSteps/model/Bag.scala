@@ -8,32 +8,25 @@ import scala.collection.mutable.ListBuffer
 import scala.util.Random
 
 
-case class Bag (name:String, stones:ListMap[Char,Int] = ListMap[Char,Int]()){
-
-	val colors =Array ('a','b','c','d','e','f')
-			for ((c)<- colors )
+case class Bag (name:String, stones:ListMap[Char,Int] = ListMap[Char,Int](), test:List[Char] = List[Char]()){
+  
+ 
+  def fillup(){
+			for ((c)<- test )
 				stones += c -> 20   
-
-				/*
-				def pull (num: Int): List[Char]={
-						var list:ListBuffer[Char]=ListBuffer()
-								for( i <- 0 to num){
-									val ran = Random.nextInt(6)
-											val color =  colors.apply(ran)								
+  }
+				
+				def pull2 (): Char={
+				  println("-----------" + test)
+				  println(stones)
+									val ran = Random.nextInt(test.length)
+											val color : Char = test.apply(ran)
 											stones(color) =stones.apply(color) -1
-											list += color
-								}
-				list.toList
+											 color
 				}
-				 */
+				 
 
-				def pull () :Char={
-						val ran = Random.nextInt(6)
-						val color =  colors.apply(ran)								
-						stones(color) =stones.apply(color) -1
 
-						color
-				}
 
 
 
