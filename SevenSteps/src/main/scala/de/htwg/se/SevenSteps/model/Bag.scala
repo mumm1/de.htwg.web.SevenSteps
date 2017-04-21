@@ -10,8 +10,7 @@ import scala.util.Random
 
 
 case class Bag (name:String, stones:ListMap[Char,Int] = ListMap[Char,Int](), test:List[Char] = List[Char]()){
-  
- 
+   
   def fillup(){
 			for ((c)<- test )
 				stones += c -> 20   
@@ -25,12 +24,7 @@ case class Bag (name:String, stones:ListMap[Char,Int] = ListMap[Char,Int](), tes
 											stones(color) =stones.apply(color) -1
 											 color
 				}
-				 
-
-
-
-
-
+	
 				/*
 				override def toString = {	  
 						val sb = new StringBuilder
@@ -40,6 +34,4 @@ case class Bag (name:String, stones:ListMap[Char,Int] = ListMap[Char,Int](), tes
 				}
 
 				 */
-
-
 }
