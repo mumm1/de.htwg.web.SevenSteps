@@ -1,3 +1,4 @@
+
 package de.htwg.se.SevenSteps.controller
 
 import de.htwg.se.SevenSteps.model._
@@ -86,6 +87,8 @@ case class StartGame() extends Command{
 						c.prepareNewPlayer()
 						val colors=c.grid.getColors
 						c.players=c.players.setColors(colors)
+						c.bag=c.bag.copy(test = colors)
+						c.bag.fillup()
 						Success("Started the game")
 			}else{Failure(new Exception("Can't start the game: Not enough Players"))}}
 	override def undo(c:Controller):Try[String]={c.undoStack.clear();Failure(new Exception("You can't undo the start of the game!"))}
@@ -140,9 +143,9 @@ override def undo(c:Controller):Try[String]={
 
 case class Draw() extends Command{
 	override def doIt(c:Controller):Try[String]={
-			val newStones = 21 - c.getCurPlayer().getStoneNumber()
+			val newStones = c.grid.getColors.length * 3 - c.getCurPlayer().getStoneNumber()
 			for(i <- 0 to newStones){
-					c.players=c.players.updateCurPlayer(c.players.getCurPlayer().incColor(c.bag.pull(),1))
+					c.players=c.players.updateCurPlayer(c.players.getCurPlayer().incColor(c.bag.pull2(),1))
 
 			}
 					Success(c.getCurPlayer.name+" draw " + newStones + " new Stones" )}
@@ -177,4 +180,5 @@ case class Play(c:Controller) extends GameState{
 			}
 	}
 }
+
 
