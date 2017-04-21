@@ -7,60 +7,57 @@ import scala.collection.mutable.ListBuffer
 import scala.util._
 
 case class Controller(var grid:Grid=new Grid(0,0)) {
-	    var bag:Bag = Bag("Bag")
-			var curPlayer:Int=0;
-	    var curHeight:Int=0;
-	    var players=Players()
-			var lastcell:(Int,Int)=null
-			var gameState:GameState = Prepare(this)
-			var lastStones:Stack[(Int,Int)]=Stack()
-			var undoStack:Stack[Command] = Stack()
-			var redoStack:Stack[Command] = Stack()
-			var message="Welcome to SevenSteps"
 
-			def prepareNewPlayer() {
-				curHeight=0
-						lastcell=null
-						lastStones.clear()
-			}
-
-			def getCurPlayer():Player={players.getCurPlayer()}
-			def doIt(com: Command):Try[String]={ val explored=gameState.ecploreCommand(com)
-					explored match {
-					case Success(s) => undoStack.push(com);redoStack.clear();message=s; 
-					case Failure(e) => message=e.getMessage}
-			explored;}
-
-			def undo():Try[String]={
-					if (undoStack.length>0){
-						val temp = undoStack.pop() ; val temp2=temp.undo(this)
-								temp2 match {
-								case Success(s) => message="Undo: "+s;redoStack.push(temp)
-								case Failure(e) => message=e.getMessage()}
-						temp2
-					}
-					else{
-						message="Can't undo now!"; Failure(new Exception(message))}
-			}
-
-			def redo():Try[String]={
-					if (redoStack.length>0){
-						val temp=redoStack.pop() ; val temp2=temp.doIt(this)
-								temp2 match {
-								case Success(s) => message="Redo: "+s;undoStack.push(temp)
-								case Failure(e) => message=e.getMessage()}
-						temp2
-					}
-					else{
-						message="Can't redo now!";Failure(new Exception(message))}
-			}
-
-			override def toString = {
-					var text = "############  "+message+"  ############\n\n"
-							val len = text.length()
-							text+players.toString()+grid.toString()+"#"*(len-2)+"\n"
-			}
-
+  var bag:Bag = Bag("Bag")
+  var curHeight:Int=0;
+  var players=Players()
+  var gameState:GameState = Prepare(this)
+  var lastCells:Stack[(Int,Int)]=Stack()
+  var undoStack:Stack[Command] = Stack()
+  var redoStack:Stack[Command] = Stack()
+  var message="Welcome to SevenSteps"
+  
+  def prepareNewPlayer() {
+    curHeight=0
+    lastCells.clear()
+  }
+  
+  def getCurPlayer():Player={players.getCurPlayer()}
+  def doIt(com: Command):Try[String]={ val explored=gameState.ecploreCommand(com)
+    explored match {
+    case Success(s) => undoStack.push(com);redoStack.clear();message=s; 
+    case Failure(e) => message=e.getMessage}
+    explored;}
+  
+  def undo():Try[String]={
+    if (undoStack.length>0){
+      val temp = undoStack.pop() ; val temp2=temp.undo(this)
+       temp2 match {
+        case Success(s) => message="Undo: "+s;redoStack.push(temp)
+        case Failure(e) => message=e.getMessage()}
+      temp2
+    }
+    else{
+      message="Can't undo now!"; Failure(new Exception(message))}
+    }
+  
+  def redo():Try[String]={
+    if (redoStack.length>0){
+      val temp=redoStack.pop() ; val temp2=temp.doIt(this)
+      temp2 match {
+        case Success(s) => message="Redo: "+s;undoStack.push(temp)
+        case Failure(e) => message=e.getMessage()}
+      temp2
+    }
+    else{
+      message="Can't redo now!";Failure(new Exception(message))}
+    }
+  
+  override def toString = {
+    var text = "############  "+message+"  ############\n\n"
+    val len = text.length()
+    text+players.toString()+grid.toString()+"#"*(len-2)+"\n"
+  }
 }
 
 // ##################### Controller Commands ####################### 
@@ -100,45 +97,40 @@ case class NextPlayer() extends Command{
 }
 
 case class SetStonde(row:Int,col:Int) extends Command{
-	var lastCell:(Int,Int)=null
-			def isNeighbour(row:Int,col:Int,c:Controller):Boolean={
-					(math.abs(row-c.lastcell._1)+math.abs(col-c.lastcell._2))==1
-}
-override def doIt(c:Controller):Try[String]={
-		try{
-			val cell  =c.grid.cell(row,col)
-					if (c.lastcell!=null)
-						if  (!isNeighbour(row,col,c))
-							return Failure(new Exception("You have to set a Stone neughboring to the last Stone!"))
-									if (c.lastStones.contains((row,col)))    
-										return Failure(new Exception("You can't set on a cell twice!"))  
-
-												c.getCurPlayer().map.get(cell.color) match {
-												case None         => Failure(new Exception("You can't place here!"))
-												case Some(0)      => Failure(new Exception("You don't have Stones from color '"+cell.color+"'"))
-												case Some(stones) => {  val dif   =c.curHeight-cell.height
-												if (dif==0 | dif==1){                                                            
-													c.grid=c.grid.set(row, col, cell.height+1)
-															c.players=c.players.updateCurPlayer(c.players.getCurPlayer().incPoints(cell.height+1).incColor(cell.color,-1))
-
-
-															c.curHeight=cell.height+1
-															lastCell=c.lastcell
-															c.lastcell=(row,col)
-															c.lastStones.push((row,col))
-															Success("You set a stone")
-												}else{Failure(new Exception("You have to set a Stone on height "+(c.curHeight-1)+" or " +c.curHeight))}
-												}
-									}}catch{ case e:IndexOutOfBoundsException => Failure(new Exception("You can't set a Stone here"))}
-}
-override def undo(c:Controller):Try[String]={    
-		val cell=c.grid.cell(row,col)
-				c.grid=c.grid.set(row, col, cell.height-1)
-				c.players=c.players.updateCurPlayer(c.players.getCurPlayer().incPoints(-cell.height).incColor(cell.color,+1))   
-				c.curHeight=cell.height-1
-				c.lastcell=lastCell
-				c.lastStones.pop()
-				;Success("Take the Stone")}
+  def isNeighbour(row:Int,col:Int,c:Controller):Boolean={
+    (math.abs(row-c.lastCells(0)._1)+math.abs(col-c.lastCells(0)._2))==1
+  }
+  override def doIt(c:Controller):Try[String]={
+    try{
+      val cell  =c.grid.cell(row,col)
+      if (c.lastCells.length>0)
+        if  (!isNeighbour(row,col,c))
+          return Failure(new Exception("You have to set a Stone neughboring to the last Stone!"))
+        if (c.lastCells.contains((row,col)))    
+          return Failure(new Exception("You can't set on a cell twice!"))  
+          
+      c.getCurPlayer().map.get(cell.color) match {
+        case None         => Failure(new Exception("You can't place here!"))
+        case Some(0)      => Failure(new Exception("You don't have Stones from color '"+cell.color+"'"))
+        case Some(stones) => {  val dif   =c.curHeight-cell.height
+                                if (dif==0 | dif==1){                                                            
+                                  c.grid=c.grid.set(row, col, cell.height+1)
+                                  c.players=c.players.updateCurPlayer(c.players.getCurPlayer().incPoints(cell.height+1).incColor(cell.color,-1))
+                                                              
+                                  c.curHeight=cell.height+1
+                                  c.lastCells.push((row,col))
+                                  Success("You set a stone")
+                                }else{Failure(new Exception("You have to set a Stone on height "+(c.curHeight-1)+" or " +c.curHeight))}
+        }
+      }}catch{ case e:IndexOutOfBoundsException => Failure(new Exception("You can't set a Stone here"))}
+    }
+  override def undo(c:Controller):Try[String]={    
+    val cell=c.grid.cell(row,col)
+    c.grid=c.grid.set(row, col, cell.height-1)
+    c.players=c.players.updateCurPlayer(c.players.getCurPlayer().incPoints(-cell.height).incColor(cell.color,+1))   
+    c.curHeight=cell.height-1
+    c.lastCells.pop()
+    ;Success("Take the Stone")}
 }
 
 case class Draw() extends Command{
