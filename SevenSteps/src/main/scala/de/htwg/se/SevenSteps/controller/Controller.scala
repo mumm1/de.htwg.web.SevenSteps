@@ -148,8 +148,8 @@ case class SetStone(row: Int, col: Int) extends Command {
   def isNeighbour(row: Int, col: Int, c: Controller): Boolean = (math.abs(row - c.lastCells.head._1) + math.abs(col - c.lastCells.head._2)) == 1
 
   override def undo(c: Controller): Try[String] = {
-			val cell=c.grid.cell(row,col)
-					c.grid=c.grid.set(row, col, cell.height-1)
+    val cell = c.grid.cell(row, col)
+    c.grid = c.grid.set(row, col, cell.height - 1)
     c.players = c.players.updateCurPlayer(c.players.getCurPlayer().incPoints(-cell.height).incColor(cell.color, +1))
 					c.curHeight=cell.height-1
 					c.lastCells.pop()
