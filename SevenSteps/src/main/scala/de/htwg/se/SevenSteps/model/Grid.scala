@@ -4,7 +4,7 @@ import scala.collection.mutable.ListBuffer
 import scala.util._
 
 case class Grid(rows: Int, cols: Int, cells: Option[Vector[Cell]] = None) {
-  val grid = cells getOrElse Vector.fill(rows * cols)(new Cell)
+  val grid: Vector[Cell] = cells getOrElse Vector.fill(rows * cols)(new Cell)
   def this(colors: String, cols: Int) = {
     this(math.ceil(colors.length() / cols.toFloat).toInt, cols,
       cells = {
@@ -15,9 +15,10 @@ case class Grid(rows: Int, cols: Int, cells: Option[Vector[Cell]] = None) {
         Option(cCells.toVector)
       })
   }
-  override def toString = {
-    if (grid.length == 0)
+  override def toString: String = {
+    if (grid.isEmpty) {
       "\n"
+    }
     else {
       val linesep = "+---" * cols + "+\n"
       val line = "|XXX" * cols + "|\n"
@@ -31,9 +32,6 @@ case class Grid(rows: Int, cols: Int, cells: Option[Vector[Cell]] = None) {
   }
   def set(row: Int, col: Int, color: Char): Grid = {
     copy(cells = Option(grid.updated(getIndex(row, col), cell(row, col).get.copy(color = color))))
-  }
-  def set(row: Int, col: Int, height: Int): Grid = {
-    copy(cells = Option(grid.updated(getIndex(row, col), cell(row, col).get.copy(height = height))))
   }
   private def getIndex(row: Int, col: Int): Int = {
     if (row >= rows | col >= cols) {
@@ -50,15 +48,18 @@ case class Grid(rows: Int, cols: Int, cells: Option[Vector[Cell]] = None) {
       case e: IndexOutOfBoundsException => Failure(e)
     }
   }
+  def set(row: Int, col: Int, height: Int): Grid = {
+    copy(cells = Option(grid.updated(getIndex(row, col), cell(row, col).get.copy(height = height))))
+  }
   def getColors: List[Char] = {
     var list: ListBuffer[Char] = ListBuffer()
-    cellsToString.foreach(c => if (!list.contains(c) & c != ' ') {
+    cellsToString().foreach(c => if (!list.contains(c) & c != ' ') {
       list += c
     })
     list.toList
   }
   def cellsToString(): String = {
-    var text = "";
+    var text = ""
     grid.foreach(cell => text += cell.color.toString)
     text
   }
