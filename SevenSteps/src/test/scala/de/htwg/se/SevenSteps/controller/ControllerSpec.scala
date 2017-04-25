@@ -99,12 +99,12 @@ class ControllerSpec extends WordSpec{
     "allow a player to set a stone on the grid" in{
       before(new Play(c))
       c.doIt(new SetStone(0, 0)).isSuccess should be(true)
-      c.grid.cell(0,0).height should be(1)
+      c.grid.cell(0, 0).get.height should be(1)
       c.doIt(new SetStone(2, 0)).isSuccess should be(false)
       c.doIt(new SetStone(0, 2)).isSuccess should be(false)
       c.doIt(new SetStone(-1, 0)).isSuccess should be(false)
       c.doIt(new SetStone(0, -1)).isSuccess should be(false)
-      c.grid.cell(0, 0).height should be(1)
+      c.grid.cell(0, 0).get.height should be(1)
     }
     "give on Transition Prepare -> Play the Players colors with 0 stones" in {
       before(new Play(c))

@@ -2,10 +2,9 @@ package de.htwg.se.SevennSteps.aview.tui
 
 import de.htwg.se.SevenSteps.controller._
 
-class Tui(var con: Controller){
+class Tui(var con: Controller) {
   val DEFAULT_GRID_COLS = 5
   printTui()
-
   def processInputLine(input: String): Boolean = {
     var continue = true
     input match {
@@ -19,9 +18,7 @@ class Tui(var con: Controller){
     update()
     continue
   }
-
   def update(): Unit = printTui()
-
   def printTui(): Unit = {
     println("\n" * 30)
     println(con.toString)
@@ -33,7 +30,6 @@ class Tui(var con: Controller){
       println("               SetStone [row] [col], n-NextPlayer")
     }
   }
-
   private def processMoreParameter(input: String): Unit = {
     input.split(" ").toList match {
       case "a" :: player :: Nil => con.doIt(AddPlayer(player))
@@ -42,7 +38,6 @@ class Tui(var con: Controller){
       case _ => con.message = "False Input!!!"
     }
   }
-
   def str2Int(s: String, default: Int): Int = {
     try {
       s.toInt
