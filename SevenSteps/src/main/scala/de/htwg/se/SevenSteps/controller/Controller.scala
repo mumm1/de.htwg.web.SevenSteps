@@ -105,7 +105,7 @@ case class StartGame() extends Command {
       c.prepareNewPlayer()
       val colors = c.grid.getColors
       c.players = c.players.setColors(colors)
-      c.bag = c.bag.copy(test = colors)
+      c.bag = c.bag.copy(colors = colors)
       c.bag.fillup()
       Success("Started the game")
     }
@@ -122,7 +122,7 @@ case class StartGame() extends Command {
 case class NextPlayer() extends Command {
   override def doIt(c: Controller): Try[String] = {
     for (_ <- c.getCurPlayer.getStoneNumber to 7) {
-      c.players = c.players.updateCurPlayer(c.players.getCurPlayer.incColor(c.bag.pull2(), 1))
+      c.players = c.players.updateCurPlayer(c.players.getCurPlayer.incColor(c.bag.pull(), 1))
     }
     c.players = c.players.next()
     c.prepareNewPlayer()

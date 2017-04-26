@@ -48,7 +48,7 @@ case class Player(name: String, points: Int = 0, map: Map[Char, Int] = Map[Char,
   def setColors(colors: List[Char]): Player = {
     var newMap: Map[Char, Int] = Map()
     for ((c) <- colors) {
-      newMap = newMap + (c -> 3)
+      newMap = newMap + (c -> 0)
     }
     copy(map = newMap)
   }
