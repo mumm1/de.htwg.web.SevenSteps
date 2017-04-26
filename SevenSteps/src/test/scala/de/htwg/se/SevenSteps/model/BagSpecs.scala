@@ -4,6 +4,7 @@ import org.scalatest._
 import org.junit.runner.RunWith
 import org.scalatest.Matchers._
 import org.scalatest.junit.JUnitRunner
+import scala.collection.mutable.ListMap
 
 
 @RunWith(classOf[JUnitRunner])
@@ -55,7 +56,7 @@ class BagSpec extends WordSpec {
 			bag.colors.isEmpty should be (true)
 		}
 		"have a $ color char" in {
-			color_char should be ('$')
+			 bag.pull() should be ('$')
 		}
 	}
 
@@ -80,14 +81,28 @@ class BagSpec extends WordSpec {
 		"have a $ color char" in {
 			color_char should be ('a')
 		}
-
-
-
-
 	}
 
 
-
+"A Bag with all" should {
+  
+    val map = new ListMap[Char,Int]()
+    val col : List[Char] = List('b')
+    map.updated('b', 15)
+  		var bag = new Bag("Sack",map,col)
+    bag.fillup()
+	//			bag = bag.copy(colors = List('a'))
+		//		bag.fillup()
+		//		val color_char = bag.pull()
+  
+    "have stones" in {
+      bag.stones.isEmpty should be (false)
+      bag.stones.apply('b') should be (20)
+    }
+    "have colors" in{
+      bag.colors.isEmpty should be (false)
+    }
+}
 
 
 
