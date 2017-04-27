@@ -1,8 +1,10 @@
 package de.htwg.se.SevennSteps.aview.tui
 
 import de.htwg.se.SevenSteps.controller._
+import de.htwg.se.SevenSteps.util.Observer
 
-class Tui(var con: Controller) {
+class Tui(var con: Controller) extends Observer {
+  con.add(this)
   val DEFAULT_GRID_COLS = 5
   printTui()
   def processInputLine(input: String): Boolean = {
@@ -15,20 +17,7 @@ class Tui(var con: Controller) {
       case "r" => con.redo()
       case _ => processMoreParameter(input)
     }
-    update()
     continue
-  }
-  def update(): Unit = printTui()
-  def printTui(): Unit = {
-    println("\n" * 30)
-    println(con.toString)
-    println("Enter command: q-Quit, u-Undo, r-Redo")
-    if (con.gameState.isInstanceOf[Prepare]) {
-      println("               a-AddPlayer [Name], g-Grid [ColorString] [ColsInt], s-StartGame")
-    }
-    if (con.gameState.isInstanceOf[Play]) {
-      println("               SetStone [row] [col], n-NextPlayer")
-    }
   }
   private def processMoreParameter(input: String): Unit = {
     input.split(" ").toList match {
@@ -43,6 +32,18 @@ class Tui(var con: Controller) {
       s.toInt
     } catch {
       case _: Exception => default
+    }
+  }
+  override def update(): Unit = printTui()
+  def printTui(): Unit = {
+    println("\n" * 30)
+    println(con.toString)
+    println("Enter command: q-Quit, u-Undo, r-Redo")
+    if (con.gameState.isInstanceOf[Prepare]) {
+      println("               a-AddPlayer [Name], g-Grid [ColorString] [ColsInt], s-StartGame")
+    }
+    if (con.gameState.isInstanceOf[Play]) {
+      println("               SetStone [row] [col], n-NextPlayer")
     }
   }
 }

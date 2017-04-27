@@ -2,11 +2,12 @@
 package de.htwg.se.SevenSteps.controller
 
 import de.htwg.se.SevenSteps.model._
+import de.htwg.se.SevenSteps.util.Observable
 
 import scala.collection.mutable
 import scala.util._
 
-case class Controller(var grid: Grid = Grid(0, 0)) {
+case class Controller(var grid: Grid = Grid(0, 0)) extends Observable {
   var bag: Bag = Bag("Bag")
   var curHeight: Int = 0
   var players = Players()
@@ -33,9 +34,14 @@ case class Controller(var grid: Grid = Grid(0, 0)) {
   def doIt(com: Command): Try[String] = {
     val explored = gameState.exploreCommand(com)
     explored match {
-      case Success(s) => undoStack.push(com); redoStack.clear(); message = s;
+      case Success(s) => {
+        undoStack.push(com)
+        redoStack.clear()
+        message = s
+      }
       case Failure(e) => message = e.getMessage
     }
+    notifyObservers()
     explored
   }
   def undo(): Try[String] = {
@@ -43,9 +49,13 @@ case class Controller(var grid: Grid = Grid(0, 0)) {
       val temp = undoStack.pop()
       val temp2 = temp.undo(this)
       temp2 match {
-        case Success(s) => message = "Undo: " + s; redoStack.push(temp)
+        case Success(s) => {
+          message = "Undo: " + s
+          redoStack.push(temp)
+        }
         case Failure(e) => message = e.getMessage
       }
+      notifyObservers()
       temp2
     }
     else {
@@ -58,9 +68,13 @@ case class Controller(var grid: Grid = Grid(0, 0)) {
       val temp = redoStack.pop()
       val temp2 = temp.doIt(this)
       temp2 match {
-        case Success(s) => message = "Redo: " + s; undoStack.push(temp)
+        case Success(s) => {
+          message = "Redo: " + s
+          undoStack.push(temp)
+        }
         case Failure(e) => message = e.getMessage
       }
+      notifyObservers()
       temp2
     }
     else {
