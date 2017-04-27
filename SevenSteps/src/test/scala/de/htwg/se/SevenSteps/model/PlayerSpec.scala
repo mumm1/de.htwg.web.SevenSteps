@@ -7,19 +7,84 @@ import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
 class PlayerSpec extends WordSpec {
-  "A Player" should {
-    val p = new Player("Julius", 50)
-    "have a name" in {
-      Player("Julius", 50).name should be("Julius")
-    }
-    "have points" in {
-      Player("Julius", 50).points should be(50)
-    }
-    "can set colors" in {
-      p.setColors(List('g', 'b', 'a', 'c')).map.contains('g') should be(true)
-    }
-    "toString look like" in {
-      p.toString should be("Julius: Points=50")
-    }
-  }
+	"A Player" should {
+		val p = new Player("Julius", 50)
+				"have a name" in {
+			Player("Julius", 50).name should be("Julius")
+		}
+		"have points" in {
+			Player("Julius", 50).points should be(50)
+		}
+		"can set colors" in {
+			p.setColors(List('g', 'b', 'a', 'c')).map.contains('g') should be(true)
+		}
+		"toString look like" in {
+			p.toString should be("Julius: Points=50")
+		}
+	}
+
+
+	"Players without list" should {
+
+		val pls = new Players()
+
+				"Have a curPlayer number" in{
+			pls.curPlayer should be (0)
+		}
+		"Have players" in {
+			pls.players.isEmpty should be (true)
+			pls.length should be (0)
+			pls.nonEmpty should be (false)
+		}    
+	}
+
+	"Players with a List" should{
+
+		var pls = new Players()
+				val p1 = new Player("Julius", 50)
+				val p2 = new Player("Tobias", 50)
+				pls = pls.push(p1)
+				pls = pls.push(p2)
+
+
+				"current player" in {
+			pls.curPlayer should be (0)
+			pls = pls.next
+			pls.curPlayer should be (1)
+		}
+
+		"have a players list" in {
+			pls.players.isEmpty should be (false)
+			pls.length should be (2)
+			pls.getCurPlayer should be (p2)
+			pls = pls.pop()
+			pls.length should be (1)
+			pls.next().toString()  should be ("-> Julius: Points=50\n")
+
+		}
+
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

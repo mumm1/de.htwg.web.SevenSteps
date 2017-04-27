@@ -34,7 +34,7 @@ case class Grid(rows: Int, cols: Int, cells: Option[Vector[Cell]] = None) {
     copy(cells = Option(grid.updated(getIndex(row, col), cell(row, col).get.copy(color = color))))
   }
   private def getIndex(row: Int, col: Int): Int = {
-    if (row >= rows | col >= cols) {
+    if (row >= rows || col >= cols) {
       -1
     } else {
       cols * row + col

@@ -4,19 +4,22 @@ package de.htwg.se.SevenSteps.model
 import scala.collection.mutable
 import scala.util.Random
 
-case class Bag(name: String, stones: mutable.ListMap[Char, Int] = mutable.ListMap[Char, Int](), test: List[Char] = List[Char]()) {
+case class Bag(name: String, stones: mutable.ListMap[Char, Int] = mutable.ListMap[Char, Int](), colors: List[Char] = List[Char]()) {
   def fillup(): Unit = {
-    for ((c) <- test)
+    for ((c) <- colors)
       stones += c -> 20
   }
-  def pull2(): Char = {
-    println("-----------" + test)
-    println(stones)
-    val ran = Random.nextInt(test.length)
-    val color: Char = test.apply(ran)
+  def pull(): Char = {
+    if (! colors.isEmpty){
+    val ran = Random.nextInt(colors.length)
+    val color: Char = colors.apply(ran)
     stones(color) = stones.apply(color) - 1
-    color
+    return color
+    }
+    '$'
   }
+  
+  
   /*
   override def toString = {
       val sb = new StringBuilder
