@@ -28,9 +28,6 @@ case class Controller(var grid: Grid = Grid(0, 0)) extends Observable {
   }
   def addPlayer(name: String): Try[String] = doIt(AddPlayer(name))
   def newGrid(colors: String, cols: Int): Try[String] = doIt(NewGrid(colors, cols))
-  def startGame(): Try[String] = doIt(StartGame())
-  def nextPlayer(): Try[String] = doIt(NextPlayer())
-  def setStone(row: Int, col: Int): Try[String] = doIt(SetStone(row, col))
   def doIt(com: Command): Try[String] = {
     val explored = gameState.exploreCommand(com)
     explored match {
@@ -44,6 +41,9 @@ case class Controller(var grid: Grid = Grid(0, 0)) extends Observable {
     notifyObservers()
     explored
   }
+  def startGame(): Try[String] = doIt(StartGame())
+  def nextPlayer(): Try[String] = doIt(NextPlayer())
+  def setStone(row: Int, col: Int): Try[String] = doIt(SetStone(row, col))
   def undo(): Try[String] = {
     if (undoStack.nonEmpty) {
       val temp = undoStack.pop()
@@ -122,7 +122,7 @@ case class NewGrid(colors: String, cols: Int) extends Command {
 
 case class StartGame() extends Command {
   override def doIt(c: Controller): Try[String] = {
-    if (c.players.nonEmpty & c.grid.nonEmpty) {
+    if (c.players.nonEmpty && c.grid.nonEmpty) {
       c.gameState = Play(c)
       val colors = c.grid.getColors
       c.players = c.players.setColors(colors)

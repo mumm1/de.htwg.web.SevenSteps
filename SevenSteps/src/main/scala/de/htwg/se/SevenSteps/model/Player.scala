@@ -41,7 +41,7 @@ case class Players(curPlayer: Int = 0, players: Vector[Player] = Vector()) {
     var text = ""
     for (player <- players) {
       if (player == players(curPlayer)) {
-        text += "-> " + player.toString() + "\n" //+" CurHeight="+curHeight+"\n"
+        text += "-> " + player.toString() + "\n"
       }
       else {
         text += "   " + player.toString() + "\n"
