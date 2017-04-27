@@ -9,8 +9,8 @@ class Tui(var con: Controller) {
     var continue = true
     input match {
       case "q" => continue = false
-      case "s" => con.doIt(StartGame())
-      case "n" => con.doIt(NextPlayer())
+      case "s" => con.startGame()
+      case "n" => con.nextPlayer()
       case "u" => con.undo()
       case "r" => con.redo()
       case _ => processMoreParameter(input)
@@ -32,9 +32,9 @@ class Tui(var con: Controller) {
   }
   private def processMoreParameter(input: String): Unit = {
     input.split(" ").toList match {
-      case "a" :: player :: Nil => con.doIt(AddPlayer(player))
-      case "g" :: colors :: cols :: Nil => con.doIt(NewGrid(colors.replace('-', ' '), str2Int(cols, DEFAULT_GRID_COLS)))
-      case row :: col :: Nil => con.doIt(SetStone(str2Int(row, -1), str2Int(col, -1)))
+      case "a" :: player :: Nil => con.addPlayer(player)
+      case "g" :: colors :: cols :: Nil => con.newGrid(colors.replace('-', ' '), str2Int(cols, DEFAULT_GRID_COLS))
+      case row :: col :: Nil => con.setStone(str2Int(row, -1), str2Int(col, -1))
       case _ => con.message = "False Input!!!"
     }
   }

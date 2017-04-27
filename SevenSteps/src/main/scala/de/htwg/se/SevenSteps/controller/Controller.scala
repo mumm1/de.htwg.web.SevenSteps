@@ -25,6 +25,11 @@ case class Controller(var grid: Grid = Grid(0, 0)) {
   def getCurPlayer: Player = {
     players.getCurPlayer
   }
+  def addPlayer(name: String): Try[String] = doIt(AddPlayer(name))
+  def newGrid(colors: String, cols: Int): Try[String] = doIt(NewGrid(colors, cols))
+  def startGame(): Try[String] = doIt(StartGame())
+  def nextPlayer(): Try[String] = doIt(NextPlayer())
+  def setStone(row: Int, col: Int): Try[String] = doIt(SetStone(row, col))
   def doIt(com: Command): Try[String] = {
     val explored = gameState.exploreCommand(com)
     explored match {
