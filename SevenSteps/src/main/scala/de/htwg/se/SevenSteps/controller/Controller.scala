@@ -16,6 +16,9 @@ case class Controller(var grid: Grid = Grid(0, 0)) {
   var redoStack: mutable.Stack[Command] = mutable.Stack()
   var message = "Welcome to SevenSteps"
   def prepareNewPlayer(): Unit = {
+    for (_ <- getCurPlayer.getStoneNumber to 6) {
+      players = players.updateCurPlayer(players.getCurPlayer.incColor(bag.pull(), 1))
+    }
     curHeight = 0
     lastCells.clear()
   }
@@ -100,13 +103,13 @@ case class NewGrid(colors: String, cols: Int) extends Command {
 
 case class StartGame() extends Command {
   override def doIt(c: Controller): Try[String] = {
-    if (c.players.nonEmpty) {
+    if (c.players.nonEmpty & c.grid.nonEmpty) {
       c.gameState = Play(c)
-      c.prepareNewPlayer()
       val colors = c.grid.getColors
       c.players = c.players.setColors(colors)
       c.bag = c.bag.copy(colors = colors)
       c.bag.fillup()
+      c.prepareNewPlayer()
       Success("Started the game")
     }
     else {
@@ -121,9 +124,6 @@ case class StartGame() extends Command {
 
 case class NextPlayer() extends Command {
   override def doIt(c: Controller): Try[String] = {
-    for (_ <- c.getCurPlayer.getStoneNumber to 7) {
-      c.players = c.players.updateCurPlayer(c.players.getCurPlayer.incColor(c.bag.pull(), 1))
-    }
     c.players = c.players.next()
     c.prepareNewPlayer()
     Success("Player " + c.getCurPlayer.name + " it is your turn!")

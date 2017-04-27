@@ -1,5 +1,7 @@
-git conflicts		right click -> git -> Res??e Conflicts -> merge
-correct problems 	alt enter
-next problem		f2
-format all      	ctrl alt L
-folding			    ctrl shift num+/- (i have set this behavior in idea, that methods get folded)
+goto implementation     ctrl mouseLeft
+go back                 ctrl mouseWheelDown (not the default)
+git conflicts		    right click -> git -> Res??e Conflicts -> merge
+correct problems 	    alt enter
+next problem		    f2
+format all      	    ctrl alt L
+folding			        ctrl shift num+/- (i have set this behavior in idea, that methods get folded)

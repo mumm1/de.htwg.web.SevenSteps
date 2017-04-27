@@ -36,12 +36,14 @@ class ControllerSpec extends WordSpec {
       c.undo().isSuccess should be(true)
       c.grid.cellsToString() should be("")
     }
-    "start the game (minimum 1 Player) and can't undo that" in {
+    "start the game (minimum 1 Player and a non empty grid) and can't undo that" in {
       before(Prepare(c))
       c.gameState.isInstanceOf[Prepare] should be(true)
       c.doIt(StartGame()).isSuccess should be(false)
       c.gameState.isInstanceOf[Prepare] should be(true)
       c.doIt(AddPlayer("Hugo"))
+      c.doIt(StartGame()).isSuccess should be(false)
+      c.doIt(NewGrid("aabb", 2)).isSuccess should be(true)
       c.doIt(StartGame()).isSuccess should be(true)
       c.gameState.isInstanceOf[Play] should be(true)
       c.undo().isSuccess should be(false)
@@ -103,10 +105,13 @@ class ControllerSpec extends WordSpec {
       c.doIt(SetStone(0, -1)).isSuccess should be(false)
       c.grid.cell(0, 0).get.height should be(1)
     }
-    "give on Transition Prepare -> Play the Players colors with 0 stones" in {
+    "give on Transition Prepare -> Play the first player colors with 7 stones" in {
       before(Play(c))
       c.grid.getColors should be(List('a', 'b'))
-      c.getCurPlayer.map.toList should be(List(('b', 0), ('a', 0)))
+      c.players.getCurPlayer.getStoneNumber should be(7)
+      c.players(1).getStoneNumber should be(0)
+
+
     }
     "set the first stone everywhere on height 0" in {
       before(Play(c))
@@ -137,6 +142,7 @@ class ControllerSpec extends WordSpec {
     }
     "not set in one turn a grid cell twice" in {
       before(Play(c))
+      c.players.setAllStonesTo(99)
       c.doIt(SetStone(0, 0)).isSuccess should be(true)
       c.doIt(SetStone(0, 1)).isSuccess should be(true)
       c.doIt(SetStone(1, 1)).isSuccess should be(true)

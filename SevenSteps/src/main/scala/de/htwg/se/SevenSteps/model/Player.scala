@@ -30,6 +30,13 @@ case class Players(curPlayer: Int = 0, players: Vector[Player] = Vector()) {
     }
     copy(players = newPlayers)
   }
+  def setAllStonesTo(num: Int): Players = {
+    val newPlayers = for (p <- players) yield {
+      p.setStones(num)
+    }
+    copy(players = newPlayers)
+  }
+  def apply(i: Int): Player = players(i)
   override def toString: String = {
     var text = ""
     for (player <- players) {
@@ -49,6 +56,13 @@ case class Player(name: String, points: Int = 0, map: Map[Char, Int] = Map[Char,
     var newMap: Map[Char, Int] = Map()
     for ((c) <- colors) {
       newMap = newMap + (c -> 0)
+    }
+    copy(map = newMap)
+  }
+  def setStones(num: Int): Player = {
+    var newMap: Map[Char, Int] = Map()
+    for ((k, _) <- map) {
+      newMap = newMap + (k -> num)
     }
     copy(map = newMap)
   }

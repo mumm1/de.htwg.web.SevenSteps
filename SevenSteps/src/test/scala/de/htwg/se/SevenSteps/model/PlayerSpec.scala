@@ -35,7 +35,7 @@ class PlayerSpec extends WordSpec {
 			pls.players.isEmpty should be (true)
 			pls.length should be (0)
 			pls.nonEmpty should be (false)
-		}    
+		}
 	}
 
 	"Players with a List" should{
@@ -49,8 +49,9 @@ class PlayerSpec extends WordSpec {
 
 				"current player" in {
 			pls.curPlayer should be (0)
-			pls = pls.next
+					pls = pls.next()
 			pls.curPlayer should be (1)
+					pls.next().curPlayer should be(0)
 		}
 
 		"have a players list" in {
@@ -61,6 +62,19 @@ class PlayerSpec extends WordSpec {
 			pls.length should be (1)
 			pls.next().toString()  should be ("-> Julius: Points=50\n")
 
+		}
+		"set colors to the the players" in {
+			val newPls = Players().push(Player("hans")).push(Player("hugo"))
+				.setColors("ab".toCharArray().toList)
+			newPls(0).map.toList should be(List(('a', 0), ('b', 0)))
+			newPls(1).map.toList should be(List(('a', 0), ('b', 0)))
+		}
+		"set all Stones of all players" in {
+			var newPls = Players().push(Player("hans")).push(Player("hugo"))
+				.setColors("ab".toCharArray().toList)
+			newPls = newPls.setAllStonesTo(5)
+			newPls(0).getStoneNumber should be(10)
+			newPls(1).getStoneNumber should be(10)
 		}
 
 	}
