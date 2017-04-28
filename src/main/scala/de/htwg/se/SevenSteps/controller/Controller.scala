@@ -1,4 +1,3 @@
-
 package de.htwg.se.SevenSteps.controller
 
 import de.htwg.se.SevenSteps.model._
@@ -16,6 +15,7 @@ case class Controller(var grid: Grid = Grid(0, 0)) extends Observable {
   var undoStack: mutable.Stack[Command] = mutable.Stack()
   var redoStack: mutable.Stack[Command] = mutable.Stack()
   var message = "Welcome to SevenSteps"
+
   def prepareNewPlayer(): Unit = {
     for (_ <- getCurPlayer.getStoneNumber to 6) {
       players = players.updateCurPlayer(players.getCurPlayer.incColor(bag.pull(), 1))
@@ -23,11 +23,15 @@ case class Controller(var grid: Grid = Grid(0, 0)) extends Observable {
     curHeight = 0
     lastCells.clear()
   }
+
   def getCurPlayer: Player = {
     players.getCurPlayer
   }
+
   def addPlayer(name: String): Try[String] = doIt(AddPlayer(name))
+
   def newGrid(colors: String, cols: Int): Try[String] = doIt(NewGrid(colors, cols))
+
   def doIt(com: Command): Try[String] = {
     val explored = gameState.exploreCommand(com)
     explored match {
@@ -41,9 +45,13 @@ case class Controller(var grid: Grid = Grid(0, 0)) extends Observable {
     notifyObservers()
     explored
   }
+
   def startGame(): Try[String] = doIt(StartGame())
+
   def nextPlayer(): Try[String] = doIt(NextPlayer())
+
   def setStone(row: Int, col: Int): Try[String] = doIt(SetStone(row, col))
+
   def undo(): Try[String] = {
     if (undoStack.nonEmpty) {
       val temp = undoStack.pop()
@@ -62,6 +70,7 @@ case class Controller(var grid: Grid = Grid(0, 0)) extends Observable {
       Failure(new Exception(message))
     }
   }
+
   def redo(): Try[String] = {
     if (redoStack.nonEmpty) {
       val temp = redoStack.pop()
@@ -80,6 +89,7 @@ case class Controller(var grid: Grid = Grid(0, 0)) extends Observable {
       Failure(new Exception(message))
     }
   }
+
   override def toString: String = {
     val text = "\n############  " + message + "  ############\n\n"
     val len = text.length()
@@ -90,15 +100,18 @@ case class Controller(var grid: Grid = Grid(0, 0)) extends Observable {
 // ##################### Controller Commands #######################
 trait Command {
   def doIt(c: Controller): Try[String]
+
   def undo(c: Controller): Try[String]
 }
 
 case class AddPlayer(name: String) extends Command {
   val player = Player(name)
+
   override def doIt(c: Controller): Success[String] = {
     c.players = c.players.push(player)
     Success("Added Player " + name)
   }
+
   override def undo(c: Controller): Try[String] = {
     c.players = c.players.pop()
     Success("Deleted Player")
@@ -107,11 +120,13 @@ case class AddPlayer(name: String) extends Command {
 
 case class NewGrid(colors: String, cols: Int) extends Command {
   var oldGrid: Grid = _
+
   override def doIt(c: Controller): Try[String] = {
     oldGrid = c.grid
     c.grid = new Grid(colors, cols)
     Success("Build new Grid")
   }
+
   override def undo(c: Controller): Try[String] = {
     c.grid = oldGrid
     Success("Deleted new Grid")
@@ -132,6 +147,7 @@ case class StartGame() extends Command {
       Failure(new Exception("Can't start the game: Not enough Players"))
     }
   }
+
   override def undo(c: Controller): Try[String] = {
     c.undoStack.clear()
     Failure(new Exception("You can't undo the start of the game!"))
@@ -144,6 +160,7 @@ case class NextPlayer() extends Command {
     c.prepareNewPlayer()
     Success("Player " + c.getCurPlayer.name + " it is your turn!")
   }
+
   override def undo(c: Controller): Try[String] = {
     c.undoStack.clear()
     Failure(new Exception("You can't undo to previous player!"))
@@ -154,33 +171,32 @@ case class SetStone(row: Int, col: Int) extends Command {
   override def doIt(c: Controller): Try[String] = {
     c.grid.cell(row, col) match {
       case Failure(_) => Failure(new Exception("You have to set a Stone on height " + (c.curHeight - 1) + " or " + c.curHeight))
-      case Success(cell) =>
-        if (c.lastCells.nonEmpty) {
-          if (!isNeighbour(row, col, c)) {
-            return Failure(new Exception("You have to set a Stone neighboring to the last Stone!"))
-          }
+      case Success(cell) => if (c.lastCells.nonEmpty) {
+        if (!isNeighbour(row, col, c)) {
+          return Failure(new Exception("You have to set a Stone neighboring to the last Stone!"))
         }
+      }
         if (c.lastCells.contains((row, col))) {
           return Failure(new Exception("You can't set on a cell twice!"))
         }
-        c.getCurPlayer.map.get(cell.color) match {
-          case None => Failure(new Exception("You can't place here!"))
-          case Some(0) => Failure(new Exception("You don't have Stones from color '" + cell.color + "'"))
-          case Some(_) =>
-            val dif = c.curHeight - cell.height
-            if (dif == 0 | dif == 1) {
-              c.grid = c.grid.set(row, col, cell.height + 1)
-              c.players = c.players.updateCurPlayer(c.players.getCurPlayer.incPoints(cell.height + 1).incColor(cell.color, -1))
+        val dif = c.curHeight - cell.height
+        if (dif == 0 | dif == 1) {
+          c.getCurPlayer.placeStone(cell.color, cell.height) match {
+            case (_, Failure(e)) => Failure(e)
+            case (player, _) => c.grid = c.grid.set(row, col, cell.height + 1)
+              c.players = c.players.updateCurPlayer(player)
               c.curHeight = cell.height + 1
               c.lastCells.push((row, col))
               Success("You set a stone")
-            } else {
-              Failure(new Exception("You have to set a Stone on height " + (c.curHeight - 1) + " or " + c.curHeight))
-            }
+          }
+        } else {
+          Failure(new Exception("You have to set a Stone on height " + (c.curHeight - 1) + " or " + c.curHeight))
         }
     }
   }
+
   def isNeighbour(row: Int, col: Int, c: Controller): Boolean = (math.abs(row - c.lastCells.head._1) + math.abs(col - c.lastCells.head._2)) == 1
+
   override def undo(c: Controller): Try[String] = {
     val cell = c.grid.cell(row, col).get
     c.grid = c.grid.set(row, col, cell.height - 1)

@@ -16,7 +16,7 @@ class PlayerSpec extends WordSpec {
       Player("Julius", 50).points should be(50)
     }
     "can set colors" in {
-      p.setColors(List('g', 'b', 'a', 'c')).map.contains('g') should be(true)
+      p.setColors(List('g', 'b', 'a', 'c')).map.get.contains('g') should be(true)
     }
     "toString look like" in {
       p.toString should be("Julius: Points=50")
@@ -56,8 +56,8 @@ class PlayerSpec extends WordSpec {
     "set colors to the the players" in {
       val newPls = Players().push(Player("hans")).push(Player("hugo"))
         .setColors("ab".toCharArray.toList)
-      newPls(0).map.toList should be(List(('a', 0), ('b', 0)))
-      newPls(1).map.toList should be(List(('a', 0), ('b', 0)))
+      newPls(0).map.get.toList should be(List(('a', 0), ('b', 0)))
+      newPls(1).map.get.toList should be(List(('a', 0), ('b', 0)))
     }
     "set all Stones of all players" in {
       var newPls = Players().push(Player("hans")).push(Player("hugo"))
