@@ -83,7 +83,7 @@ case class Controller(var grid: Grid = Grid(0, 0)) extends Observable {
     }
   }
   override def toString: String = {
-    val text = "############  " + message + "  ############\n\n"
+    val text = "\n############  " + message + "  ############\n\n"
     val len = text.length()
     text + players.toString() + grid.toString() + "#" * (len - 2) + "\n"
   }

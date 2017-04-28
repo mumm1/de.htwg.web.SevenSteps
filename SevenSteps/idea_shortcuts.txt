@@ -1,3 +1,7 @@
+
+Shortcuts
+#########
+
 goto implementation     ctrl mouseLeft
 go back                 ctrl mouseWheelDown (not the default)
 git conflicts		    right click -> git -> Res??e Conflicts -> merge
@@ -5,3 +9,14 @@ correct problems 	    alt enter
 next problem		    f2
 format all      	    ctrl alt L
 folding			        ctrl shift num+/- (i have set this behavior in idea, that methods get folded)
+
+
+Live Templates
+##############
+
+main — generates main() method for runnable applications
+itr — creates a for loop, using the closest defined collections as generators
+itry — creates a for loop, using the closest defined collections as generators and yield modifier
+opt — creates a pattern-matching expression with scala.Option[T] argument and two branches
+priv — creates an expression for debug print of values
+
