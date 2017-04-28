@@ -10,16 +10,14 @@ case class Bag(name: String, stones: mutable.ListMap[Char, Int] = mutable.ListMa
       stones += c -> 20
   }
   def pull(): Char = {
-    if (! colors.isEmpty){
-    val ran = Random.nextInt(colors.length)
-    val color: Char = colors.apply(ran)
-    stones(color) = stones.apply(color) - 1
-    return color
+    if (!colors.isEmpty) {
+      val ran = Random.nextInt(colors.length)
+      val color: Char = colors.apply(ran)
+      stones(color) = stones.apply(color) - 1
+      return color
     }
     '$'
   }
-  
-  
   /*
   override def toString = {
       val sb = new StringBuilder

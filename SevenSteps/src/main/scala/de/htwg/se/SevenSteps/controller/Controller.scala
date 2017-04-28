@@ -57,8 +57,7 @@ case class Controller(var grid: Grid = Grid(0, 0)) extends Observable {
       }
       notifyObservers()
       temp2
-    }
-    else {
+    } else {
       message = "Can't undo now!"
       Failure(new Exception(message))
     }
@@ -76,8 +75,7 @@ case class Controller(var grid: Grid = Grid(0, 0)) extends Observable {
       }
       notifyObservers()
       temp2
-    }
-    else {
+    } else {
       message = "Can't redo now!"
       Failure(new Exception(message))
     }
@@ -130,8 +128,7 @@ case class StartGame() extends Command {
       c.bag.fillup()
       c.prepareNewPlayer()
       Success("Started the game")
-    }
-    else {
+    } else {
       Failure(new Exception("Can't start the game: Not enough Players"))
     }
   }
@@ -177,8 +174,7 @@ case class SetStone(row: Int, col: Int) extends Command {
               c.curHeight = cell.height + 1
               c.lastCells.push((row, col))
               Success("You set a stone")
-            }
-            else {
+            } else {
               Failure(new Exception("You have to set a Stone on height " + (c.curHeight - 1) + " or " + c.curHeight))
             }
         }
@@ -220,5 +216,4 @@ case class Play(c: Controller) extends GameState {
     }
   }
 }
-
 

@@ -42,8 +42,7 @@ case class Players(curPlayer: Int = 0, players: Vector[Player] = Vector()) {
     for (player <- players) {
       if (player == players(curPlayer)) {
         text += "-> " + player.toString() + "\n"
-      }
-      else {
+      } else {
         text += "   " + player.toString() + "\n"
       }
     }
