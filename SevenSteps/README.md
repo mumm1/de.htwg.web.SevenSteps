@@ -1,3 +1,5 @@
+[![Travis](https://travis-ci.org/t123obi/de.htwg.se.SevenSteps.svg?branch=master)]()
+
 SevenSteps (Game)
 =========================
 
