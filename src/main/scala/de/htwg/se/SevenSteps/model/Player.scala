@@ -90,14 +90,14 @@ case class Player(name: String, points: Int = 0, map: Option[Map[Char, Int]] = N
     }
 
   }
-  def placeStone(color: Char,height:Int): (Player,Try[String]) = {
+  def placeStone(color: Char,height:Int): Try[Player] = {
     map match {
-      case None => (this,Failure(new Exception("You can't place here!")))
+      case None => Failure(new Exception("You can't place here!"))
       case Some(m) =>
         m.get(color) match {
-          case None => (this,Failure(new Exception("You can't place here!")))
-          case Some(0) => (this,Failure(new Exception("You don't have Stones from color '" + color + "'")))
-          case Some(_) => (incPoints(height + 1).incColor(color, -1),Success("Updates Player"))
+          case None => Failure(new Exception("You can't place here!"))
+          case Some(0) => Failure(new Exception("You don't have Stones from color '" + color + "'"))
+          case Some(_) => Success(incPoints(height + 1).incColor(color, -1))
     }
   }
 

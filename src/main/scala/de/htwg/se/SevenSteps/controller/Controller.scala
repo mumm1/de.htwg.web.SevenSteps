@@ -182,8 +182,8 @@ case class SetStone(row: Int, col: Int) extends Command {
         val dif = c.curHeight - cell.height
         if (dif == 0 | dif == 1) {
           c.getCurPlayer.placeStone(cell.color, cell.height) match {
-            case (_, Failure(e)) => Failure(e)
-            case (player, _) => c.grid = c.grid.set(row, col, cell.height + 1)
+            case Failure(e) => Failure(e)
+            case Success(player) => c.grid = c.grid.set(row, col, cell.height + 1)
               c.players = c.players.updateCurPlayer(player)
               c.curHeight = cell.height + 1
               c.lastCells.push((row, col))
