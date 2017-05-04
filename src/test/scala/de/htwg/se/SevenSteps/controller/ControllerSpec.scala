@@ -113,6 +113,7 @@ class ControllerSpec extends WordSpec {
     }
     "set the first stone everywhere on height 0" in {
       before(Play(c))
+      c.players=c.players.setAllStonesTo(999);
       c.grid.getHeights should be(List(0, 0, 0, 0))
       c.setStone(0, 0).isSuccess should be(true)
       c.grid.getHeights should be(List(1, 0, 0, 0))
@@ -128,6 +129,7 @@ class ControllerSpec extends WordSpec {
     }
     "set the second Stone neighboring to the first stone" in {
       before(Play(c))
+      c.players=c.players.setAllStonesTo(999);
       c.setStone(0, 0).isSuccess should be(true)
       c.setStone(0, 1).isSuccess should be(true)
       c.grid.getHeights should be(List(1, 1, 0, 0))
@@ -140,6 +142,7 @@ class ControllerSpec extends WordSpec {
     }
     "not set in one turn a grid cell twice" in {
       before(Play(c))
+      c.players=c.players.setAllStonesTo(999);
       c.players = c.players.setAllStonesTo(99)
       c.setStone(0, 0).isSuccess should be(true)
       c.setStone(0, 1).isSuccess should be(true)
