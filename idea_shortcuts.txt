@@ -7,7 +7,7 @@ go back                 ctrl mouseWheelDown (not the default)
 git conflicts		    right click -> git -> Res??e Conflicts -> merge
 correct problems 	    alt enter
 next problem		    f2
-format all      	    ctrl alt L
+format all      	    ctrl alt L oder bei mir (ctrl shift L)
 folding			        ctrl shift num+/- (i have set this behavior in idea, that methods get folded)
 
 

@@ -1,5 +1,6 @@
 package de.htwg.se.SevenSteps.controller
 
+import de.htwg.se.SevenSteps.util.Observer
 import org.junit.runner.RunWith
 import org.scalatest.Matchers._
 import org.scalatest._
@@ -113,7 +114,7 @@ class ControllerSpec extends WordSpec {
     }
     "set the first stone everywhere on height 0" in {
       before(Play(c))
-      c.players=c.players.setAllStonesTo(999);
+      c.players = c.players.setAllStonesTo(999)
       c.grid.getHeights should be(List(0, 0, 0, 0))
       c.setStone(0, 0).isSuccess should be(true)
       c.grid.getHeights should be(List(1, 0, 0, 0))
@@ -129,7 +130,7 @@ class ControllerSpec extends WordSpec {
     }
     "set the second Stone neighboring to the first stone" in {
       before(Play(c))
-      c.players=c.players.setAllStonesTo(999);
+      c.players = c.players.setAllStonesTo(999)
       c.setStone(0, 0).isSuccess should be(true)
       c.setStone(0, 1).isSuccess should be(true)
       c.grid.getHeights should be(List(1, 1, 0, 0))
@@ -142,7 +143,7 @@ class ControllerSpec extends WordSpec {
     }
     "not set in one turn a grid cell twice" in {
       before(Play(c))
-      c.players=c.players.setAllStonesTo(999);
+      c.players = c.players.setAllStonesTo(999)
       c.players = c.players.setAllStonesTo(99)
       c.setStone(0, 0).isSuccess should be(true)
       c.setStone(0, 1).isSuccess should be(true)
@@ -157,6 +158,26 @@ class ControllerSpec extends WordSpec {
       c.undo().isSuccess should be(true)
       c.grid.getHeights should be(List(1, 1, 0, 1))
       c.setStone(1, 0).isSuccess should be(true)
+    }
+  }
+  "A Controller observed by an Observer" should {
+    "notify its Observer after every Change" in {
+      before(Prepare(c))
+      val observer = new Observer {
+        var updates: Int = 0
+        override def update(): Unit = updates += 1
+      }
+      c.add(observer)
+      c.addPlayer("Hans").isSuccess should be(true)
+      observer.updates should be(1)
+      c.newGrid("aaaa", 2).isSuccess should be(true)
+      observer.updates should be(2)
+      c.startGame().isSuccess should be(true)
+      observer.updates should be(3)
+      c.setStone(0, 0).isSuccess should be(true)
+      observer.updates should be(4)
+      c.nextPlayer().isSuccess should be(true)
+      observer.updates should be(5)
     }
   }
 }
