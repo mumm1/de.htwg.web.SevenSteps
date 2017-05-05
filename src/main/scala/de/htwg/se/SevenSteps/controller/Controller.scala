@@ -14,6 +14,7 @@ case class Controller(var grid: Grid = Grid(0, 0),
                       var lastCells: mutable.Stack[(Int, Int)] = mutable.Stack(),
                       var undoStack: mutable.Stack[Command] = mutable.Stack(),
                       var redoStack: mutable.Stack[Command] = mutable.Stack(),
+                      var language: Translator = dictEnEn,
                       var message: String = "Welcome to SevenSteps"
                      ) extends Observable {
   var gameState: GameState = Prepare(this)
@@ -30,19 +31,18 @@ case class Controller(var grid: Grid = Grid(0, 0),
     players.getCurPlayer
   }
   def addPlayer(name: String): Try[Controller] = doIt(AddPlayer(name))
+  def newGrid(colors: String, cols: Int): Try[Controller] = doIt(NewGrid(colors, cols))
   def doIt(com: Command): Try[Controller] = {
     val explored = gameState.exploreCommand(com)
     explored match {
-      case Success(_) => {
+      case Success(_) =>
         undoStack.push(com)
         redoStack.clear()
-      }
       case Failure(e) => message = e.getMessage
     }
     notifyObservers()
     explored
   }
-  def newGrid(colors: String, cols: Int): Try[Controller] = doIt(NewGrid(colors, cols))
   def startGame(): Try[Controller] = doIt(StartGame())
   def nextPlayer(): Try[Controller] = doIt(NextPlayer())
   def setStone(row: Int, col: Int): Try[Controller] = doIt(SetStone(row, col))
@@ -51,10 +51,9 @@ case class Controller(var grid: Grid = Grid(0, 0),
       val temp = undoStack.pop()
       val temp2 = temp.undo(this)
       temp2 match {
-        case Success(_) => {
+        case Success(_) =>
           message = "Undo: " + message
           redoStack.push(temp)
-        }
         case Failure(e) => message = e.getMessage
       }
       notifyObservers()
@@ -69,10 +68,9 @@ case class Controller(var grid: Grid = Grid(0, 0),
       val temp = redoStack.pop()
       val temp2 = temp.doIt(this)
       temp2 match {
-        case Success(s) => {
+        case Success(s) =>
           message = "Redo: " + s
           undoStack.push(temp)
-        }
         case Failure(e) => message = e.getMessage
       }
       notifyObservers()
@@ -95,7 +93,7 @@ trait Command {
   def undo(c: Controller): Try[Controller]
 }
 
-case class AddPlayer(name: String) extends Command {
+case class AddPlayer(name: String) extends Command with Translatable {
   val player = Player(name)
   override def doIt(c: Controller): Success[Controller] = {
     c.players = c.players.push(player)
@@ -106,6 +104,9 @@ case class AddPlayer(name: String) extends Command {
     c.players = c.players.pop()
     c.message = "Deleted Player"
     Success(c)
+  }
+  override def translate(trans: Translator): String = {
+    trans.translate("addPlayer") + name
   }
 }
 

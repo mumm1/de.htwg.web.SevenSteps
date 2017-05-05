@@ -7,6 +7,9 @@ case class Players(curPlayer: Int = 0, players: Vector[Player] = Vector()) {
   def push(player: Player): Players = {
     copy(players = players :+ player)
   }
+  def push(name: String): Players = {
+    copy(players = players :+ Player(name))
+  }
   def pop(): Players = {
     copy(players = players.init)
   }
@@ -71,15 +74,6 @@ case class Player(name: String, points: Int = 0, map: Option[Map[Char, Int]] = N
     }
 
   }
-  def incPoints(delta: Int): Player = {
-    copy(points = points + delta)
-  }
-  def incColor(color: Char, delta: Int): Player = {
-    map match {
-      case None => this
-      case Some(m) => copy(map = Some(m.updated(color, m(color) + delta)))
-    }
-  }
   def getStoneNumber: Int = {
     map match {
       case None => 0
@@ -101,6 +95,15 @@ case class Player(name: String, points: Int = 0, map: Option[Map[Char, Int]] = N
     }
   }
 
+  }
+  def incPoints(delta: Int): Player = {
+    copy(points = points + delta)
+  }
+  def incColor(color: Char, delta: Int): Player = {
+    map match {
+      case None => this
+      case Some(m) => copy(map = Some(m.updated(color, m(color) + delta)))
+    }
   }
   override def toString: String = {
     val sb = new StringBuilder
