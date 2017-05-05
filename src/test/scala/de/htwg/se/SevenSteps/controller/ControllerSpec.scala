@@ -27,12 +27,8 @@ class ControllerSpec extends WordSpec {
       before(Prepare(c))
       val cCopy = c.copy()
       c.addPlayer("Hugo").isSuccess should be(true)
-      c.addPlayer("Peter").isSuccess should be(true)
-      cCopy.players = Players(0, Vector(Player("Hugo"), Player("Peter")))
-      c should be(cCopy)
-      c.undo().isSuccess should be(true)
-      cCopy.players = Players(0, Vector(Player("Hugo")))
-      c should be(cCopy)
+      c.addPlayer("Peter").get should be(c.copy(players = Players(0, Vector(Player("Hugo"), Player("Peter"))), message = "Added Player Peter"))
+      c.undo().get should be(c.copy(players = Players(0, Vector(Player("Hugo"))), message = "Undo: Deleted Player"))
     }
     "generate a new Grid and undo this" in {
       before(Prepare(c))

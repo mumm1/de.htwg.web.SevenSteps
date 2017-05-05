@@ -11,12 +11,12 @@ case class Controller(var grid: Grid = Grid(0, 0),
                       var bag: Bag = Bag("Bag"),
                       var curHeight: Int = 0,
                       var players: Players = Players(),
-                      var gameState: GameState = Prepare(this),
                       var lastCells: mutable.Stack[(Int, Int)] = mutable.Stack(),
                       var undoStack: mutable.Stack[Command] = mutable.Stack(),
                       var redoStack: mutable.Stack[Command] = mutable.Stack(),
                       var message: String = "Welcome to SevenSteps"
                      ) extends Observable {
+  var gameState: GameState = Prepare(this)
 
 
   def prepareNewPlayer(): Unit = {
@@ -30,30 +30,29 @@ case class Controller(var grid: Grid = Grid(0, 0),
     players.getCurPlayer
   }
   def addPlayer(name: String): Try[Controller] = doIt(AddPlayer(name))
-  def newGrid(colors: String, cols: Int): Try[Controller] = doIt(NewGrid(colors, cols))
-  def startGame(): Try[Controller] = doIt(StartGame())
-  def nextPlayer(): Try[Controller] = doIt(NextPlayer())
-  def setStone(row: Int, col: Int): Try[Controller] = doIt(SetStone(row, col))
   def doIt(com: Command): Try[Controller] = {
     val explored = gameState.exploreCommand(com)
     explored match {
-      case Success(s) => {
+      case Success(_) => {
         undoStack.push(com)
         redoStack.clear()
-        message = s
       }
       case Failure(e) => message = e.getMessage
     }
     notifyObservers()
     explored
   }
+  def newGrid(colors: String, cols: Int): Try[Controller] = doIt(NewGrid(colors, cols))
+  def startGame(): Try[Controller] = doIt(StartGame())
+  def nextPlayer(): Try[Controller] = doIt(NextPlayer())
+  def setStone(row: Int, col: Int): Try[Controller] = doIt(SetStone(row, col))
   def undo(): Try[Controller] = {
     if (undoStack.nonEmpty) {
       val temp = undoStack.pop()
       val temp2 = temp.undo(this)
       temp2 match {
-        case Success(s) => {
-          message = "Undo: " + s
+        case Success(_) => {
+          message = "Undo: " + message
           redoStack.push(temp)
         }
         case Failure(e) => message = e.getMessage
@@ -96,7 +95,7 @@ trait Command {
   def undo(c: Controller): Try[Controller]
 }
 
-case class AddPlayer(name: Controller) extends Command {
+case class AddPlayer(name: String) extends Command {
   val player = Player(name)
   override def doIt(c: Controller): Success[Controller] = {
     c.players = c.players.push(player)
@@ -134,7 +133,8 @@ case class StartGame() extends Command {
       c.bag = c.bag.copy(colors = colors)
       c.bag.fillup()
       c.prepareNewPlayer()
-      Success("Started the game")
+      c.message = "Started the game"
+      Success(c)
     } else {
       Failure(new Exception("Can't start the game: Not enough Players"))
     }
@@ -149,7 +149,8 @@ case class NextPlayer() extends Command {
   override def doIt(c: Controller): Try[Controller] = {
     c.players = c.players.next()
     c.prepareNewPlayer()
-    Success("Player " + c.getCurPlayer.name + " it is your turn!")
+    c.message = "Player " + c.getCurPlayer.name + " it is your turn!"
+    Success(c)
   }
   override def undo(c: Controller): Try[Controller] = {
     c.undoStack.clear()
@@ -180,7 +181,8 @@ case class SetStone(row: Int, col: Int) extends Command {
               c.players = c.players.updateCurPlayer(c.players.getCurPlayer.incPoints(cell.height + 1).incColor(cell.color, -1))
               c.curHeight = cell.height + 1
               c.lastCells.push((row, col))
-              Success("You set a stone")
+              c.message = "You set a stone"
+              Success(c)
             } else {
               Failure(new Exception("You have to set a Stone on height " + (c.curHeight - 1) + " or " + c.curHeight))
             }
@@ -194,7 +196,8 @@ case class SetStone(row: Int, col: Int) extends Command {
     c.players = c.players.updateCurPlayer(c.players.getCurPlayer.incPoints(-cell.height).incColor(cell.color, +1))
     c.curHeight = cell.height - 1
     c.lastCells.pop()
-    Success("Take the Stone")
+    c.message = "Take the Stone"
+    Success(c)
   }
 }
 
