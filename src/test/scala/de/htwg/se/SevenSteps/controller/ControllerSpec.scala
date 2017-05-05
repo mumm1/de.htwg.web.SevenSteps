@@ -25,11 +25,14 @@ class ControllerSpec extends WordSpec {
   "A Controller in game phase prepare" should {
     "add Players and undo this" in {
       before(Prepare(c))
+      val cCopy = c.copy()
       c.addPlayer("Hugo").isSuccess should be(true)
       c.addPlayer("Peter").isSuccess should be(true)
-      c.players should be(Players(0, Vector(Player("Hugo"), Player("Peter"))))
+      cCopy.players = Players(0, Vector(Player("Hugo"), Player("Peter")))
+      c should be(cCopy)
       c.undo().isSuccess should be(true)
-      c.players should be(Players(0, Vector(Player("Hugo"))))
+      cCopy.players = Players(0, Vector(Player("Hugo")))
+      c should be(cCopy)
     }
     "generate a new Grid and undo this" in {
       before(Prepare(c))

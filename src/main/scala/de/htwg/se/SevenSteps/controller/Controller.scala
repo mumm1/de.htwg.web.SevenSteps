@@ -7,15 +7,18 @@ import de.htwg.se.SevenSteps.util.Observable
 import scala.collection.mutable
 import scala.util._
 
-case class Controller(var grid: Grid = Grid(0, 0)) extends Observable {
-  var bag: Bag = Bag("Bag")
-  var curHeight: Int = 0
-  var players = Players()
-  var gameState: GameState = Prepare(this)
-  var lastCells: mutable.Stack[(Int, Int)] = mutable.Stack()
-  var undoStack: mutable.Stack[Command] = mutable.Stack()
-  var redoStack: mutable.Stack[Command] = mutable.Stack()
-  var message = "Welcome to SevenSteps"
+case class Controller(var grid: Grid = Grid(0, 0),
+                      var bag: Bag = Bag("Bag"),
+                      var curHeight: Int = 0,
+                      var players: Players = Players(),
+                      var gameState: GameState = Prepare(this),
+                      var lastCells: mutable.Stack[(Int, Int)] = mutable.Stack(),
+                      var undoStack: mutable.Stack[Command] = mutable.Stack(),
+                      var redoStack: mutable.Stack[Command] = mutable.Stack(),
+                      var message: String = "Welcome to SevenSteps"
+                     ) extends Observable {
+
+
   def prepareNewPlayer(): Unit = {
     for (_ <- getCurPlayer.getStoneNumber to 6) {
       players = players.updateCurPlayer(players.getCurPlayer.incColor(bag.pull(), 1))
@@ -26,9 +29,12 @@ case class Controller(var grid: Grid = Grid(0, 0)) extends Observable {
   def getCurPlayer: Player = {
     players.getCurPlayer
   }
-  def addPlayer(name: String): Try[String] = doIt(AddPlayer(name))
-  def newGrid(colors: String, cols: Int): Try[String] = doIt(NewGrid(colors, cols))
-  def doIt(com: Command): Try[String] = {
+  def addPlayer(name: String): Try[Controller] = doIt(AddPlayer(name))
+  def newGrid(colors: String, cols: Int): Try[Controller] = doIt(NewGrid(colors, cols))
+  def startGame(): Try[Controller] = doIt(StartGame())
+  def nextPlayer(): Try[Controller] = doIt(NextPlayer())
+  def setStone(row: Int, col: Int): Try[Controller] = doIt(SetStone(row, col))
+  def doIt(com: Command): Try[Controller] = {
     val explored = gameState.exploreCommand(com)
     explored match {
       case Success(s) => {
@@ -41,10 +47,7 @@ case class Controller(var grid: Grid = Grid(0, 0)) extends Observable {
     notifyObservers()
     explored
   }
-  def startGame(): Try[String] = doIt(StartGame())
-  def nextPlayer(): Try[String] = doIt(NextPlayer())
-  def setStone(row: Int, col: Int): Try[String] = doIt(SetStone(row, col))
-  def undo(): Try[String] = {
+  def undo(): Try[Controller] = {
     if (undoStack.nonEmpty) {
       val temp = undoStack.pop()
       val temp2 = temp.undo(this)
@@ -62,7 +65,7 @@ case class Controller(var grid: Grid = Grid(0, 0)) extends Observable {
       Failure(new Exception(message))
     }
   }
-  def redo(): Try[String] = {
+  def redo(): Try[Controller] = {
     if (redoStack.nonEmpty) {
       val temp = redoStack.pop()
       val temp2 = temp.doIt(this)
@@ -89,37 +92,41 @@ case class Controller(var grid: Grid = Grid(0, 0)) extends Observable {
 
 // ##################### Controller Commands #######################
 trait Command {
-  def doIt(c: Controller): Try[String]
-  def undo(c: Controller): Try[String]
+  def doIt(c: Controller): Try[Controller]
+  def undo(c: Controller): Try[Controller]
 }
 
-case class AddPlayer(name: String) extends Command {
+case class AddPlayer(name: Controller) extends Command {
   val player = Player(name)
-  override def doIt(c: Controller): Success[String] = {
+  override def doIt(c: Controller): Success[Controller] = {
     c.players = c.players.push(player)
-    Success("Added Player " + name)
+    c.message = "Added Player " + name
+    Success(c)
   }
-  override def undo(c: Controller): Try[String] = {
+  override def undo(c: Controller): Try[Controller] = {
     c.players = c.players.pop()
-    Success("Deleted Player")
+    c.message = "Deleted Player"
+    Success(c)
   }
 }
 
 case class NewGrid(colors: String, cols: Int) extends Command {
   var oldGrid: Grid = _
-  override def doIt(c: Controller): Try[String] = {
+  override def doIt(c: Controller): Try[Controller] = {
     oldGrid = c.grid
     c.grid = new Grid(colors, cols)
-    Success("Build new Grid")
+    c.message = "Build new Grid"
+    Success(c)
   }
-  override def undo(c: Controller): Try[String] = {
+  override def undo(c: Controller): Try[Controller] = {
     c.grid = oldGrid
-    Success("Deleted new Grid")
+    c.message = "Deleted new Grid"
+    Success(c)
   }
 }
 
 case class StartGame() extends Command {
-  override def doIt(c: Controller): Try[String] = {
+  override def doIt(c: Controller): Try[Controller] = {
     if (c.players.nonEmpty && c.grid.nonEmpty) {
       c.gameState = Play(c)
       val colors = c.grid.getColors
@@ -132,26 +139,26 @@ case class StartGame() extends Command {
       Failure(new Exception("Can't start the game: Not enough Players"))
     }
   }
-  override def undo(c: Controller): Try[String] = {
+  override def undo(c: Controller): Try[Controller] = {
     c.undoStack.clear()
     Failure(new Exception("You can't undo the start of the game!"))
   }
 }
 
 case class NextPlayer() extends Command {
-  override def doIt(c: Controller): Try[String] = {
+  override def doIt(c: Controller): Try[Controller] = {
     c.players = c.players.next()
     c.prepareNewPlayer()
     Success("Player " + c.getCurPlayer.name + " it is your turn!")
   }
-  override def undo(c: Controller): Try[String] = {
+  override def undo(c: Controller): Try[Controller] = {
     c.undoStack.clear()
     Failure(new Exception("You can't undo to previous player!"))
   }
 }
 
 case class SetStone(row: Int, col: Int) extends Command {
-  override def doIt(c: Controller): Try[String] = {
+  override def doIt(c: Controller): Try[Controller] = {
     c.grid.cell(row, col) match {
       case Failure(_) => Failure(new Exception("You have to set a Stone on height " + (c.curHeight - 1) + " or " + c.curHeight))
       case Success(cell) =>
@@ -181,7 +188,7 @@ case class SetStone(row: Int, col: Int) extends Command {
     }
   }
   def isNeighbour(row: Int, col: Int, c: Controller): Boolean = (math.abs(row - c.lastCells.head._1) + math.abs(col - c.lastCells.head._2)) == 1
-  override def undo(c: Controller): Try[String] = {
+  override def undo(c: Controller): Try[Controller] = {
     val cell = c.grid.cell(row, col).get
     c.grid = c.grid.set(row, col, cell.height - 1)
     c.players = c.players.updateCurPlayer(c.players.getCurPlayer.incPoints(-cell.height).incColor(cell.color, +1))
@@ -193,11 +200,11 @@ case class SetStone(row: Int, col: Int) extends Command {
 
 // ##################### Finite State Machine #######################
 trait GameState {
-  def exploreCommand(com: Command): Try[String]
+  def exploreCommand(com: Command): Try[Controller]
 }
 
 case class Prepare(c: Controller) extends GameState {
-  override def exploreCommand(com: Command): Try[String] = {
+  override def exploreCommand(com: Command): Try[Controller] = {
     com match {
       case command: AddPlayer => command.doIt(c)
       case command: NewGrid => command.doIt(c)
@@ -208,7 +215,7 @@ case class Prepare(c: Controller) extends GameState {
 }
 
 case class Play(c: Controller) extends GameState {
-  override def exploreCommand(com: Command): Try[String] = {
+  override def exploreCommand(com: Command): Try[Controller] = {
     com match {
       case command: NextPlayer => command.doIt(c)
       case command: SetStone => command.doIt(c)
