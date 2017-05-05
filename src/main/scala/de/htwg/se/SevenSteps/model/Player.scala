@@ -1,6 +1,7 @@
 package de.htwg.se.SevenSteps.model
 
 import scala.collection.immutable.Map
+import scala.util.{Failure, Success, Try}
 
 case class Players(curPlayer: Int = 0, players: Vector[Player] = Vector()) {
   def push(player: Player): Players = {
@@ -50,37 +51,66 @@ case class Players(curPlayer: Int = 0, players: Vector[Player] = Vector()) {
   }
 }
 
-case class Player(name: String, points: Int = 0, map: Map[Char, Int] = Map[Char, Int]()) {
+case class Player(name: String, points: Int = 0, map: Option[Map[Char, Int]] = None) {
   def setColors(colors: List[Char]): Player = {
     var newMap: Map[Char, Int] = Map()
     for ((c) <- colors) {
       newMap = newMap + (c -> 0)
     }
-    copy(map = newMap)
+    copy(map = Some(newMap))
   }
   def setStones(num: Int): Player = {
-    var newMap: Map[Char, Int] = Map()
-    for ((k, _) <- map) {
-      newMap = newMap + (k -> num)
+    map match {
+      case None    => this
+      case Some(m) =>
+        var newMap: Map[Char, Int] = Map()
+        for ((k, _) <- m) {
+          newMap = newMap + (k -> num)
+        }
+        copy(map = Some(newMap))
     }
-    copy(map = newMap)
+
   }
   def incPoints(delta: Int): Player = {
     copy(points = points + delta)
   }
   def incColor(color: Char, delta: Int): Player = {
-    copy(map = map.updated(color, map(color) + delta))
+    map match {
+      case None => this
+      case Some(m) => copy(map = Some(m.updated(color, m(color) + delta)))
+    }
   }
   def getStoneNumber: Int = {
-    var num = 0
-    for ((_, v) <- map) num += v
-    num
+    map match {
+      case None => 0
+      case Some(m) =>
+        var num = 0
+        for ((_, v) <- m) num += v
+        num
+    }
+
+  }
+  def placeStone(color: Char,height:Int): Try[Player] = {
+    map match {
+      case None => Failure(new Exception("You can't place here!"))
+      case Some(m) =>
+        m.get(color) match {
+          case None => Failure(new Exception("You can't place here!"))
+          case Some(0) => Failure(new Exception("You don't have Stones from color '" + color + "'"))
+          case Some(_) => Success(incPoints(height + 1).incColor(color, -1))
+    }
+  }
+
   }
   override def toString: String = {
     val sb = new StringBuilder
     sb.append(name + ": ")
-    for ((k, v) <- map) {
-      sb.append(k + "=" + v + ", ")
+    map match {
+      case None =>
+      case Some(m) =>
+        for ((k, v) <- m) {
+          sb.append(k + "=" + v + ", ")
+        }
     }
     sb.append("Points=" + points)
     sb.toString()

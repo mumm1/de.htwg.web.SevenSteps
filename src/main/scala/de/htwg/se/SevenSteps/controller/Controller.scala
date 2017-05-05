@@ -162,30 +162,27 @@ case class SetStone(row: Int, col: Int) extends Command {
   override def doIt(c: Controller): Try[Controller] = {
     c.grid.cell(row, col) match {
       case Failure(_) => Failure(new Exception("You have to set a Stone on height " + (c.curHeight - 1) + " or " + c.curHeight))
-      case Success(cell) =>
-        if (c.lastCells.nonEmpty) {
-          if (!isNeighbour(row, col, c)) {
-            return Failure(new Exception("You have to set a Stone neighboring to the last Stone!"))
-          }
+      case Success(cell) => if (c.lastCells.nonEmpty) {
+        if (!isNeighbour(row, col, c)) {
+          return Failure(new Exception("You have to set a Stone neighboring to the last Stone!"))
         }
+      }
         if (c.lastCells.contains((row, col))) {
           return Failure(new Exception("You can't set on a cell twice!"))
         }
-        c.getCurPlayer.map.get(cell.color) match {
-          case None => Failure(new Exception("You can't place here!"))
-          case Some(0) => Failure(new Exception("You don't have Stones from color '" + cell.color + "'"))
-          case Some(_) =>
-            val dif = c.curHeight - cell.height
-            if (dif == 0 | dif == 1) {
-              c.grid = c.grid.set(row, col, cell.height + 1)
-              c.players = c.players.updateCurPlayer(c.players.getCurPlayer.incPoints(cell.height + 1).incColor(cell.color, -1))
+        val dif = c.curHeight - cell.height
+        if (dif == 0 | dif == 1) {
+          c.getCurPlayer.placeStone(cell.color, cell.height) match {
+            case Failure(e) => Failure(e)
+            case Success(player) => c.grid = c.grid.set(row, col, cell.height + 1)
+              c.players = c.players.updateCurPlayer(player)
               c.curHeight = cell.height + 1
               c.lastCells.push((row, col))
               c.message = "You set a stone"
               Success(c)
-            } else {
-              Failure(new Exception("You have to set a Stone on height " + (c.curHeight - 1) + " or " + c.curHeight))
-            }
+          }
+        } else {
+          Failure(new Exception("You have to set a Stone on height " + (c.curHeight - 1) + " or " + c.curHeight))
         }
     }
   }
