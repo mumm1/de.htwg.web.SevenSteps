@@ -1,6 +1,6 @@
 package de.htwg.se.SevenSteps.controller
 
-import de.htwg.se.SevenSteps.model.{Grid, Player}
+import de.htwg.se.SevenSteps.model.{Cell, Grid, Player}
 import de.htwg.se.SevenSteps.util.Command
 
 import scala.util.{Failure, Success, Try}
@@ -70,17 +70,11 @@ case class NextPlayer(c: Controller) extends Command {
 }
 
 case class SetStone(row: Int, col: Int, c: Controller) extends Command {
+
   override def doIt(): Try[_] = {
-    c.grid.cell(row, col) match {
-      case Failure(_) => Failure(new Exception("You have to set a Stone on height " + (c.curHeight - 1) + " or " + c.curHeight))
-      case Success(cell) => if (c.lastCells.nonEmpty) {
-        if (!isNeighbour(row, col, c)) {
-          return Failure(new Exception("You have to set a Stone neighboring to the last Stone!"))
-        }
-      }
-        if (c.lastCells.contains((row, col))) {
-          return Failure(new Exception("You can't set on a cell twice!"))
-        }
+    isCellLegal() match {
+      case Failure(e) => Failure(e)
+      case Success(cell) =>
         val dif = c.curHeight - cell.height
         if (dif == 0 | dif == 1) {
           c.getCurPlayer.placeStone(cell.color, cell.height) match {
@@ -94,6 +88,23 @@ case class SetStone(row: Int, col: Int, c: Controller) extends Command {
           }
         } else {
           Failure(new Exception("You have to set a Stone on height " + (c.curHeight - 1) + " or " + c.curHeight))
+        }
+    }
+  }
+  def isCellLegal(): Try[Cell] = {
+    c.grid.cell(row, col) match {
+      case Failure(_) => Failure(new Exception("You have to set a stone inside the grid"))
+      case Success(cell) =>
+        if (c.lastCells.nonEmpty && !isNeighbour(row, col, c)) {
+          Failure(new Exception("You have to set a Stone neighboring to the last Stone!"))
+        }
+        else {
+          if (c.lastCells.contains((row, col))) {
+            Failure(new Exception("You can't set on a cell twice!"))
+          }
+          else {
+            Success(cell)
+          }
         }
     }
   }
