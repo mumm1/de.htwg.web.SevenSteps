@@ -29,11 +29,8 @@ case class Controller(var grid: Grid = Grid(0, 0),
   def getCurPlayer: Player = {
     players.getCurPlayer
   }
-  def addPlayer(name: String): Try[Controller] = doIt(AddPlayer(name))
-  def newGrid(colors: String, cols: Int): Try[Controller] = doIt(NewGrid(colors, cols))
-  def startGame(): Try[Controller] = doIt(StartGame())
-  def nextPlayer(): Try[Controller] = doIt(NextPlayer())
-  def doIt(com: Command): Try[Controller] = {
+  def addPlayer(name: String): Try[_] = doIt(AddPlayer(name, this))
+  def doIt(com: Command): Try[_] = {
     val explored = gameState.exploreCommand(com)
     explored match {
       case Success(_) =>
@@ -44,11 +41,14 @@ case class Controller(var grid: Grid = Grid(0, 0),
     notifyObservers()
     explored
   }
-  def setStone(row: Int, col: Int): Try[Controller] = doIt(SetStone(row, col))
-  def undo(): Try[Controller] = {
+  def newGrid(colors: String, cols: Int): Try[_] = doIt(NewGrid(colors, cols, this))
+  def startGame(): Try[_] = doIt(StartGame(this))
+  def nextPlayer(): Try[_] = doIt(NextPlayer(this))
+  def setStone(row: Int, col: Int): Try[_] = doIt(SetStone(row, col, this))
+  def undo(): Try[_] = {
     if (undoStack.nonEmpty) {
       val temp = undoStack.pop()
-      val temp2 = temp.undo(this)
+      val temp2 = temp.undo()
       temp2 match {
         case Success(_) =>
           message = "Undo: " + message
@@ -62,10 +62,10 @@ case class Controller(var grid: Grid = Grid(0, 0),
       Failure(new Exception(message))
     }
   }
-  def redo(): Try[Controller] = {
+  def redo(): Try[_] = {
     if (redoStack.nonEmpty) {
       val temp = redoStack.pop()
-      val temp2 = temp.doIt(this)
+      val temp2 = temp.doIt()
       temp2 match {
         case Success(s) =>
           message = "Redo: " + s
@@ -88,41 +88,41 @@ case class Controller(var grid: Grid = Grid(0, 0),
 
 // ##################### Controller Commands #######################
 trait Command {
-  def doIt(c: Controller): Try[Controller]
-  def undo(c: Controller): Try[Controller]
+  def doIt(): Try[_]
+  def undo(): Try[_]
 }
 
-case class AddPlayer(name: String) extends Command {
+case class AddPlayer(name: String, c: Controller) extends Command {
   val player = Player(name)
-  override def doIt(c: Controller): Success[Controller] = {
+  override def doIt(): Try[_] = {
     c.players = c.players.push(player)
     c.message = "Added Player " + name
-    Success(c)
+    Success()
   }
-  override def undo(c: Controller): Try[Controller] = {
+  override def undo(): Try[_] = {
     c.players = c.players.pop()
     c.message = "Deleted Player"
-    Success(c)
+    Success()
   }
 }
 
-case class NewGrid(colors: String, cols: Int) extends Command {
-  var oldGrid: Grid = _
-  override def doIt(c: Controller): Try[Controller] = {
+case class NewGrid(colors: String, cols: Int, c: Controller) extends Command {
+  var oldGrid: Grid = c.grid
+  override def doIt(): Try[_] = {
     oldGrid = c.grid
     c.grid = new Grid(colors, cols)
     c.message = "Build new Grid"
-    Success(c)
+    Success()
   }
-  override def undo(c: Controller): Try[Controller] = {
+  override def undo(): Try[_] = {
     c.grid = oldGrid
     c.message = "Deleted new Grid"
-    Success(c)
+    Success()
   }
 }
 
-case class StartGame() extends Command {
-  override def doIt(c: Controller): Try[Controller] = {
+case class StartGame(c: Controller) extends Command {
+  override def doIt(): Try[_] = {
     if (c.players.nonEmpty && c.grid.nonEmpty) {
       c.gameState = Play(c)
       val colors = c.grid.getColors
@@ -131,32 +131,32 @@ case class StartGame() extends Command {
       c.bag.fillup()
       c.prepareNewPlayer()
       c.message = "Started the game"
-      Success(c)
+      Success()
     } else {
       Failure(new Exception("Can't start the game: Not enough Players"))
     }
   }
-  override def undo(c: Controller): Try[Controller] = {
+  override def undo(): Try[_] = {
     c.undoStack.clear()
     Failure(new Exception("You can't undo the start of the game!"))
   }
 }
 
-case class NextPlayer() extends Command {
-  override def doIt(c: Controller): Try[Controller] = {
+case class NextPlayer(c: Controller) extends Command {
+  override def doIt(): Try[_] = {
     c.players = c.players.next()
     c.prepareNewPlayer()
     c.message = "Player " + c.getCurPlayer.name + " it is your turn!"
-    Success(c)
+    Success()
   }
-  override def undo(c: Controller): Try[Controller] = {
+  override def undo(): Try[_] = {
     c.undoStack.clear()
     Failure(new Exception("You can't undo to previous player!"))
   }
 }
 
-case class SetStone(row: Int, col: Int) extends Command {
-  override def doIt(c: Controller): Try[Controller] = {
+case class SetStone(row: Int, col: Int, c: Controller) extends Command {
+  override def doIt(): Try[_] = {
     c.grid.cell(row, col) match {
       case Failure(_) => Failure(new Exception("You have to set a Stone on height " + (c.curHeight - 1) + " or " + c.curHeight))
       case Success(cell) => if (c.lastCells.nonEmpty) {
@@ -176,7 +176,7 @@ case class SetStone(row: Int, col: Int) extends Command {
               c.curHeight = cell.height + 1
               c.lastCells.push((row, col))
               c.message = "You set a stone"
-              Success(c)
+              Success()
           }
         } else {
           Failure(new Exception("You have to set a Stone on height " + (c.curHeight - 1) + " or " + c.curHeight))
@@ -184,38 +184,38 @@ case class SetStone(row: Int, col: Int) extends Command {
     }
   }
   def isNeighbour(row: Int, col: Int, c: Controller): Boolean = (math.abs(row - c.lastCells.head._1) + math.abs(col - c.lastCells.head._2)) == 1
-  override def undo(c: Controller): Try[Controller] = {
+  override def undo(): Try[_] = {
     val cell = c.grid.cell(row, col).get
     c.grid = c.grid.set(row, col, cell.height - 1)
     c.players = c.players.updateCurPlayer(c.players.getCurPlayer.incPoints(-cell.height).incColor(cell.color, +1))
     c.curHeight = cell.height - 1
     c.lastCells.pop()
     c.message = "Take the Stone"
-    Success(c)
+    Success()
   }
 }
 
 // ##################### Finite State Machine #######################
 trait GameState {
-  def exploreCommand(com: Command): Try[Controller]
+  def exploreCommand(com: Command): Try[_]
 }
 
 case class Prepare(c: Controller) extends GameState {
-  override def exploreCommand(com: Command): Try[Controller] = {
+  override def exploreCommand(com: Command): Try[_] = {
     com match {
-      case command: AddPlayer => command.doIt(c)
-      case command: NewGrid => command.doIt(c)
-      case command: StartGame => command.doIt(c)
+      case command: AddPlayer => command.doIt()
+      case command: NewGrid => command.doIt()
+      case command: StartGame => command.doIt()
       case _ => Failure(new Exception("ILLEGAL COMMAND"))
     }
   }
 }
 
 case class Play(c: Controller) extends GameState {
-  override def exploreCommand(com: Command): Try[Controller] = {
+  override def exploreCommand(com: Command): Try[_] = {
     com match {
-      case command: NextPlayer => command.doIt(c)
-      case command: SetStone => command.doIt(c)
+      case command: NextPlayer => command.doIt()
+      case command: SetStone => command.doIt()
       case _ => Failure(new Exception("ILLEGAL COMMAND"))
     }
   }
