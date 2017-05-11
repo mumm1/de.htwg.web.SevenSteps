@@ -45,16 +45,21 @@ case class Controller(var grid: Grid = Grid(0, 0),
   def setStone(row: Int, col: Int): Try[Controller] = doIt(SetStone(row, col, this))
   def undo(): Try[Controller] = {
     val result = undoManager.undo()
+    result match {
+      case Failure(e) => message = e.getMessage
+      case _ =>
+    }
     notifyObservers()
     wrapController(result)
   }
   def redo(): Try[Controller] = {
     val result = undoManager.redo()
+    result match {
+      case Failure(e) => message = e.getMessage
+      case _ =>
+    }
     notifyObservers()
     wrapController(result)
-  }
-  def clearUndoStack(): Unit = {
-    undoManager.clearUndoStack()
   }
   override def toString: String = {
     val text = "\n############  " + message + "  ############\n\n"

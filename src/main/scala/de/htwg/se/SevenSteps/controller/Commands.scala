@@ -15,7 +15,7 @@ case class AddPlayer(name: String, c: Controller) extends Command {
   }
   override def undo(): Try[_] = {
     c.players = c.players.pop()
-    c.message = "Deleted Player"
+    c.message = "Deleted Player " + name
     Success()
   }
 }
@@ -51,7 +51,7 @@ case class StartGame(c: Controller) extends Command {
     }
   }
   override def undo(): Try[_] = {
-    c.clearUndoStack()
+    c.undoManager.clearUndoStack()
     Failure(new Exception("You can't undo the start of the game!"))
   }
 }
@@ -64,7 +64,7 @@ case class NextPlayer(c: Controller) extends Command {
     Success()
   }
   override def undo(): Try[_] = {
-    c.clearUndoStack()
+    c.undoManager.clearUndoStack()
     Failure(new Exception("You can't undo to previous player!"))
   }
 }
@@ -104,7 +104,7 @@ case class SetStone(row: Int, col: Int, c: Controller) extends Command {
     c.players = c.players.updateCurPlayer(c.players.getCurPlayer.incPoints(-cell.height).incColor(cell.color, +1))
     c.curHeight = cell.height - 1
     c.lastCells.pop()
-    c.message = "Take the Stone"
+    c.message = "You take the Stone back"
     Success()
   }
 }

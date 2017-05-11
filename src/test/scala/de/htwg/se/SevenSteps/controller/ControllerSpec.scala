@@ -1,6 +1,6 @@
 package de.htwg.se.SevenSteps.controller
 
-import de.htwg.se.SevenSteps.model.{Player, Players}
+import de.htwg.se.SevenSteps.model.Players
 import de.htwg.se.SevenSteps.util.Observer
 import org.junit.runner.RunWith
 import org.scalatest.Matchers.{be, _}
@@ -27,7 +27,7 @@ class ControllerSpec extends WordSpec {
       before(Prepare(c))
       c.addPlayer("Hugo").isSuccess should be(true)
       c.addPlayer("Peter").get should be(c.copy(players = Players().push("Hugo").push("Peter"), message = "Added Player Peter"))
-      c.undo().get should be(c.copy(players = Players(0, Vector(Player("Hugo"))), message = "Deleted Player"))
+      c.undo().get should be(c.copy(players = Players().push("Hugo"), message = "Deleted Player Peter"))
     }
     "generate a new Grid and undo this" in {
       before(Prepare(c))
