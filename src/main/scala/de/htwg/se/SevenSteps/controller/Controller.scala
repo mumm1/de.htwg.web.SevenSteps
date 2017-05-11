@@ -14,7 +14,6 @@ case class Controller(var grid: Grid = Grid(0, 0),
                       var lastCells: mutable.Stack[(Int, Int)] = mutable.Stack(),
                       var undoStack: mutable.Stack[Command] = mutable.Stack(),
                       var redoStack: mutable.Stack[Command] = mutable.Stack(),
-                      var language: Translator = dictEnEn,
                       var message: String = "Welcome to SevenSteps"
                      ) extends Observable {
   var gameState: GameState = Prepare(this)
@@ -32,6 +31,8 @@ case class Controller(var grid: Grid = Grid(0, 0),
   }
   def addPlayer(name: String): Try[Controller] = doIt(AddPlayer(name))
   def newGrid(colors: String, cols: Int): Try[Controller] = doIt(NewGrid(colors, cols))
+  def startGame(): Try[Controller] = doIt(StartGame())
+  def nextPlayer(): Try[Controller] = doIt(NextPlayer())
   def doIt(com: Command): Try[Controller] = {
     val explored = gameState.exploreCommand(com)
     explored match {
@@ -43,8 +44,6 @@ case class Controller(var grid: Grid = Grid(0, 0),
     notifyObservers()
     explored
   }
-  def startGame(): Try[Controller] = doIt(StartGame())
-  def nextPlayer(): Try[Controller] = doIt(NextPlayer())
   def setStone(row: Int, col: Int): Try[Controller] = doIt(SetStone(row, col))
   def undo(): Try[Controller] = {
     if (undoStack.nonEmpty) {
@@ -93,7 +92,7 @@ trait Command {
   def undo(c: Controller): Try[Controller]
 }
 
-case class AddPlayer(name: String) extends Command with Translatable {
+case class AddPlayer(name: String) extends Command {
   val player = Player(name)
   override def doIt(c: Controller): Success[Controller] = {
     c.players = c.players.push(player)
@@ -104,9 +103,6 @@ case class AddPlayer(name: String) extends Command with Translatable {
     c.players = c.players.pop()
     c.message = "Deleted Player"
     Success(c)
-  }
-  override def translate(trans: Translator): String = {
-    trans.translate("addPlayer") + name
   }
 }
 
