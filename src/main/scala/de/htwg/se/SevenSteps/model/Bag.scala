@@ -27,8 +27,19 @@ case class Bag(var bag: Array[Char] = new Array[Char](0),
     bag2(bag2.length - 1) = x
     bag = bag2
   }
-
-  def get(): Char = { //Zieht ein Objekt aus dem Pool
+  def get(m: Int): Option[Array[Char]] = { //Zieht eine vorgegebene Anzahl von Objekten aus dem Pool
+    var bag3 = new Array[Char](m)
+    var i = 0
+    while (i < m) {
+      get() match {
+        case Some(col: Char) => bag3(i) = col
+        case None => return None
+      }
+      i += 1
+    }
+    Some(bag3) //Rückgabe des Arrays mit den gezogenen Werten
+  }
+  def get(): Option[Char] = { //Zieht ein Objekt aus dem Pool
 
     var rand  = 0.35
     if (random)
@@ -45,20 +56,8 @@ case class Bag(var bag: Array[Char] = new Array[Char](0),
       bag(gezogen) = bag(bag.length - (entfernt + 1)) //vertauschen
       bag(bag.length - entfernt - 1) = tmp
       entfernt += 1
-      Ausgabe //gezogenen Wert Ausgeben
+      Some(Ausgabe) //gezogenen Wert Ausgeben
     }
-    else '$'
-  }
-
-
-
-  def get(m: Int): Array[Char] = { //Zieht eine vorgegebene Anzahl von Objekten aus dem Pool
-    var bag3 = new Array[Char](m)
-    var i = 0
-    while (i < m){
-      bag3(i) = get()
-      i += 1
-    }
-    bag3 //Rückgabe des Arrays mit den gezogenen Werten
+    else None
   }
 }
