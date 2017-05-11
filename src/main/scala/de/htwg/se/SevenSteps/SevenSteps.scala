@@ -5,7 +5,7 @@ import de.htwg.se.SevennSteps.aview.tui._
 
 import scala.io.StdIn.readLine
 
-object Hello {
+object SevenSteps {
   def main(args: Array[String]): Unit = {
     val con = Controller()
     val tui = new Tui(con)

@@ -31,10 +31,7 @@ case class Controller(var grid: Grid = Grid(0, 0),
   def newGrid(colors: String, cols: Int): Try[Controller] = doIt(NewGrid(colors, cols, this))
   def startGame(): Try[Controller] = doIt(StartGame(this))
   def doIt(command: Command): Try[Controller] = {
-    val e = gameState.exploreCommand(command)
-    if (e.isFailure)
-      return wrapController(e)
-    val result = undoManager.doIt(command)
+    val result = gameState.exploreCommand(command)
     notifyObservers()
     wrapController(result)
   }
@@ -63,32 +60,6 @@ case class Controller(var grid: Grid = Grid(0, 0),
     val text = "\n############  " + message + "  ############\n\n"
     val len = text.length()
     text + players.toString() + grid.toString() + "#" * (len - 2) + "\n"
-  }
-}
-
-// ##################### Finite State Machine #######################
-trait GameState {
-  def exploreCommand(com: Command): Try[_]
-}
-
-case class Prepare(c: Controller) extends GameState {
-  override def exploreCommand(com: Command): Try[_] = {
-    com match {
-      case command: AddPlayer => Success()
-      case command: NewGrid => Success()
-      case command: StartGame => Success()
-      case _ => Failure(new Exception("ILLEGAL COMMAND"))
-    }
-  }
-}
-
-case class Play(c: Controller) extends GameState {
-  override def exploreCommand(com: Command): Try[_] = {
-    com match {
-      case command: NextPlayer => Success()
-      case command: SetStone => Success()
-      case _ => Failure(new Exception("ILLEGAL COMMAND"))
-    }
   }
 }
 
