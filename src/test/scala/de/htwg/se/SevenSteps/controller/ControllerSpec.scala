@@ -26,10 +26,8 @@ class ControllerSpec extends WordSpec {
     "add Players and undo this" in {
       before(Prepare(c))
       c.addPlayer("Hugo").isSuccess should be(true)
-      c.addPlayer("Peter")
-      c should be(c.copy(players = Players().push("Hugo").push("Peter"), message = "Added Player Peter"))
-      c.undo()
-      c should be(c.copy(players = Players(0, Vector(Player("Hugo"))), message = "Undo: Deleted Player"))
+      c.addPlayer("Peter").get should be(c.copy(players = Players().push("Hugo").push("Peter"), message = "Added Player Peter"))
+      c.undo().get should be(c.copy(players = Players(0, Vector(Player("Hugo"))), message = "Undo: Deleted Player"))
     }
     "generate a new Grid and undo this" in {
       before(Prepare(c))

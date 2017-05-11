@@ -29,8 +29,8 @@ case class Controller(var grid: Grid = Grid(0, 0),
   def getCurPlayer: Player = {
     players.getCurPlayer
   }
-  def addPlayer(name: String): Try[_] = doIt(AddPlayer(name, this))
-  def doIt(com: Command): Try[_] = {
+  def addPlayer(name: String): Try[Controller] = doIt(AddPlayer(name, this))
+  def doIt(com: Command): Try[Controller] = {
     val explored = gameState.exploreCommand(com)
     explored match {
       case Success(_) =>
@@ -39,13 +39,19 @@ case class Controller(var grid: Grid = Grid(0, 0),
       case Failure(e) => message = e.getMessage
     }
     notifyObservers()
-    explored
+    wrapController(explored)
   }
-  def newGrid(colors: String, cols: Int): Try[_] = doIt(NewGrid(colors, cols, this))
-  def startGame(): Try[_] = doIt(StartGame(this))
-  def nextPlayer(): Try[_] = doIt(NextPlayer(this))
-  def setStone(row: Int, col: Int): Try[_] = doIt(SetStone(row, col, this))
-  def undo(): Try[_] = {
+  def wrapController(t: Try[_]): Try[Controller] = {
+    t match {
+      case Success(_) => Success(this)
+      case Failure(e) => Failure(e)
+    }
+  }
+  def newGrid(colors: String, cols: Int): Try[Controller] = doIt(NewGrid(colors, cols, this))
+  def startGame(): Try[Controller] = doIt(StartGame(this))
+  def nextPlayer(): Try[Controller] = doIt(NextPlayer(this))
+  def setStone(row: Int, col: Int): Try[Controller] = doIt(SetStone(row, col, this))
+  def undo(): Try[Controller] = {
     if (undoStack.nonEmpty) {
       val temp = undoStack.pop()
       val temp2 = temp.undo()
@@ -56,13 +62,13 @@ case class Controller(var grid: Grid = Grid(0, 0),
         case Failure(e) => message = e.getMessage
       }
       notifyObservers()
-      temp2
+      wrapController(temp2)
     } else {
       message = "Can't undo now!"
       Failure(new Exception(message))
     }
   }
-  def redo(): Try[_] = {
+  def redo(): Try[Controller] = {
     if (redoStack.nonEmpty) {
       val temp = redoStack.pop()
       val temp2 = temp.doIt()
@@ -73,7 +79,7 @@ case class Controller(var grid: Grid = Grid(0, 0),
         case Failure(e) => message = e.getMessage
       }
       notifyObservers()
-      temp2
+      wrapController(temp2)
     } else {
       message = "Can't redo now!"
       Failure(new Exception(message))
