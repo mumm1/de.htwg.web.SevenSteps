@@ -102,10 +102,7 @@ case class Player(name: String, points: Int = 0, map: Option[Map[Char, Int]] = N
   def incColor(color: Char, delta: Int): Player = {
     map match {
       case None => this
-      case Some(m) =>
-        if(color != '$'){ copy(map = Some(m.updated(color, m(color) + delta)))}
-        else this
-
+      case Some(m) => copy(map = Some(m.updated(color, m(color) + delta)))
     }
   }
   override def toString: String = {

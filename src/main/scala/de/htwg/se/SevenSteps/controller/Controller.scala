@@ -19,7 +19,10 @@ case class Controller(var grid: Grid = Grid(0, 0),
 
   def prepareNewPlayer(): Unit = {
     for (_ <- getCurPlayer.getStoneNumber to 6) {
-      players = players.updateCurPlayer(players.getCurPlayer.incColor(bag.get(), 1))
+      bag.get() match {
+        case Some(col: Char) => players = players.updateCurPlayer(players.getCurPlayer.incColor(col, 1))
+        case None =>
+      }
     }
     curHeight = 0
     lastCells.clear()
