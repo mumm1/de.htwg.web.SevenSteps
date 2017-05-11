@@ -132,7 +132,6 @@ class BagSpecs extends WordSpec {
   "A bag with a color List" should {
     val bag2 =  Bag(random = false, colors = List('a'))
 
-
     "have 7 stones"in {
       bag2.fillup()
       bag2.bag.length should be (7)
@@ -144,7 +143,6 @@ class BagSpecs extends WordSpec {
   }
   "A bag with a color List and random" should {
     val bag2 = Bag(random = true, colors = List('a'))
-
 
     "have 7 stones"in {
       bag2.fillup()
