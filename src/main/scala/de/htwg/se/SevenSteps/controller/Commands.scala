@@ -2,11 +2,13 @@ package de.htwg.se.SevenSteps.controller
 
 import de.htwg.se.SevenSteps.model.{Grid, Player}
 import de.htwg.se.SevenSteps.util.Command
+
 import scala.util.{Failure, Success, Try}
 
 case class AddPlayer(name: String, c: Controller) extends Command {
   val player = Player(name)
   override def doIt(): Try[_] = {
+
     c.players = c.players.push(player)
     c.message = "Added Player " + name
     Success()
@@ -49,7 +51,7 @@ case class StartGame(c: Controller) extends Command {
     }
   }
   override def undo(): Try[_] = {
-    c.undoStack.clear()
+    c.clearUndoStack()
     Failure(new Exception("You can't undo the start of the game!"))
   }
 }
@@ -62,7 +64,7 @@ case class NextPlayer(c: Controller) extends Command {
     Success()
   }
   override def undo(): Try[_] = {
-    c.undoStack.clear()
+    c.clearUndoStack()
     Failure(new Exception("You can't undo to previous player!"))
   }
 }
