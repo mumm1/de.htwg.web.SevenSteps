@@ -8,7 +8,7 @@ import scala.collection.mutable
 import scala.util._
 
 case class Controller(var grid: Grid = Grid(0, 0),
-                      var bag: Bag = Bag("Bag"),
+                      var bag: Bag = Bag(random = false),
                       var curHeight: Int = 0,
                       var players: Players = Players(),
                       var lastCells: mutable.Stack[(Int, Int)] = mutable.Stack(),
@@ -19,7 +19,7 @@ case class Controller(var grid: Grid = Grid(0, 0),
 
   def prepareNewPlayer(): Unit = {
     for (_ <- getCurPlayer.getStoneNumber to 6) {
-      players = players.updateCurPlayer(players.getCurPlayer.incColor(bag.pull(), 1))
+      players = players.updateCurPlayer(players.getCurPlayer.incColor(bag.get(), 1))
     }
     curHeight = 0
     lastCells.clear()
