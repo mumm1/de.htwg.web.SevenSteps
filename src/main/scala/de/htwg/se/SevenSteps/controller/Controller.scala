@@ -19,7 +19,10 @@ case class Controller(var grid: Grid = Grid(0, 0),
 
   def prepareNewPlayer(): Unit = {
     for (_ <- getCurPlayer.getStoneNumber to 6) {
-      players = players.updateCurPlayer(players.getCurPlayer.incColor(bag.get(), 1))
+      bag.get() match {
+        case Some(col: Char) => players = players.updateCurPlayer(players.getCurPlayer.incColor(col, 1))
+        case None =>
+      }
     }
     curHeight = 0
     lastCells.clear()
@@ -30,19 +33,13 @@ case class Controller(var grid: Grid = Grid(0, 0),
   def addPlayer(name: String): Try[Controller] = doIt(AddPlayer(name, this))
   def newGrid(colors: String, cols: Int): Try[Controller] = doIt(NewGrid(colors, cols, this))
   def startGame(): Try[Controller] = doIt(StartGame(this))
+  def nextPlayer(): Try[Controller] = doIt(NextPlayer(this))
+  def setStone(row: Int, col: Int): Try[Controller] = doIt(SetStone(row, col, this))
   def doIt(command: Command): Try[Controller] = {
     val result = gameState.exploreCommand(command)
     notifyObservers()
     wrapController(result)
   }
-  def wrapController(t: Try[_]): Try[Controller] = {
-    t match {
-      case Success(_) => Success(this)
-      case Failure(e) => Failure(e)
-    }
-  }
-  def nextPlayer(): Try[Controller] = doIt(NextPlayer(this))
-  def setStone(row: Int, col: Int): Try[Controller] = doIt(SetStone(row, col, this))
   def undo(): Try[Controller] = {
     val result = undoManager.undo()
     result match {
@@ -60,6 +57,12 @@ case class Controller(var grid: Grid = Grid(0, 0),
     }
     notifyObservers()
     wrapController(result)
+  }
+  def wrapController(t: Try[_]): Try[Controller] = {
+    t match {
+      case Success(_) => Success(this)
+      case Failure(e) => Failure(e)
+    }
   }
   override def toString: String = {
     val text = "\n############  " + message + "  ############\n\n"

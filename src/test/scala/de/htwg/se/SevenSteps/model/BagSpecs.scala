@@ -24,26 +24,26 @@ class BagSpecs extends WordSpec {
       bag2.bag should be (bag3)
     }
     "have a draw function" in {
-      bag2.get() should be ('b')
+      bag2.get() should be(Some('b'))
     }
     "have less stones after draw" in {
       bag2.bag should be (bag3_after_1draw)
     }
     "can draw 2 times" in {
-      bag2.get() should be ('a')
+      bag2.get() should be(Some('a'))
     }
     "have less stones second after second draw" in {
       bag2.bag should be (bag3_after_2draw)
     }
 
     "can draw 3 times" in {
-      bag2.get() should be ('c')
+      bag2.get() should be(Some('c'))
     }
     "have less stones second after third draw" in {
       bag2.bag should be (bag3_after_3draw)
     }
     "cant draw 4 times" in {
-      bag2.get() should be ('$')
+      bag2.get() should be(None)
     }
   }
 
@@ -53,13 +53,16 @@ class BagSpecs extends WordSpec {
     bag2.insert('b')
     bag2.insert('c')
     "have a function to draw 2 stones" in {
-      bag2.get(2) should be(Array('b', 'a'))
+      bag2.get(2) match {
+        case Some(n) => n should be(Array('b', 'a'))
+        case None =>
+      }
     }
     "can draw the last Stone" in {
-      bag2.get() should be ('c')
+      bag2.get() should be(Some('c'))
     }
     "cant draw another stone" in {
-      bag2.get() should be ('$')
+      bag2.get() should be(None)
     }
   }
 
@@ -69,10 +72,13 @@ class BagSpecs extends WordSpec {
     bag2.insert('b')
     bag2.insert('c')
     "can draw all stones" in {
-      bag2.get(3) should be(Array('b', 'a','c'))
+      bag2.get(3) match {
+        case Some(n) => n should be(Array('b', 'a', 'c'))
+        case None =>
+      }
     }
     "cant draw another stone" in {
-      bag2.get() should be ('$')
+      bag2.get() should be(None)
     }
   }
 
@@ -82,13 +88,16 @@ class BagSpecs extends WordSpec {
     bag2.insert('b')
     bag2.insert('c')
     "have a function to draw 2 stones" in {
-      bag2.get(2) should be(Array('b', 'a'))
+      bag2.get(2) match {
+        case Some(n) => n should be(Array('b', 'a'))
+        case None =>
+      }
     }
     "can draw the last Stone" in {
-      bag2.get() should be ('c')
+      bag2.get() should be(Some('c'))
     }
     "cant draw another stone" in {
-      bag2.get() should be ('$')
+      bag2.get() should be(None)
     }
   }
 
@@ -118,14 +127,17 @@ class BagSpecs extends WordSpec {
       bag2.random should be (true)
     }
     "can draw 2 stones " in {
-      bag2.get(2) should be (Array('a','a'))
+      bag2.get(2) match {
+        case Some(n) => n should be(Array('a', 'a'))
+        case None =>
+      }
     }
     "cant draw antoher stone" in {
-      bag2.get() should be ('$')
+      bag2.get() should be(None)
     }
     "can draw another stone after insert" in {
       bag2.insert('a')
-      bag2.get() should be ('a')
+      bag2.get() should be(Some('a'))
     }
   }
 
@@ -137,7 +149,10 @@ class BagSpecs extends WordSpec {
       bag2.bag.length should be (7)
     }
     "can draw 7 stones" in {
-      bag2.get(7) should be (Array('a','a','a','a','a','a','a'))
+      bag2.get(7) match {
+        case Some(n) => n should be(Array('a', 'a', 'a', 'a', 'a', 'a', 'a'))
+        case None =>
+      }
     }
 
   }
@@ -148,8 +163,10 @@ class BagSpecs extends WordSpec {
       bag2.fillup()
       bag2.bag.length should be (7)    }
     "can draw 7 stones" in {
-      bag2.get(7) should be (Array('a','a','a','a','a','a','a'))
+      bag2.get(7) match {
+        case Some(n) => n should be(Array('a', 'a', 'a', 'a', 'a', 'a', 'a'))
+        case None =>
+      }
     }
-
   }
 }
