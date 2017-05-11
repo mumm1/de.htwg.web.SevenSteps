@@ -32,6 +32,7 @@ case class Controller(var grid: Grid = Grid(0, 0),
   def startGame(): Try[Controller] = doIt(StartGame(this))
   def doIt(command: Command): Try[Controller] = {
     val result = gameState.exploreCommand(command)
+    unpackError(result)
     notifyObservers()
     wrapController(result)
   }
@@ -41,23 +42,23 @@ case class Controller(var grid: Grid = Grid(0, 0),
       case Failure(e) => Failure(e)
     }
   }
+  def unpackError(e: Try[_]): Unit = {
+    e match {
+      case Failure(e) => message = e.getMessage
+      case _ =>
+    }
+  }
   def nextPlayer(): Try[Controller] = doIt(NextPlayer(this))
   def setStone(row: Int, col: Int): Try[Controller] = doIt(SetStone(row, col, this))
   def undo(): Try[Controller] = {
     val result = undoManager.undo()
-    result match {
-      case Failure(e) => message = e.getMessage
-      case _ =>
-    }
+    unpackError(result)
     notifyObservers()
     wrapController(result)
   }
   def redo(): Try[Controller] = {
     val result = undoManager.redo()
-    result match {
-      case Failure(e) => message = e.getMessage
-      case _ =>
-    }
+    unpackError(result)
     notifyObservers()
     wrapController(result)
   }
