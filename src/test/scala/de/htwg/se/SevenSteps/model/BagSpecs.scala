@@ -8,88 +8,150 @@ import org.scalatest.junit.JUnitRunner
 import scala.collection.mutable.ListMap
 
 @RunWith(classOf[JUnitRunner])
-class BagSpec extends WordSpec {
-  "A new Bag with a name" should {
-    val bag = new Bag("Sack")
-    "have a name" in {
-      bag.name should be("Sack")
-    }
-    "have a empty stone Map" in {
-      bag.stones.isEmpty should be(true)
-    }
-    "have a empty color List" in {
-      bag.colors.isEmpty should be(true)
-    }
-  }
-  "A Bag with a color List" should {
-    var bag = new Bag("Sack")
-    bag = bag.copy(colors = List('a', 'b'))
-    "have a name" in {
-      bag.name should be("Sack")
-    }
-    "have colors" in {
-      bag.colors.apply(0) should be('a')
-      bag.colors.apply(1) should be('b')
-      bag.colors.isEmpty should be(false)
-    }
-    "have a empty stone Map" in {
-      bag.stones.isEmpty should be(true)
-    }
-  }
-  "A Bag with fillup() without colors" should {
-    var bag = new Bag("Sack")
-    bag.fillup()
-    val color_char = bag.pull()
-    "have a empty stone Map" in {
-      bag.stones.isEmpty should be(true)
-    }
-    "have a name" in {
-      bag.name should be("Sack")
-    }
-    "have  empty colors" in {
-      bag.colors.isEmpty should be(true)
-    }
-    "have a $ color char" in {
-      bag.pull() should be('$')
-    }
-  }
-  "A filled up bag with colors" should {
-    var bag = new Bag("Sack")
-    bag = bag.copy(colors = List('a'))
-    bag.fillup()
-    val color_char = bag.pull()
-    "have a stone Map with 19 stones after pull" in {
-      bag.stones.isEmpty should be(false)
-      bag.stones.apply('a') should be(19)
-    }
-    "have a name" in {
-      bag.name should be("Sack")
-    }
-    "have colors" in {
-      bag.colors.isEmpty should be(false)
-      bag.colors.apply(0) should be('a')
-    }
-    "have a $ color char" in {
-      color_char should be('a')
-    }
-  }
-  "A Bag with all" should {
-    val map = new ListMap[Char, Int]()
-    val col: List[Char] = List('b')
-    map.updated('b', 15)
-    var bag = new Bag("Sack", map, col)
-    bag.fillup()
-    //			bag = bag.copy(colors = List('a'))
-    //		bag.fillup()
-    //		val color_char = bag.pull()
+class BagSpecs extends WordSpec {
 
-    "have stones" in {
-      bag.stones.isEmpty should be(false)
-      bag.stones.apply('b') should be(20)
+  "A new Bag" should {
+    val bag2 = Bag(random = false, colors = List('a','b'))
+    val bag2_copy = bag2
+    bag2.insert('a')
+    bag2.insert('b')
+    bag2.insert('c')
+    val bag3 = Array('a', 'b', 'c')
+    val bag3_after_1draw = Array('a','c','b')
+    val bag3_after_2draw = Array('c','a','b')
+    val bag3_after_3draw = Array('c','a','b')
+    "have a insert function" in {
+      bag2.bag should be (bag3)
     }
-    "have colors" in {
-      bag.colors.isEmpty should be(false)
+    "have a draw function" in {
+      bag2.get() should be ('b')
+    }
+    "have less stones after draw" in {
+      bag2.bag should be (bag3_after_1draw)
+    }
+    "can draw 2 times" in {
+      bag2.get() should be ('a')
+    }
+    "have less stones second after second draw" in {
+      bag2.bag should be (bag3_after_2draw)
+    }
+
+    "can draw 3 times" in {
+      bag2.get() should be ('c')
+    }
+    "have less stones second after third draw" in {
+      bag2.bag should be (bag3_after_3draw)
+    }
+    "cant draw 4 times" in {
+      bag2.get() should be ('$')
     }
   }
 
+  "A second Bag " should {
+    val bag2 =  Bag(random = false, colors = List('a','b'))
+    bag2.insert('a')
+    bag2.insert('b')
+    bag2.insert('c')
+    "have a function to draw 2 stones" in {
+      bag2.get(2) should be(Array('b', 'a'))
+    }
+    "can draw the last Stone" in {
+      bag2.get() should be ('c')
+    }
+    "cant draw another stone" in {
+      bag2.get() should be ('$')
+    }
+  }
+
+  "A third Bag " should {
+    val bag2 =  Bag(random = false, colors = List('a','b'))
+    bag2.insert('a')
+    bag2.insert('b')
+    bag2.insert('c')
+    "can draw all stones" in {
+      bag2.get(3) should be(Array('b', 'a','c'))
+    }
+    "cant draw another stone" in {
+      bag2.get() should be ('$')
+    }
+  }
+
+  "Another Bag " should {
+    val bag2 = Bag(random = false, colors = List('a','b'))
+    bag2.insert('a')
+    bag2.insert('b')
+    bag2.insert('c')
+    "have a function to draw 2 stones" in {
+      bag2.get(2) should be(Array('b', 'a'))
+    }
+    "can draw the last Stone" in {
+      bag2.get() should be ('c')
+    }
+    "cant draw another stone" in {
+      bag2.get() should be ('$')
+    }
+  }
+
+  "A fourth Bag " should {
+    val bag2 =  Bag(random = false, colors = List('a','b'))
+    bag2.insert('a')
+
+
+    "can insert a second stone" in {
+      bag2.insert('a')
+      bag2.bag should be (Array('a','a'))
+    }
+    "have a boolen" in {
+      bag2.random should be (false)
+    }
+  }
+  "A random Bag " should {
+    val bag2 = Bag(random = true, colors = List('a','b'))
+    bag2.insert('a')
+
+
+    "can insert a second stone" in {
+      bag2.insert('a')
+      bag2.bag should be (Array('a','a'))
+    }
+    "have a boolen" in {
+      bag2.random should be (true)
+    }
+    "can draw 2 stones " in {
+      bag2.get(2) should be (Array('a','a'))
+    }
+    "cant draw antoher stone" in {
+      bag2.get() should be ('$')
+    }
+    "can draw another stone after insert" in {
+      bag2.insert('a')
+      bag2.get() should be ('a')
+    }
+  }
+
+  "A bag with a color List" should {
+    val bag2 =  Bag(random = false, colors = List('a'))
+
+
+    "have 7 stones"in {
+      bag2.fillup()
+      bag2.bag.length should be (7)
+    }
+    "can draw 7 stones" in {
+      bag2.get(7) should be (Array('a','a','a','a','a','a','a'))
+    }
+
+  }
+  "A bag with a color List and random" should {
+    val bag2 = Bag(random = true, colors = List('a'))
+
+
+    "have 7 stones"in {
+      bag2.fillup()
+      bag2.bag.length should be (7)    }
+    "can draw 7 stones" in {
+      bag2.get(7) should be (Array('a','a','a','a','a','a','a'))
+    }
+
+  }
 }
