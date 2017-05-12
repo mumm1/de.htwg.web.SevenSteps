@@ -1,9 +1,11 @@
 package de.htwg.se.SevenSteps.model.impl
 
+import de.htwg.se.SevenSteps.model.IPlayers
+
 import scala.collection.immutable.Map
 import scala.util.{Failure, Success, Try}
 
-case class Players(curPlayer: Int = 0, players: Vector[Player] = Vector()) {
+case class Players(curPlayer: Int = 0, players: Vector[Player] = Vector()) extends IPlayers {
   def push(player: Player): Players = {
     copy(players = players :+ player)
   }

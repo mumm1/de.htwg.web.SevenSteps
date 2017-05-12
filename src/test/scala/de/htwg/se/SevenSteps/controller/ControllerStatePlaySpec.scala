@@ -20,13 +20,13 @@ class ControllerStatePlaySpec extends WordSpec {
   "A Controller in game phase play" should {
     "switch between different Players and can't undo that" in {
       before()
-      c.getCurPlayer.name should be("Hans")
+      c.players.getCurPlayer.name should be("Hans")
       c.nextPlayer().isSuccess should be(true)
-      c.getCurPlayer.name should be("Peter")
+      c.players.getCurPlayer.name should be("Peter")
       c.nextPlayer().isSuccess should be(true)
-      c.getCurPlayer.name should be("Alex")
+      c.players.getCurPlayer.name should be("Alex")
       c.nextPlayer().isSuccess should be(true)
-      c.getCurPlayer.name should be("Hans")
+      c.players.getCurPlayer.name should be("Hans")
       c.undo().isSuccess should be(false)
     }
     "can only use play commands" in {
