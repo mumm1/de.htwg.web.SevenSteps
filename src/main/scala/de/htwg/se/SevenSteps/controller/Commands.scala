@@ -1,6 +1,7 @@
 package de.htwg.se.SevenSteps.controller
 
-import de.htwg.se.SevenSteps.model.impl.{Cell, Grid, Player}
+import de.htwg.se.SevenSteps.model.ICell
+import de.htwg.se.SevenSteps.model.impl.Player
 import de.htwg.se.SevenSteps.util.Command
 
 import scala.util.{Failure, Success, Try}
@@ -21,10 +22,10 @@ case class AddPlayer(name: String, c: Controller) extends Command {
 }
 
 case class NewGrid(colors: String, cols: Int, c: Controller) extends Command {
-  var oldGrid: Grid = c.grid
+  var oldGrid = c.grid
   override def doIt(): Try[_] = {
     oldGrid = c.grid
-    c.grid = new Grid(colors, cols)
+    c.grid = c.modelFactory.newGrid(colors, cols)
     c.message = "Build new Grid"
     Success()
   }
@@ -91,7 +92,7 @@ case class SetStone(row: Int, col: Int, c: Controller) extends Command {
         }
     }
   }
-  def isCellLegal(): Try[Cell] = {
+  def isCellLegal(): Try[ICell] = {
     c.grid.cell(row, col) match {
       case Failure(_) => Failure(new Exception("You have to set a stone inside the grid"))
       case Success(cell) =>

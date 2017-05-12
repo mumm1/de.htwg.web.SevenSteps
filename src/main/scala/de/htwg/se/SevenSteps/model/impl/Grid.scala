@@ -1,9 +1,11 @@
 package de.htwg.se.SevenSteps.model.impl
 
+import de.htwg.se.SevenSteps.model.IGrid
+
 import scala.collection.mutable.ListBuffer
 import scala.util._
 
-case class Grid(rows: Int, cols: Int, cells: Option[Vector[Cell]] = None) {
+case class Grid(rows: Int, cols: Int, cells: Option[Vector[Cell]] = None) extends IGrid {
   val grid: Vector[Cell] = cells getOrElse Vector.fill(rows * cols)(new Cell)
   def nonEmpty: Boolean = {
     cellsToString().replaceAll(" ", "").nonEmpty
@@ -39,18 +41,18 @@ case class Grid(rows: Int, cols: Int, cells: Option[Vector[Cell]] = None) {
       strGrid
     }
   }
+  def set(row: Int, col: Int, color: Char): Grid = {
+    copy(cells = Option(grid.updated(getIndex(row, col), cell(row, col).get.copy(color = color))))
+  }
+  def set(row: Int, col: Int, height: Int): Grid = {
+    copy(cells = Option(grid.updated(getIndex(row, col), cell(row, col).get.copy(height = height))))
+  }
   private def getIndex(row: Int, col: Int): Int = {
     if (row >= rows || col >= cols) {
       -1
     } else {
       cols * row + col
     }
-  }
-  def set(row: Int, col: Int, color: Char): Grid = {
-    copy(cells = Option(grid.updated(getIndex(row, col), cell(row, col).get.copy(color = color))))
-  }
-  def set(row: Int, col: Int, height: Int): Grid = {
-    copy(cells = Option(grid.updated(getIndex(row, col), cell(row, col).get.copy(height = height))))
   }
   def cell(row: Int, col: Int): Try[Cell] = {
     try {
