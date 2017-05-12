@@ -1,4 +1,4 @@
-package de.htwg.se.SevenSteps.model
+package de.htwg.se.SevenSteps.model.impl
 
 import scala.collection.mutable.ListBuffer
 import scala.util._
@@ -7,6 +7,11 @@ case class Grid(rows: Int, cols: Int, cells: Option[Vector[Cell]] = None) {
   val grid: Vector[Cell] = cells getOrElse Vector.fill(rows * cols)(new Cell)
   def nonEmpty: Boolean = {
     cellsToString().replaceAll(" ", "").nonEmpty
+  }
+  def cellsToString(): String = {
+    var text = ""
+    grid.foreach(cell => text += cell.color.toString)
+    text
   }
   def this(colors: String, cols: Int) = {
     this(math.ceil(colors.length() / cols.toFloat).toInt, cols,
@@ -34,8 +39,18 @@ case class Grid(rows: Int, cols: Int, cells: Option[Vector[Cell]] = None) {
       strGrid
     }
   }
+  private def getIndex(row: Int, col: Int): Int = {
+    if (row >= rows || col >= cols) {
+      -1
+    } else {
+      cols * row + col
+    }
+  }
   def set(row: Int, col: Int, color: Char): Grid = {
     copy(cells = Option(grid.updated(getIndex(row, col), cell(row, col).get.copy(color = color))))
+  }
+  def set(row: Int, col: Int, height: Int): Grid = {
+    copy(cells = Option(grid.updated(getIndex(row, col), cell(row, col).get.copy(height = height))))
   }
   def cell(row: Int, col: Int): Try[Cell] = {
     try {
@@ -44,27 +59,12 @@ case class Grid(rows: Int, cols: Int, cells: Option[Vector[Cell]] = None) {
       case e: IndexOutOfBoundsException => Failure(e)
     }
   }
-  private def getIndex(row: Int, col: Int): Int = {
-    if (row >= rows || col >= cols) {
-      -1
-    } else {
-      cols * row + col
-    }
-  }
-  def set(row: Int, col: Int, height: Int): Grid = {
-    copy(cells = Option(grid.updated(getIndex(row, col), cell(row, col).get.copy(height = height))))
-  }
   def getColors: List[Char] = {
     var list: ListBuffer[Char] = ListBuffer()
     cellsToString().foreach(c => if (!list.contains(c) & c != ' ') {
       list += c
     })
     list.toList
-  }
-  def cellsToString(): String = {
-    var text = ""
-    grid.foreach(cell => text += cell.color.toString)
-    text
   }
   def getHeights: List[Int] = {
     var list: ListBuffer[Int] = ListBuffer()

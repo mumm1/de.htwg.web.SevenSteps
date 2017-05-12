@@ -1,6 +1,6 @@
 package de.htwg.se.SevenSteps.controller
 
-import de.htwg.se.SevenSteps.model.Players
+import de.htwg.se.SevenSteps.model.impl.Players
 import de.htwg.se.SevenSteps.util.Observer
 import org.junit.runner.RunWith
 import org.scalatest.Matchers.{be, _}

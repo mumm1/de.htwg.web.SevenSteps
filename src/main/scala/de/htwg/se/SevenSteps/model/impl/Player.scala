@@ -1,4 +1,4 @@
-package de.htwg.se.SevenSteps.model
+package de.htwg.se.SevenSteps.model.impl
 
 import scala.collection.immutable.Map
 import scala.util.{Failure, Success, Try}

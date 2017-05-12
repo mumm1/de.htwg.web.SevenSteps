@@ -1,7 +1,7 @@
 
 package de.htwg.se.SevenSteps.controller
 
-import de.htwg.se.SevenSteps.model._
+import de.htwg.se.SevenSteps.model.impl.{Bag, Grid, Player, Players}
 import de.htwg.se.SevenSteps.util.{Command, Observable, UndoManager}
 
 import scala.collection.mutable
@@ -31,10 +31,24 @@ case class Controller(var grid: Grid = Grid(0, 0),
     players.getCurPlayer
   }
   def addPlayer(name: String): Try[Controller] = doIt(AddPlayer(name, this))
-  def newGrid(colors: String, cols: Int): Try[Controller] = doIt(NewGrid(colors, cols, this))
-  def startGame(): Try[Controller] = doIt(StartGame(this))
   def doIt(command: Command): Try[Controller] = {
     val result = gameState.exploreCommand(command)
+    unpackError(result)
+    notifyObservers()
+    wrapController(result)
+  }
+  def newGrid(colors: String, cols: Int): Try[Controller] = doIt(NewGrid(colors, cols, this))
+  def startGame(): Try[Controller] = doIt(StartGame(this))
+  def nextPlayer(): Try[Controller] = doIt(NextPlayer(this))
+  def setStone(row: Int, col: Int): Try[Controller] = doIt(SetStone(row, col, this))
+  def undo(): Try[Controller] = {
+    val result = undoManager.undo()
+    unpackError(result)
+    notifyObservers()
+    wrapController(result)
+  }
+  def redo(): Try[Controller] = {
+    val result = undoManager.redo()
     unpackError(result)
     notifyObservers()
     wrapController(result)
@@ -50,20 +64,6 @@ case class Controller(var grid: Grid = Grid(0, 0),
       case Failure(e) => message = e.getMessage
       case _ =>
     }
-  }
-  def nextPlayer(): Try[Controller] = doIt(NextPlayer(this))
-  def setStone(row: Int, col: Int): Try[Controller] = doIt(SetStone(row, col, this))
-  def undo(): Try[Controller] = {
-    val result = undoManager.undo()
-    unpackError(result)
-    notifyObservers()
-    wrapController(result)
-  }
-  def redo(): Try[Controller] = {
-    val result = undoManager.redo()
-    unpackError(result)
-    notifyObservers()
-    wrapController(result)
   }
   override def toString: String = {
     val text = "\n############  " + message + "  ############\n\n"

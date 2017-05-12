@@ -1,6 +1,6 @@
 package de.htwg.se.SevenSteps.controller
 
-import de.htwg.se.SevenSteps.model.{Cell, Grid, Player}
+import de.htwg.se.SevenSteps.model.impl.{Cell, Grid, Player}
 import de.htwg.se.SevenSteps.util.Command
 
 import scala.util.{Failure, Success, Try}

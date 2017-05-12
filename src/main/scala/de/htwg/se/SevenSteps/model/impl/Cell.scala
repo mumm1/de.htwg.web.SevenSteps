@@ -1,4 +1,4 @@
-package de.htwg.se.SevenSteps.model
+package de.htwg.se.SevenSteps.model.impl
 
 case class Cell(color: Char = ' ', height: Int = 0) {
   override def toString: String = {

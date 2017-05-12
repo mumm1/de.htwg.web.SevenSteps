@@ -1,24 +1,21 @@
-package de.htwg.se.SevenSteps.model
+package de.htwg.se.SevenSteps.model.impl
 
 /**
   * Created by acer1 on 04.05.2017.
   */
 case class Bag(var bag: Array[Char] = new Array[Char](0),
-                var entfernt : Int = 0,
-                var aktuell: Int = 0,
-                var random : Boolean,
-                colors: List[Char] = List[Char]() ) {
-
+               var entfernt: Int = 0,
+               var aktuell: Int = 0,
+               var random: Boolean,
+               colors: List[Char] = List[Char]()) {
   def fillup(): Unit = {
     for ((c) <- colors) {
       for (i <- 0 to 6)
         insert(c)
     }
   }
-
-
-  def insert(x : Char): Unit ={
-    var bag2 = new Array[Char](bag.length + 1 )
+  def insert(x: Char): Unit = {
+    var bag2 = new Array[Char](bag.length + 1)
     var i = 0
     while (i < bag.length) {
       bag2(i) = bag(i)
@@ -40,13 +37,11 @@ case class Bag(var bag: Array[Char] = new Array[Char](0),
     Some(bag3) //Rückgabe des Arrays mit den gezogenen Werten
   }
   def get(): Option[Char] = { //Zieht ein Objekt aus dem Pool
-
-    var rand  = 0.35
+    var rand = 0.35
     if (random)
       rand = Math.random()
-
     var tmp = 'a'
-    var Ausgabe  = 'a'
+    var Ausgabe = 'a'
     if (bag.length >= (entfernt + 1)) {
       aktuell = bag.length - entfernt
       // val gezogen = (Math.random * aktuell).asInstanceOf[Int]

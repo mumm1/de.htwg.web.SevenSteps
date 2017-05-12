@@ -1,4 +1,4 @@
-package de.htwg.se.SevenSteps.model
+package de.htwg.se.SevenSteps.model.impl
 
 import org.junit.runner.RunWith
 import org.scalatest.Matchers._
