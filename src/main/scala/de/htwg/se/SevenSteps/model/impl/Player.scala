@@ -6,9 +6,7 @@ import scala.collection.immutable.Map
 import scala.util.{Failure, Success, Try}
 
 case class Players(curPlayer: Int = 0, players: Vector[Player] = Vector()) extends IPlayers {
-  def push(player: IPlayer): Players = {
-    copy(players = players :+ Player(player.name, player.points, map = player.map)) // Umkopierung ist scheiße!!!
-  }
+  def push(player: Player): Players = copy(players = players :+ player)
   def push(name: String): Players = {
     copy(players = players :+ Player(name))
   }

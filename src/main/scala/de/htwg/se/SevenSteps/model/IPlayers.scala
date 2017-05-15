@@ -4,7 +4,6 @@ import scala.collection.immutable.Map
 import scala.util.Try
 
 trait IPlayers {
-  def push(player: IPlayer): IPlayers
   def push(name: String): IPlayers
   def pop(): IPlayers
   def length: Int
@@ -18,8 +17,6 @@ trait IPlayers {
 }
 
 trait IPlayer {
-  def setColors(colors: List[Char]): IPlayer
-  def setStones(num: Int): IPlayer
   def getStoneNumber: Int
   def placeStone(color: Char, height: Int): Try[IPlayer]
   def incPoints(delta: Int): IPlayer
@@ -27,5 +24,4 @@ trait IPlayer {
   def name: String
   def points: Int
   def map: Option[Map[Char, Int]]
-
 }
