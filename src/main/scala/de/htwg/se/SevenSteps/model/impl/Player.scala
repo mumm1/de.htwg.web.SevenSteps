@@ -6,10 +6,8 @@ import scala.collection.immutable.Map
 import scala.util.{Failure, Success, Try}
 
 case class Players(curPlayer: Int = 0, players: Vector[Player] = Vector()) extends IPlayers {
+  def push(name: String): Players = push(Player(name))
   def push(player: Player): Players = copy(players = players :+ player)
-  def push(name: String): Players = {
-    copy(players = players :+ Player(name))
-  }
   def pop(): Players = {
     copy(players = players.init)
   }
