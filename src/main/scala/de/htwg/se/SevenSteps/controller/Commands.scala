@@ -58,6 +58,7 @@ case class NextPlayer(c: Controller) extends Command {
   override def doIt(): Try[_] = {
     c.players = c.players.next()
     c.prepareNewPlayer()
+    c.checkStones()
     c.message = "Player " + c.players.getCurPlayer.name + " it is your turn!"
     Success()
   }
@@ -120,7 +121,8 @@ case class SetStone(row: Int, col: Int, c: Controller) extends Command {
 
 case class End(c: Controller) extends Command {
   override def doIt(): Try[_] = {
-    c.message = "Winner is " + c.players.getCurPlayer.name
+    c.gameState = Finish(c)
+    c.message = "Winner is " + c.win()
     Success()
   }
   override def undo(): Try[_] = {
