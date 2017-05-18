@@ -1,6 +1,8 @@
 package de.htwg.se.SevenSteps.model.impl
 
-case class Cell(color: Char = ' ', height: Int = 0) {
+import de.htwg.se.SevenSteps.model.ICell
+
+case class Cell(color: Char = ' ', height: Int = 0) extends ICell {
   override def toString: String = {
     if (color != ' ') {
       color.toString + " " + height

@@ -1,23 +1,21 @@
 package de.htwg.se.SevenSteps.model.impl
 
+import de.htwg.se.SevenSteps.model.{IPlayer, IPlayers}
+
 import scala.collection.immutable.Map
 import scala.util.{Failure, Success, Try}
 
-case class Players(curPlayer: Int = 0, players: Vector[Player] = Vector()) {
-  def push(player: Player): Players = {
-    copy(players = players :+ player)
-  }
-  def push(name: String): Players = {
-    copy(players = players :+ Player(name))
-  }
+case class Players(curPlayer: Int = 0, players: Vector[Player] = Vector()) extends IPlayers {
+  def push(name: String): Players = push(Player(name))
+  def push(player: Player): Players = copy(players = players :+ player)
   def pop(): Players = {
     copy(players = players.init)
   }
   def length: Int = {
     players.length
   }
-  def updateCurPlayer(player: Player): Players = {
-    copy(players = players.updated(curPlayer, player))
+  def updateCurPlayer(player: IPlayer): Players = {
+    copy(players = players.updated(curPlayer, Player(player.name, player.points, map = player.map)))
   }
   def next(): Players = {
     copy(curPlayer = (curPlayer + 1) % players.length)
@@ -54,7 +52,7 @@ case class Players(curPlayer: Int = 0, players: Vector[Player] = Vector()) {
   }
 }
 
-case class Player(name: String, points: Int = 0, map: Option[Map[Char, Int]] = None) {
+case class Player(name: String, points: Int = 0, map: Option[Map[Char, Int]] = None) extends IPlayer {
   def setColors(colors: List[Char]): Player = {
     var newMap: Map[Char, Int] = Map()
     for ((c) <- colors) {

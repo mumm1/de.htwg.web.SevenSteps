@@ -1,15 +1,13 @@
 package de.htwg.se.SevenSteps.controller
 
-import de.htwg.se.SevenSteps.model.impl.{Cell, Grid, Player}
+import de.htwg.se.SevenSteps.model.ICell
 import de.htwg.se.SevenSteps.util.Command
 
 import scala.util.{Failure, Success, Try}
 
 case class AddPlayer(name: String, c: Controller) extends Command {
-  val player = Player(name)
   override def doIt(): Try[_] = {
-
-    c.players = c.players.push(player)
+    c.players = c.players.push(name)
     c.message = "Added Player " + name
     Success()
   }
@@ -21,10 +19,10 @@ case class AddPlayer(name: String, c: Controller) extends Command {
 }
 
 case class NewGrid(colors: String, cols: Int, c: Controller) extends Command {
-  var oldGrid: Grid = c.grid
+  var oldGrid = c.grid
   override def doIt(): Try[_] = {
     oldGrid = c.grid
-    c.grid = new Grid(colors, cols)
+    c.grid = c.modelFactory.newGrid(colors, cols)
     c.message = "Build new Grid"
     Success()
   }
@@ -60,7 +58,7 @@ case class NextPlayer(c: Controller) extends Command {
   override def doIt(): Try[_] = {
     c.players = c.players.next()
     c.prepareNewPlayer()
-    c.message = "Player " + c.getCurPlayer.name + " it is your turn!"
+    c.message = "Player " + c.players.getCurPlayer.name + " it is your turn!"
     Success()
   }
   override def undo(): Try[_] = {
@@ -77,7 +75,7 @@ case class SetStone(row: Int, col: Int, c: Controller) extends Command {
       case Success(cell) =>
         val dif = c.curHeight - cell.height
         if (dif == 0 | dif == 1) {
-          c.getCurPlayer.placeStone(cell.color, cell.height) match {
+          c.players.getCurPlayer.placeStone(cell.color, cell.height) match {
             case Failure(e) => Failure(e)
             case Success(player) => c.grid = c.grid.set(row, col, cell.height + 1)
               c.players = c.players.updateCurPlayer(player)
@@ -91,7 +89,7 @@ case class SetStone(row: Int, col: Int, c: Controller) extends Command {
         }
     }
   }
-  def isCellLegal(): Try[Cell] = {
+  def isCellLegal(): Try[ICell] = {
     c.grid.cell(row, col) match {
       case Failure(_) => Failure(new Exception("You have to set a stone inside the grid"))
       case Success(cell) =>
