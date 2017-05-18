@@ -14,6 +14,8 @@ trait IPlayers {
   def setColors(colors: List[Char]): IPlayers
   def setAllStonesTo(num: Int): IPlayers
   def apply(i: Int): IPlayer
+  def getPlayerList: Vector[IPlayer]
+  def haveNoStones: Boolean
 }
 
 trait IPlayer {
@@ -24,4 +26,5 @@ trait IPlayer {
   def name: String
   def points: Int
   def map: Option[Map[Char, Int]]
+  def haveNoStones(): Boolean
 }

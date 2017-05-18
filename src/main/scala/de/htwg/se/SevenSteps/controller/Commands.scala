@@ -39,7 +39,7 @@ case class StartGame(c: Controller) extends Command {
       c.gameState = Play(c)
       val colors = c.grid.getColors
       c.players = c.players.setColors(colors)
-      c.bag = c.bag.copy(colors = colors)
+      c.bag = c.bag.copy1(colors)
       c.bag.fillup()
       c.prepareNewPlayer()
       c.message = "Started the game"
@@ -115,5 +115,16 @@ case class SetStone(row: Int, col: Int, c: Controller) extends Command {
     c.lastCells.pop()
     c.message = "You take the Stone back"
     Success()
+  }
+}
+
+case class End(c: Controller) extends Command {
+  override def doIt(): Try[_] = {
+    c.message = "Winner is " + c.players.getCurPlayer.name
+    Success()
+  }
+  override def undo(): Try[_] = {
+    c.undoManager.clearUndoStack()
+    Failure(new Exception("You can't undo win"))
   }
 }

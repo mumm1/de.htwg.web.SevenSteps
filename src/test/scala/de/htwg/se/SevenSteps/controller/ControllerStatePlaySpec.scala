@@ -98,10 +98,6 @@ class ControllerStatePlaySpec extends WordSpec {
       c.grid.getHeights should be(List(1, 1, 0, 1))
       c.setStone(1, 0).isSuccess should be(true)
     }
-    "have a winner" in {
-      c.win() should be(c.players(0))
-      c.win().points should be(4)
-    }
   }
   "A Controller observed by an Observer" should {
     "notify its Observer after every Change" in {

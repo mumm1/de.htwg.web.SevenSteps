@@ -1,5 +1,7 @@
 package de.htwg.se.SevenSteps.model.impl
 
+import de.htwg.se.SevenSteps.model.IBag
+
 /**
   * Created by acer1 on 04.05.2017.
   */
@@ -7,7 +9,7 @@ case class Bag(var bag: Array[Char] = new Array[Char](0),
                var entfernt: Int = 0,
                var aktuell: Int = 0,
                var random: Boolean,
-               colors: List[Char] = List[Char]()) {
+               var colors: List[Char] = List[Char]()) extends IBag {
   def fillup(): Unit = {
     for ((c) <- colors) {
       for (i <- 0 to 6)
@@ -54,5 +56,11 @@ case class Bag(var bag: Array[Char] = new Array[Char](0),
       Some(Ausgabe) //gezogenen Wert Ausgeben
     }
     else None
+  }
+  def isEmpty(): Boolean = {
+    bag.length >= (entfernt + 1)
+  }
+  def copy1(newColors: List[Char]): Bag = {
+    copy(colors = newColors)
   }
 }

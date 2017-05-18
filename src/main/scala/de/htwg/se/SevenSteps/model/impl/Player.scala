@@ -26,6 +26,18 @@ case class Players(curPlayer: Int = 0, players: Vector[Player] = Vector()) exten
   def getCurPlayer: Player = {
     players(curPlayer)
   }
+  def getPlayerList: Vector[Player] = {
+    players
+  }
+  def haveNoStones: Boolean = {
+    var playerWithNoStones = 0
+    for (player <- players) {
+      if (player.haveNoStones())
+        playerWithNoStones += 1
+    }
+    playerWithNoStones == players.length
+
+  }
   def setColors(colors: List[Char]): Players = {
     val newPlayers = for (p <- players) yield {
       p.setColors(colors)
@@ -102,6 +114,9 @@ case class Player(name: String, points: Int = 0, map: Option[Map[Char, Int]] = N
       case None => this
       case Some(m) => copy(map = Some(m.updated(color, m(color) + delta)))
     }
+  }
+  def haveNoStones(): Boolean = {
+    map.isEmpty
   }
   override def toString: String = {
     val sb = new StringBuilder
