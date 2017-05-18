@@ -32,29 +32,23 @@ case class Controller(var grid: IGrid = ModelFactory1.newGrid(),
   def getCurPlayer: IPlayer = {
     players.getCurPlayer
   }
-  def checkStones(): Unit = {
-    if (bag.isEmpty() && players.haveNoStones) {
-      finish()
-    }
+  def isGameEnd(): Boolean = bag.isEmpty && players.haveNoStones
+  def finish(): Try[Controller] = {
+    gameState = Finish(this)
+    message = "Winner is " + getWinningPlayer().name
+    Success(this)
   }
-  def finish(): Try[Controller] = doIt(End(this))
-  def win(): Option[IPlayer] = {
-    if (bag.isEmpty() && players.haveNoStones) {
+  def getWinningPlayer(): IPlayer = {
       var winner = players(0)
     for (i <- 1 to players.length - 1) {
       if (players(i).points > winner.points) {
         winner = players(i)
       }
     }
-      Some(winner)
-    } else {
-      None
-    }
+    winner
   }
   def addPlayer(name: String): Try[Controller] = doIt(AddPlayer(name, this))
   def newGrid(colors: String, cols: Int): Try[Controller] = doIt(NewGrid(colors, cols, this))
-  def startGame(): Try[Controller] = doIt(StartGame(this))
-  def nextPlayer(): Try[Controller] = doIt(NextPlayer(this))
   def doIt(command: Command): Try[Controller] = {
     val result = gameState.exploreCommand(command)
     unpackError(result)
@@ -73,6 +67,8 @@ case class Controller(var grid: IGrid = ModelFactory1.newGrid(),
       case _ =>
     }
   }
+  def startGame(): Try[Controller] = doIt(StartGame(this))
+  def nextPlayer(): Try[Controller] = doIt(NextPlayer(this))
   def setStone(row: Int, col: Int): Try[Controller] = doIt(SetStone(row, col, this))
   def undo(): Try[Controller] = {
     val result = undoManager.undo()
