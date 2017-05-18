@@ -121,8 +121,7 @@ case class SetStone(row: Int, col: Int, c: Controller) extends Command {
 
 case class End(c: Controller) extends Command {
   override def doIt(): Try[_] = {
-    c.gameState = Finish(c)
-    c.message = "Winner is " + c.win()
+    c.message = "Winner is " + c.players.getCurPlayer.name
     Success()
   }
   override def undo(): Try[_] = {

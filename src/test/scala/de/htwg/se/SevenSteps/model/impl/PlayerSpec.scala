@@ -21,6 +21,10 @@ class PlayerSpec extends WordSpec {
     "toString look like" in {
       p.toString should be("Julius: Points=50")
     }
+    "can get more points" in {
+      val p2 = p.incPoints(10)
+      p2.points should be(60)
+    }
   }
   "Players without list" should {
     val pls = Players()

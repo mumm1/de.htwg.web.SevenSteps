@@ -23,7 +23,7 @@ case class Play(c: Controller) extends GameState {
     com match {
       case _: NextPlayer => c.undoManager.doIt(com)
       case _: SetStone => c.undoManager.doIt(com)
-      case _ => Failure(new Exception("ILLEGAL COMMAND"))
+      case _ => Failure(new Exception("ILLEGAL COMMAND Play"))
     }
   }
 }
