@@ -11,24 +11,13 @@ case class Players(curPlayer: Int = 0, players: Vector[Player] = Vector()) exten
   def pop(): Players = {
     copy(players = players.init)
   }
-  def length: Int = {
-    players.length
-  }
+  def length: Int = players.length
   def updateCurPlayer(player: IPlayer): Players = {
     copy(players = players.updated(curPlayer, Player(player.name, player.points, map = player.map)))
   }
-  def next(): Players = {
-    copy(curPlayer = (curPlayer + 1) % players.length)
-  }
-  def nonEmpty: Boolean = {
-    players.nonEmpty
-  }
-  def getCurPlayer: Player = {
-    players(curPlayer)
-  }
-  def getPlayerList: Vector[Player] = {
-    players
-  }
+  def next(): Players = copy(curPlayer = (curPlayer + 1) % players.length)
+  def nonEmpty: Boolean = players.nonEmpty
+  def getCurPlayer: Player = players(curPlayer)
   def haveNoStones: Boolean = {
     var playerWithNoStones = 0
     for (player <- players) {

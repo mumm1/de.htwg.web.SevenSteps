@@ -2,7 +2,7 @@
 package de.htwg.se.SevenSteps.controller
 
 //import de.htwg.se.SevenSteps.model.impl.Bag
-import de.htwg.se.SevenSteps.model.{IGrid, IPlayers, IPlayer, IBag, ModelFactory, ModelFactory1}
+import de.htwg.se.SevenSteps.model._
 import de.htwg.se.SevenSteps.util.{Command, Observable, UndoManager}
 
 import scala.collection.mutable
@@ -40,10 +40,10 @@ case class Controller(var grid: IGrid = ModelFactory1.newGrid(),
   def finish(): Try[Controller] = doIt(End(this))
   def win(): Option[IPlayer] = {
     if (bag.isEmpty() && players.haveNoStones) {
-      var winner = players.getPlayerList.apply(0)
+      var winner = players(0)
     for (i <- 1 to players.length - 1) {
-      if (players.getPlayerList(i).points > winner.points) {
-        winner = players.getPlayerList(i)
+      if (players(i).points > winner.points) {
+        winner = players(i)
       }
     }
       Some(winner)
@@ -55,7 +55,6 @@ case class Controller(var grid: IGrid = ModelFactory1.newGrid(),
   def newGrid(colors: String, cols: Int): Try[Controller] = doIt(NewGrid(colors, cols, this))
   def startGame(): Try[Controller] = doIt(StartGame(this))
   def nextPlayer(): Try[Controller] = doIt(NextPlayer(this))
-  def setStone(row: Int, col: Int): Try[Controller] = doIt(SetStone(row, col, this))
   def doIt(command: Command): Try[Controller] = {
     val result = gameState.exploreCommand(command)
     unpackError(result)
@@ -74,6 +73,7 @@ case class Controller(var grid: IGrid = ModelFactory1.newGrid(),
       case _ =>
     }
   }
+  def setStone(row: Int, col: Int): Try[Controller] = doIt(SetStone(row, col, this))
   def undo(): Try[Controller] = {
     val result = undoManager.undo()
     unpackError(result)
