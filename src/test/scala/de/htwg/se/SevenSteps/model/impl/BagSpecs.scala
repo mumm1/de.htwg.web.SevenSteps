@@ -166,5 +166,19 @@ class BagSpecs extends WordSpec {
         case None =>
       }
     }
+    "should be not empty" in {
+      bag2.isEmpty() should be(false)
+    }
+    "should have a copy Colors function" in {
+      val bag3 = bag2.copy1(List('a', 'b'))
+      bag3.colors should be(List('a', 'b'))
+    }
+  }
+  "A bag with a color List and random" should {
+    var bag2 = Bag(random = true, colors = List('a'))
+    bag2.colors = List('b')
+    "should have a updated List" in {
+      bag2.colors should be(List('b'))
+    }
   }
 }

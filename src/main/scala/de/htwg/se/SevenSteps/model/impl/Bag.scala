@@ -9,7 +9,8 @@ case class Bag(var bag: Array[Char] = new Array[Char](0),
                var entfernt: Int = 0,
                var aktuell: Int = 0,
                var random: Boolean,
-               var colors: List[Char] = List[Char]()) extends IBag {
+               var colors: List[Char] = List[Char]())
+  extends IBag {
   def fillup(): Unit = {
     for ((c) <- colors) {
       for (i <- 0 to 6)
