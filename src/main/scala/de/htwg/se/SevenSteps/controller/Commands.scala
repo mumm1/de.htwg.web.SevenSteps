@@ -56,18 +56,15 @@ case class StartGame(c: Controller) extends Command {
 
 case class NextPlayer(c: Controller) extends Command {
   override def doIt(): Try[_] = {
-    if (c.isGameEnd()) {
-      c.finish()
-    } else {
-      c.players = c.players.next()
-      c.prepareNewPlayer()
-      c.message = "Player " + c.players.getCurPlayer.name + " it is your turn!"
-    }
+    c.players = c.players.next()
+    c.prepareNewPlayer()
+    c.checkStones()
+    c.message = "Player " + c.players.getCurPlayer.name + " it is your turn!"
     Success()
   }
   override def undo(): Try[_] = {
     c.undoManager.clearUndoStack()
-    Failure(new Exception("You can't undo now!"))
+    Failure(new Exception("You can't undo to previous player!"))
   }
 }
 
@@ -119,5 +116,16 @@ case class SetStone(row: Int, col: Int, c: Controller) extends Command {
     c.lastCells.pop()
     c.message = "You take the Stone back"
     Success()
+  }
+}
+
+case class End(c: Controller) extends Command {
+  override def doIt(): Try[_] = {
+    c.message = "Winner is " + c.players.getCurPlayer.name
+    Success()
+  }
+  override def undo(): Try[_] = {
+    c.undoManager.clearUndoStack()
+    Failure(new Exception("You can't undo win"))
   }
 }
