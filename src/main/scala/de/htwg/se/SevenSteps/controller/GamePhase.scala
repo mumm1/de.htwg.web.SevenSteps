@@ -28,3 +28,11 @@ case class Play(c: Controller) extends GameState {
   }
 }
 
+case class End(c: Controller) extends GameState {
+  override def exploreCommand(com: Command): Try[_] = {
+    com match {
+      case _ => Failure(new Exception("ILLEGAL COMMAND"))
+    }
+  }
+}
+

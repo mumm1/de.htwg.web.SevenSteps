@@ -30,12 +30,33 @@ case class Controller(var grid: Grid = Grid(0, 0),
   def getCurPlayer: Player = {
     players.getCurPlayer
   }
+  def win(): Player = {
+    var winner = players.players.apply(0)
+    for (i <- 1 to players.length - 1) {
+      if (players.players(i).points > winner.points) {
+        winner = players.players(i)
+      }
+    }
+    winner
+  }
   def addPlayer(name: String): Try[Controller] = doIt(AddPlayer(name, this))
   def doIt(command: Command): Try[Controller] = {
     val result = gameState.exploreCommand(command)
     unpackError(result)
     notifyObservers()
     wrapController(result)
+  }
+  def wrapController(t: Try[_]): Try[Controller] = {
+    t match {
+      case Success(_) => Success(this)
+      case Failure(e) => Failure(e)
+    }
+  }
+  def unpackError(e: Try[_]): Unit = {
+    e match {
+      case Failure(e) => message = e.getMessage
+      case _ =>
+    }
   }
   def newGrid(colors: String, cols: Int): Try[Controller] = doIt(NewGrid(colors, cols, this))
   def startGame(): Try[Controller] = doIt(StartGame(this))
@@ -52,18 +73,6 @@ case class Controller(var grid: Grid = Grid(0, 0),
     unpackError(result)
     notifyObservers()
     wrapController(result)
-  }
-  def wrapController(t: Try[_]): Try[Controller] = {
-    t match {
-      case Success(_) => Success(this)
-      case Failure(e) => Failure(e)
-    }
-  }
-  def unpackError(e: Try[_]): Unit = {
-    e match {
-      case Failure(e) => message = e.getMessage
-      case _ =>
-    }
   }
   override def toString: String = {
     val text = "\n############  " + message + "  ############\n\n"
