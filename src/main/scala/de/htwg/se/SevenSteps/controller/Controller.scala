@@ -83,6 +83,13 @@ case class Controller(var grid: IGrid = ModelFactory1.newGrid(),
     wrapController(result)
   }
   def isDeadlock: Boolean = {
+    val possibleColorsGrid = grid.getColorsWithHeight0
+    val possibleColorsPlayer = players.getAllPossibleColorsFromAllPlayers
+    for (color <- possibleColorsGrid) {
+      if (possibleColorsPlayer.contains(color)) {
+        return false
+      }
+    }
     true
   }
   override def toString: String = {
