@@ -57,13 +57,6 @@ case class Controller(var grid: IGrid = ModelFactory1.newGrid(),
     notifyObservers()
     wrapController(result)
   }
-  def setStone(row: Int, col: Int): Try[Controller] = doIt(SetStone(row, col, this))
-  def undo(): Try[Controller] = {
-    val result = undoManager.undo()
-    unpackError(result)
-    notifyObservers()
-    wrapController(result)
-  }
   def wrapController(t: Try[_]): Try[Controller] = {
     t match {
       case Success(_) => Success(this)
@@ -76,11 +69,28 @@ case class Controller(var grid: IGrid = ModelFactory1.newGrid(),
       case _ =>
     }
   }
+  def setStone(row: Int, col: Int): Try[Controller] = doIt(SetStone(row, col, this))
+  def undo(): Try[Controller] = {
+    val result = undoManager.undo()
+    unpackError(result)
+    notifyObservers()
+    wrapController(result)
+  }
   def redo(): Try[Controller] = {
     val result = undoManager.redo()
     unpackError(result)
     notifyObservers()
     wrapController(result)
+  }
+  def isDeadlock: Boolean = {
+    val possibleColorsGrid = grid.getColorsWithHeight0
+    val possibleColorsPlayer = players.getAllPossibleColorsFromAllPlayers
+    for (color <- possibleColorsGrid) {
+      if (possibleColorsPlayer.contains(color)) {
+        return false
+      }
+    }
+    true
   }
   override def toString: String = {
     val text = "\n############  " + message + "  ############\n\n"

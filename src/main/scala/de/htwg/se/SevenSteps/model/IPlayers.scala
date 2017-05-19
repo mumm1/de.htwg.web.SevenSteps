@@ -15,6 +15,7 @@ trait IPlayers {
   def setAllStonesTo(num: Int): IPlayers
   def apply(i: Int): IPlayer
   def haveNoStones: Boolean
+  def getAllPossibleColorsFromAllPlayers: List[Char]
 }
 
 trait IPlayer {

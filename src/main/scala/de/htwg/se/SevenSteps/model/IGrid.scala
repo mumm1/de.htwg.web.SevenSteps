@@ -10,4 +10,5 @@ trait IGrid {
   def getColors: List[Char]
   def getHeights: List[Int]
   def cellsToString(): String
+  def getColorsWithHeight0: List[Char]
 }

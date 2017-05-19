@@ -9,24 +9,23 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class ControllerStatePlaySpec extends WordSpec {
   var c = Controller()
-  def before(): Unit = {
+  def before(colors: String = "aabb", cols: Int = 2, numPlayers: Int = 3): Unit = {
     c = Controller()
-    c.addPlayer("Hans").isSuccess should be(true)
-    c.addPlayer("Peter").isSuccess should be(true)
-    c.addPlayer("Alex").isSuccess should be(true)
-    c.newGrid("aabb", 2).isSuccess should be(true)
+    for (i <- 1 to numPlayers)
+      c.addPlayer("Hans" + i).isSuccess should be(true)
+    c.newGrid(colors, cols).isSuccess should be(true)
     c.startGame().isSuccess should be(true)
   }
   "A Controller in game phase play" should {
     "switch between different Players and can't undo that" in {
       before()
-      c.players.getCurPlayer.name should be("Hans")
+      c.players.getCurPlayer.name should be("Hans1")
       c.nextPlayer().isSuccess should be(true)
-      c.players.getCurPlayer.name should be("Peter")
+      c.players.getCurPlayer.name should be("Hans2")
       c.nextPlayer().isSuccess should be(true)
-      c.players.getCurPlayer.name should be("Alex")
+      c.players.getCurPlayer.name should be("Hans3")
       c.nextPlayer().isSuccess should be(true)
-      c.players.getCurPlayer.name should be("Hans")
+      c.players.getCurPlayer.name should be("Hans1")
       c.undo().isSuccess should be(false)
     }
     "can only use play commands" in {
@@ -107,7 +106,7 @@ class ControllerStatePlaySpec extends WordSpec {
     }
     "checks on command next if the game is finished" in {
       before()
-      c.players.setAllStonesTo(1)
+      c.players = c.players.setAllStonesTo(1)
       c.nextPlayer().isSuccess should be(true)
       c.setStone(0, 0).isSuccess should be(true)
       // delete all stones
@@ -120,7 +119,7 @@ class ControllerStatePlaySpec extends WordSpec {
     }
     "selects the winning player with the most stones" in {
       before()
-      c.players.setAllStonesTo(2)
+      c.players = c.players.setAllStonesTo(2)
       c.setStone(0, 0).isSuccess should be(true)
       c.setStone(1, 0).isSuccess should be(true)
       val winner = c.players.getCurPlayer
@@ -133,6 +132,34 @@ class ControllerStatePlaySpec extends WordSpec {
       c.gameState.isInstanceOf[Finish] should be(true)
       c.getWinningPlayer().name should be(winner.name)
       c.isGameEnd should be(true)
+    }
+    "can check deadlock situation when grid is full" in {
+      before("a")
+      c.players = c.players.setAllStonesTo(3)
+      c.isDeadlock should be(false)
+      c.setStone(0, 0).isSuccess should be(true)
+      c.isDeadlock should be(true)
+    }
+    "can check deadlock situation when grit is not full" in {
+      before(colors = "ab", numPlayers = 2)
+      c.players = c.players.setAllStonesTo(1)
+      while (c.bag.get() != None) {}
+      c.players = c.players.updateCurPlayer(c.getCurPlayer.incColor('b', -1))
+      c.setStone(0, 0).isSuccess should be(true)
+      c.nextPlayer().isSuccess should be(true)
+      c.isDeadlock should be(false)
+      c.players = c.players.updateCurPlayer(c.getCurPlayer.incColor('b', -1))
+      c.isDeadlock should be(true)
+    }
+    "checks on command next if the game is in deadlock and finish it" in {
+      before("a")
+      c.players = c.players.setAllStonesTo(3)
+      c.isDeadlock should be(false)
+      c.setStone(0, 0).isSuccess should be(true)
+      c.isDeadlock should be(true)
+      c.nextPlayer().isSuccess should be(true)
+      c.gameState.isInstanceOf[Finish] should be(true)
+      c.getWinningPlayer() should be(c.getCurPlayer)
     }
   }
   "A Controller observed by an Observer" should {
