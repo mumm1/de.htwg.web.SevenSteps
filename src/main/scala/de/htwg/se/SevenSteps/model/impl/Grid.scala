@@ -7,6 +7,15 @@ import scala.util._
 
 case class Grid(rows: Int, cols: Int, cells: Option[Vector[Cell]] = None) extends IGrid {
   val grid: Vector[Cell] = cells getOrElse Vector.fill(rows * cols)(new Cell)
+  def getColorsWithHeight0: List[Char] = {
+    var result: ListBuffer[Char] = ListBuffer()
+    for (cell <- grid) {
+      if (cell.height == 0 && cell.color != ' ' && !result.contains(cell.color)) {
+        result += cell.color
+      }
+    }
+    result.toList
+  }
   def nonEmpty: Boolean = {
     cellsToString().replaceAll(" ", "").nonEmpty
   }
@@ -41,12 +50,6 @@ case class Grid(rows: Int, cols: Int, cells: Option[Vector[Cell]] = None) extend
       strGrid
     }
   }
-  def set(row: Int, col: Int, color: Char): Grid = {
-    copy(cells = Option(grid.updated(getIndex(row, col), cell(row, col).get.copy(color = color))))
-  }
-  def set(row: Int, col: Int, height: Int): Grid = {
-    copy(cells = Option(grid.updated(getIndex(row, col), cell(row, col).get.copy(height = height))))
-  }
   private def getIndex(row: Int, col: Int): Int = {
     if (row >= rows || col >= cols) {
       -1
@@ -54,12 +57,18 @@ case class Grid(rows: Int, cols: Int, cells: Option[Vector[Cell]] = None) extend
       cols * row + col
     }
   }
+  def set(row: Int, col: Int, color: Char): Grid = {
+    copy(cells = Option(grid.updated(getIndex(row, col), cell(row, col).get.copy(color = color))))
+  }
   def cell(row: Int, col: Int): Try[Cell] = {
     try {
       Success(grid(getIndex(row, col)))
     } catch {
       case e: IndexOutOfBoundsException => Failure(e)
     }
+  }
+  def set(row: Int, col: Int, height: Int): Grid = {
+    copy(cells = Option(grid.updated(getIndex(row, col), cell(row, col).get.copy(height = height))))
   }
   def getColors: List[Char] = {
     var list: ListBuffer[Char] = ListBuffer()
