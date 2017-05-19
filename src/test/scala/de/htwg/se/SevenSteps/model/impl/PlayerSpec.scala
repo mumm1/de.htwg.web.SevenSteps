@@ -4,6 +4,8 @@ import org.junit.runner.RunWith
 import org.scalatest.Matchers._
 import org.scalatest._
 import org.scalatest.junit.JUnitRunner
+import de.htwg.se.SevenSteps.model.IPlayer
+
 
 @RunWith(classOf[JUnitRunner])
 class PlayerSpec extends WordSpec {
@@ -64,8 +66,9 @@ class PlayerSpec extends WordSpec {
       pls.curPlayer should be(0)
     }
     "push a Player" in {
+      val plJulius = Player("Julius")
       val pls2 = pls.push("Julius")
-      pls2.apply(0).name should be("Julius")
+      pls2.apply(0) should be(plJulius)
     }
     "Have players" in {
       pls.players.isEmpty should be(true)
@@ -74,16 +77,33 @@ class PlayerSpec extends WordSpec {
     }
   }
   "Players with a List" should {
-    var pls = Players()
+    var pls3 = Players()
     val p1 = Player("Julius", 50)
     val p2 = Player("Tobias", 50)
-    pls = pls.push(p1)
-    pls = pls.push(p2)
+    val pls2 = pls3.push(p1)
+    var pls = pls2.push(p2)
     "current player" in {
       pls.curPlayer should be(0)
       pls = pls.next()
       pls.curPlayer should be(1)
       pls.next().curPlayer should be(0)
+    }
+    "have no stones" in {
+      pls.haveNoStones should be(true)
+    }
+    "have stones after draw" in {
+      val player1 = pls.getCurPlayer
+      val pl2 = player1.setColors(List('a', 'b'))
+      val pl3 = pl2.incColor('a', 5)
+      val pls2 = pls.push(pl3)
+      pls2.haveNoStones should be(false)
+    }
+    "have an update function" in {
+      val iplayer = Player("Peter")
+      val pls2 = pls.updateCurPlayer(iplayer)
+      pls.getCurPlayer.toString should be("Tobias: Points=50")
+      pls2.getCurPlayer.name should be("Peter")
+
     }
     "have a players list" in {
       pls.players.isEmpty should be(false)
@@ -105,6 +125,19 @@ class PlayerSpec extends WordSpec {
       newPls = newPls.setAllStonesTo(5)
       newPls(0).getStoneNumber should be(10)
       newPls(1).getStoneNumber should be(10)
+    }
+    "to string look like" in {
+      var players = Players()
+      val pl1 = Player("Julius")
+      val pl2 = Player("Tobias")
+      val pl3 = Player("Peter")
+      val pls2 = players.push(pl1)
+      val pls3 = pls2.push(pl2)
+      val sb = new StringBuilder()
+      var text = ""
+      text += "-> " + pl1.toString() + "\n"
+      text += "   " + pl2.toString() + "\n"
+      pls3.toString() should be(text)
     }
   }
 }
