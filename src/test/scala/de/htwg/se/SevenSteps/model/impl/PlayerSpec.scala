@@ -21,15 +21,51 @@ class PlayerSpec extends WordSpec {
     "toString look like" in {
       p.toString should be("Julius: Points=50")
     }
+    "toString with a map look like" in {
+      val p2 = p.setColors(List('a', 'b'))
+      p2.toString should be("Julius: a=0, b=0, Points=50")
+    }
     "can get more points" in {
       val p2 = p.incPoints(10)
       p2.points should be(60)
+    }
+    "Have no stones" in {
+      p.haveNoStones() should be(true)
+    }
+    "Have no stones with a empty list" in {
+      val p2 = p.setColors(List('a', 'b'))
+      p2.haveNoStones() should be(true)
+    }
+    "Have  stones after insert" in {
+      val p2 = p.setColors(List('a', 'b'))
+      val p3 = p2.incColor('a', 5)
+      p3.haveNoStones() should be(false)
+    }
+    "cant set a stone if he dont have a stones map" in {
+      val p2 = p.placeStone('a', 2)
+      p2.isFailure should be(true)
+    }
+    "cant set a stone if he dont have stones in this color" in {
+      val p2 = p.setColors(List('a', 'b'))
+      val p3 = p2.placeStone('c', 0)
+      p3.isFailure should be(true)
+    }
+    "set a stone " in {
+      val p2 = p.setColors(List('a', 'b'))
+      val p3 = p2.incColor('a', 5)
+      val p4 = p3.placeStone('a', 2)
+      p4.isSuccess should be(true)
+      p4.get.points should be(53)
     }
   }
   "Players without list" should {
     val pls = Players()
     "Have a curPlayer number" in {
       pls.curPlayer should be(0)
+    }
+    "push a Player" in {
+      val pls2 = pls.push("Julius")
+      pls2.apply(0).name should be("Julius")
     }
     "Have players" in {
       pls.players.isEmpty should be(true)

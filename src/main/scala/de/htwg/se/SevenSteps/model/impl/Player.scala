@@ -104,7 +104,7 @@ case class Player(name: String, points: Int = 0, map: Option[Map[Char, Int]] = N
   }
   def haveNoStones(): Boolean = {
     map match {
-      case None => true
+      case None => return true
       case Some(map) => {
         for ((k, v) <- map) {
           if (!(map.apply(k) == 0)) {
