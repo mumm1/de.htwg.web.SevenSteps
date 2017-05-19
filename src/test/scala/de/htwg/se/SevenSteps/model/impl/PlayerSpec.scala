@@ -70,5 +70,16 @@ class PlayerSpec extends WordSpec {
       newPls(0).getStoneNumber should be(10)
       newPls(1).getStoneNumber should be(10)
     }
+    "return a list of colors from any player with more than zero stones" in {
+      var newPls = Players().push(Player("hans")).push(Player("hugo"))
+        .setColors("ab".toCharArray.toList)
+      newPls.getAllPossibleColorsFromAllPlayers should be(List())
+      newPls = newPls.setAllStonesTo(1)
+      newPls.getAllPossibleColorsFromAllPlayers should be(List('a', 'b'))
+      newPls = newPls.updateCurPlayer(newPls(0).incColor('a', -1))
+      newPls.getAllPossibleColorsFromAllPlayers.sorted should be(List('a', 'b'))
+      newPls = newPls.next().updateCurPlayer(newPls(1).incColor('a', -1))
+      newPls.getAllPossibleColorsFromAllPlayers should be(List('b'))
+    }
   }
 }

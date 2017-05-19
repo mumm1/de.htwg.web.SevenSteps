@@ -3,6 +3,7 @@ package de.htwg.se.SevenSteps.model.impl
 import de.htwg.se.SevenSteps.model.{IPlayer, IPlayers}
 
 import scala.collection.immutable.Map
+import scala.collection.mutable.ListBuffer
 import scala.util.{Failure, Success, Try}
 
 case class Players(curPlayer: Int = 0, players: Vector[Player] = Vector()) extends IPlayers {
@@ -38,6 +39,17 @@ case class Players(curPlayer: Int = 0, players: Vector[Player] = Vector()) exten
     copy(players = newPlayers)
   }
   def apply(i: Int): Player = players(i)
+  def getAllPossibleColorsFromAllPlayers: List[Char] = {
+    var result: ListBuffer[Char] = ListBuffer()
+    for (player <- players) {
+      for ((color, num) <- player.map.get) {
+        if (num > 0 && !result.contains(color)) {
+          result += color
+        }
+      }
+    }
+    result.toList
+  }
   override def toString: String = {
     var text = ""
     for (player <- players) {
