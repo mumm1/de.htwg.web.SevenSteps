@@ -103,10 +103,14 @@ case class Player(name: String, points: Int = 0, map: Option[Map[Char, Int]] = N
     }
   }
   def haveNoStones(): Boolean = {
-    var mapp = map.get
-    for ((k, v) <- mapp) {
-      if (!(mapp.apply(k) == 0)) {
-        return false
+    map match {
+      case None => true
+      case Some(map) => {
+        for ((k, v) <- map) {
+          if (!(map.apply(k) == 0)) {
+            return false
+          }
+        }
       }
     }
     true
