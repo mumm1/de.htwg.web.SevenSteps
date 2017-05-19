@@ -56,7 +56,7 @@ case class StartGame(c: Controller) extends Command {
 
 case class NextPlayer(c: Controller) extends Command {
   override def doIt(): Try[_] = {
-    if (c.isGameEnd()) {
+    if (c.isGameEnd || c.isDeadlock) {
       c.finish()
     } else {
       c.players = c.players.next()

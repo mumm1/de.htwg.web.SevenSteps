@@ -140,7 +140,7 @@ class ControllerStatePlaySpec extends WordSpec {
       c.setStone(0, 0).isSuccess should be(true)
       c.isDeadlock should be(true)
     }
-    "can check deadlock situation when gris is not full" in {
+    "can check deadlock situation when grit is not full" in {
       before(colors = "ab", numPlayers = 2)
       c.players = c.players.setAllStonesTo(1)
       while (c.bag.get() != None) {}
@@ -150,6 +150,16 @@ class ControllerStatePlaySpec extends WordSpec {
       c.isDeadlock should be(false)
       c.players = c.players.updateCurPlayer(c.getCurPlayer.incColor('b', -1))
       c.isDeadlock should be(true)
+    }
+    "checks on command next if the game is in deadlock and finish it" in {
+      before("a")
+      c.players = c.players.setAllStonesTo(3)
+      c.isDeadlock should be(false)
+      c.setStone(0, 0).isSuccess should be(true)
+      c.isDeadlock should be(true)
+      c.nextPlayer().isSuccess should be(true)
+      c.gameState.isInstanceOf[Finish] should be(true)
+      c.getWinningPlayer() should be(c.getCurPlayer)
     }
   }
   "A Controller observed by an Observer" should {
