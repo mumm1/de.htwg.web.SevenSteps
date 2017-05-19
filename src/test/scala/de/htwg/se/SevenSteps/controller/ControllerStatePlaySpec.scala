@@ -98,6 +98,42 @@ class ControllerStatePlaySpec extends WordSpec {
       c.grid.getHeights should be(List(1, 1, 0, 1))
       c.setStone(1, 0).isSuccess should be(true)
     }
+    "can check if the game is finished (there are no stones any more)" in {
+      before()
+      c.isGameEnd should be(false)
+      c.players = c.players.setAllStonesTo(0)
+      while (c.bag.get() != None) {}
+      c.isGameEnd should be(true)
+    }
+    "checks on command next if the game is finished" in {
+      before()
+      c.players.setAllStonesTo(1)
+      c.nextPlayer().isSuccess should be(true)
+      c.setStone(0, 0).isSuccess should be(true)
+      // delete all stones
+      c.players = c.players.setAllStonesTo(0)
+      while (c.bag.get() != None) {}
+      c.nextPlayer().isSuccess should be(true)
+      c.gameState.isInstanceOf[Finish] should be(true)
+      c.getWinningPlayer() should be(c.getCurPlayer)
+      c.isGameEnd should be(true)
+    }
+    "selects the winning player with the most stones" in {
+      before()
+      c.players.setAllStonesTo(2)
+      c.setStone(0, 0).isSuccess should be(true)
+      c.setStone(1, 0).isSuccess should be(true)
+      val winner = c.players.getCurPlayer
+      c.nextPlayer().isSuccess should be(true)
+      c.setStone(1, 1).isSuccess should be(true)
+      // delete all stones
+      c.players = c.players.setAllStonesTo(0)
+      while (c.bag.get() != None) {}
+      c.nextPlayer().isSuccess should be(true)
+      c.gameState.isInstanceOf[Finish] should be(true)
+      c.getWinningPlayer().name should be(winner.name)
+      c.isGameEnd should be(true)
+    }
   }
   "A Controller observed by an Observer" should {
     "notify its Observer after every Change" in {
