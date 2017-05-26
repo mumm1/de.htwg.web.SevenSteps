@@ -11,7 +11,7 @@ trait ModelFactory {
 
 object ModelFactory1 extends ModelFactory {
   def newGrid(colors: String, cols: Int): IGrid = new Grid(colors, cols)
-  def newGrid(): IGrid = Grid(0, 0)
+  def newGrid(): IGrid = new Grid("aaabbba  ab a bababb abb ba aab",5)
   def newPlayers(): IPlayers = Players()
   def newBag(): IBag = Bag(random = false)
 }

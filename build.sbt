@@ -20,3 +20,5 @@ libraryDependencies += "junit" % "junit" % "4.8" % "test"
 resolvers += "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/"
 
 libraryDependencies += "com.typesafe.akka" % "akka-actor" % "2.0"
+
+libraryDependencies += "org.scala-lang" % "scala-swing" % "2.11+"

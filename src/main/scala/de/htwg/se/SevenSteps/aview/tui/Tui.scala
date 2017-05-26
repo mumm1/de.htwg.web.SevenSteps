@@ -1,4 +1,4 @@
-package de.htwg.se.SevennSteps.aview.tui
+package de.htwg.se.SevenSteps.aview.tui
 
 import de.htwg.se.SevenSteps.controller._
 import de.htwg.se.SevenSteps.util.Observer
