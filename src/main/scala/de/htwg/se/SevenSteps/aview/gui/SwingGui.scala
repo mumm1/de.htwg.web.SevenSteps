@@ -41,7 +41,9 @@ class SwingGui(controller: Controller) extends Frame with Observer{
   override def update(): Unit = redraw()
   def redraw() = {
     contents = new BorderPanel {
-      add(new TextArea(controller.players.toString), BorderPanel.Position.West)
+
+      add(playerPanel, BorderPanel.Position.West)
+ //     add(new TextArea(controller.players.toString), BorderPanel.Position.West)
       add(gridPanel, BorderPanel.Position.Center)
       add(new TextField(controller.message, 20), BorderPanel.Position.North)
     }
@@ -91,4 +93,22 @@ class SwingGui(controller: Controller) extends Frame with Observer{
     newItem
   }
   visible = true
+
+  def playerPanel: GridPanel = new GridPanel(controller.players.length, controller.grid.getColors.length + 1) {
+    for {x <- 0 until controller.players.length;color <-  '?'::controller.grid.getColors} {
+      val player = controller.players(x)
+      if(color=='?'){
+        if(player==controller.players.getCurPlayer){
+          contents += new Label{text=player.name;font = new Font("Arial", 0, 20)}
+        }else{
+          contents += new Label{text=player.name}
+        }
+      }else{
+        player.map match {
+          case None => contents += new Label("")
+          case Some(m) => contents += new Label{text=m(color).toString;foreground=ColorManager.char2Color(color)}
+        }
+      }
+    }
+  }
 }
