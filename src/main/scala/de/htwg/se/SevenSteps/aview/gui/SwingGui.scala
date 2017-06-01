@@ -119,12 +119,12 @@ class SwingGui(controller: Controller) extends Frame with Observer {
         val player = controller.players(x)
         if (player == controller.players.getCurPlayer) {
           contents += new Label {
-            text = player.name + "  "
+            text = player.name + " " + player.points + " "
             font = new Font("Verdana", 1, 20)
           }
         } else {
           contents += new Label {
-            text = player.name + "  "
+            text = player.name + "  " + player.points + " "
           }
         }
       }
@@ -133,7 +133,7 @@ class SwingGui(controller: Controller) extends Frame with Observer {
     new BorderPanel {
       add(playerP, BorderPanel.Position.West)
       add(colorP, BorderPanel.Position.East)
-      add(new Label{text="Bag: ?";font = new Font("Verdana", 1, 20)},BorderPanel.Position.North)
+      add(new Label{text="Bag: "+controller.bag.getStoneNumber();font = new Font("Verdana", 1, 20)},BorderPanel.Position.North)
     }
   }
   visible = true
