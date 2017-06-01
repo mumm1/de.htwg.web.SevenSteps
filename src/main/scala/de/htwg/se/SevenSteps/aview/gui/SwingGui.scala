@@ -94,21 +94,39 @@ class SwingGui(controller: Controller) extends Frame with Observer{
   }
   visible = true
 
-  def playerPanel: GridPanel = new GridPanel(controller.players.length, controller.grid.getColors.length + 1) {
-    for {x <- 0 until controller.players.length;color <-  '?'::controller.grid.getColors} {
-      val player = controller.players(x)
-      if(color=='?'){
-        if(player==controller.players.getCurPlayer){
-          contents += new Label{text=player.name;font = new Font("Arial", 0, 20)}
-        }else{
-          contents += new Label{text=player.name}
-        }
-      }else{
+  def playerPanel: BorderPanel = {
+
+    val colorP = new GridPanel(controller.players.length, controller.grid.getColors.length) {
+      for {x <- 0 until controller.players.length; color <- controller.grid.getColors} {
+        val player = controller.players(x)
         player.map match {
           case None => contents += new Label("")
-          case Some(m) => contents += new Label{text=m(color).toString;foreground=ColorManager.char2Color(color)}
+          case Some(m) => contents += new Label {
+            text = " " + m(color).toString + " "
+            foreground = ColorManager.char2Color(color)
+            font = new Font("Verdana", 1, 20)
+          }
         }
       }
+    }
+    val playerP = new GridPanel(controller.players.length,1){
+      for {x <- 0 until controller.players.length} {
+        val player = controller.players(x)
+        if (player == controller.players.getCurPlayer) {
+          contents += new Label {
+            text = player.name + "  "
+            font = new Font("Verdana", 1, 20)
+          }
+        } else {
+          contents += new Label {
+            text = player.name + "  "
+          }
+        }
+      }
+    }
+    new BorderPanel {
+      add(playerP, BorderPanel.Position.West)
+      add(colorP, BorderPanel.Position.East)
     }
   }
 }
