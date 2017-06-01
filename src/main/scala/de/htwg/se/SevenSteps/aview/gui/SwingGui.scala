@@ -99,15 +99,6 @@ class SwingGui(controller: Controller) extends Frame with Observer {
       contents += new CellPanel(x, y, controller)
     }
   }
-  def getButtonColor(color: Char): MenuItem = {
-    val newItem = new MenuItem(Action("       ") {
-      ColorManager.curColer = color
-    })
-    newItem.background = ColorManager.char2Color(color)
-    newItem
-  }
-  visible = true
-
   def playerPanel: BorderPanel = {
 
     val colorP = new GridPanel(controller.players.length, controller.grid.getColors.length) {
@@ -138,10 +129,19 @@ class SwingGui(controller: Controller) extends Frame with Observer {
         }
       }
     }
+
     new BorderPanel {
       add(playerP, BorderPanel.Position.West)
       add(colorP, BorderPanel.Position.East)
     }
+  }
+  visible = true
+  def getButtonColor(color: Char): MenuItem = {
+    val newItem = new MenuItem(Action("       ") {
+      ColorManager.curColer = color
+    })
+    newItem.background = ColorManager.char2Color(color)
+    newItem
   }
 }
 

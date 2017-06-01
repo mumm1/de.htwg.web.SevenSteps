@@ -59,9 +59,11 @@ case class Bag(var bag: Array[Char] = new Array[Char](0),
   }
   def isEmpty(): Boolean = {
     !(bag.length >= entfernt + 1)
-
-
   }
+  def getStoneNumber(): Int = {
+    bag.length - entfernt
+  }
+
   def copy1(newColors: List[Char]): Bag = {
     copy(colors = newColors)
   }

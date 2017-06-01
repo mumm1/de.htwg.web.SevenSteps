@@ -8,4 +8,5 @@ trait IBag {
   def isEmpty(): Boolean
   def fillup(): Unit
   def copy1(newColors: List[Char]): IBag
+  def getStoneNumber(): Int
 }
