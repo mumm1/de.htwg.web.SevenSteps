@@ -16,44 +16,33 @@ class SwingGui(controller: Controller) extends Frame with Observer{
 
   def redraw() = {
     contents = new BorderPanel {
-      //    add(buton, BorderPanel.Position.North)
-      add(gridPanel, BorderPanel.Position.Center)
+      add(grid, BorderPanel.Position.Center)
       add(new TextField(controller.message, 20), BorderPanel.Position.South)
+      //add(new TextField(if(controller.getCurPlayer != null){ controller.getCurPlayer.toString}else{"dddd"}, 20), BorderPanel.Position.East)
+
+
     }
   }
-
-  def gridPanel : GridPanel = new GridPanel(controller.grid.rows, controller.grid.cols) {
+  def grid: GridPanel = new GridPanel(controller.grid.rows, controller.grid.cols) {
     for {x <- 0 until controller.grid.rows ; y <- 0 until controller.grid.cols} {
-      contents += new Button {
-        val cell = controller.grid.cell(x,y).get
-        background = char2Color(cell.color)
-        action = Action(if(cell.color != ' '){cell.height.toString}else{""}){ controller.setStone(x,y)}
-      }
+      contents += new CellPanel(x, y, controller)
     }
   }
 
-  def char2Color(c:Char):Color = {
-    c match {
-      case 'a' => java.awt.Color.LIGHT_GRAY
-      case 'b' => java.awt.Color.BLUE
-      case 'g' => java.awt.Color.GREEN
-      case 'r' => java.awt.Color.RED
-      case 'y' => java.awt.Color.YELLOW
-      case 'o' => java.awt.Color.ORANGE
-      case _   => java.awt.Color.WHITE
-    }
-  }
+
 
   contents = new BorderPanel {
 //    add(buton, BorderPanel.Position.North)
-    add(gridPanel, BorderPanel.Position.Center)
+    add(grid, BorderPanel.Position.Center)
     add(new TextField(controller.message, 20), BorderPanel.Position.South)
   }
 
   menuBar = new MenuBar {
     contents += new Menu("File") {
       mnemonic = Key.F
-      contents += new MenuItem(Action("New Grid") { controller.newGrid("aabbbbaababb  bab ba ba ",7) })
+      contents += new MenuItem(Action("New Grid") {
+        controller.newGrid("aabbbbaababbbabbaba ", 4)
+      })
       contents += new MenuItem(Action("Add Player") { controller.addPlayer("Hans") })
       contents += new MenuItem(Action("Start Game") { controller.startGame() })
       contents += new MenuItem(Action("Next Player") { controller.nextPlayer() })
@@ -67,5 +56,4 @@ class SwingGui(controller: Controller) extends Frame with Observer{
   }
 
   visible = true
-  preferredSize = new Dimension(900,900)
 }

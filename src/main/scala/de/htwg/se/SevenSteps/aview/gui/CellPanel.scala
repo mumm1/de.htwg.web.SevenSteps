@@ -4,31 +4,40 @@ import scala.swing._
 import javax.swing.table._
 import scala.swing.event._
 import de.htwg.se.SevenSteps.controller.Controller
+import scala.xml.dtd.ContentModelParser
 
 class CellPanel(row: Int, col: Int, controller: Controller) extends FlowPanel {
-
-  val givenCellColor = new Color(200, 200, 255)
-  val cellColor = new Color(224, 224, 255)
-  val highlightedCellColor = new Color(192, 255, 192)
-
-  def cellText(row: Int, col: Int) : String = controller.grid.cell(row,col).toString
-
+  val cell = controller.grid.cell(row, col).get
   val label =
     new Label {
-      text = cellText(row, col)
-      font = new Font("Verdana", 1, 36)
+      if (cell.color != ' ') {
+        text = cell.height.toString
+        font = new Font("Verdana", 1, 36)
+      }
     }
-
-  val cell = new BoxPanel(Orientation.Vertical) {
-    contents += label
+  val field = new BoxPanel(Orientation.Vertical) {
     preferredSize = new Dimension(51, 51)
-    border = Swing.BeveledBorder(Swing.Raised)
+    // border = Swing.BeveledBorder(Swing.Raised)
     listenTo(mouse.clicks)
+    self.setBackground(char2Color(cell.color))
+    contents += label
+
     reactions += {
       case MouseClicked(src, pt, mod, clicks, pops) => {
         controller.setStone(row, col)
       }
     }
   }
-
+  def char2Color(c: Char): Color = {
+    c match {
+      case 'a' => java.awt.Color.LIGHT_GRAY
+      case 'b' => java.awt.Color.BLUE
+      case 'g' => java.awt.Color.GREEN
+      case 'r' => java.awt.Color.RED
+      case 'y' => java.awt.Color.YELLOW
+      case 'o' => java.awt.Color.ORANGE
+      case _ => java.awt.Color.WHITE
+    }
+  }
+  contents += field
 }
