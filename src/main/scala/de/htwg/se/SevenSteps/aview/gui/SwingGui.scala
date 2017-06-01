@@ -141,6 +141,7 @@ class SwingGui(controller: Controller) extends Frame with Observer {
     new BorderPanel {
       add(playerP, BorderPanel.Position.West)
       add(colorP, BorderPanel.Position.East)
+      add(new Label{text="Bag: ?";font = new Font("Verdana", 1, 20)},BorderPanel.Position.North)
     }
   }
 }
