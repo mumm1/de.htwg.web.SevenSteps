@@ -6,6 +6,11 @@ import scala.swing.Swing.LineBorder
 import scala.swing.event._
 import de.htwg.se.SevenSteps.controller._
 import de.htwg.se.SevenSteps.util.Observer
+import scala.swing._
+import scala.swing.BorderPanel.Position._
+import event._
+import java.awt.{Color, Graphics2D}
+import scala.util.Random
 
 import scala.io.Source._
 
@@ -62,6 +67,8 @@ class SwingGui(controller: Controller) extends Frame with Observer{
       contents += new MenuItem(Action("Add Player") { controller.addPlayer("Hans") })
       contents += new MenuItem(Action("Start Game") { controller.startGame() })
       contents += new MenuItem(Action("Next Player") { controller.nextPlayer() })
+      contents += new MenuItem(Action("Test") {})
+
       contents += new MenuItem(Action("Quit") { System.exit(0) })
     }
     contents += new Menu("Edit") {
@@ -91,4 +98,11 @@ class SwingGui(controller: Controller) extends Frame with Observer{
     newItem
   }
   visible = true
+}
+
+class PrepareWindow() extends SimpleSwingApplication
+
+def gridPanel: GridPanel = new GridPanel () {
+  visi
+}
 }

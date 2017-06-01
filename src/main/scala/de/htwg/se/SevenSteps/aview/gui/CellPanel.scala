@@ -36,3 +36,5 @@ class CellPanel(row: Int, col: Int, controller: Controller) extends FlowPanel {
   }
   contents += field
 }
+
+
