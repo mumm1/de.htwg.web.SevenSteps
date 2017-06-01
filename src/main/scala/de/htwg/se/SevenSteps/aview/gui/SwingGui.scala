@@ -39,14 +39,12 @@ class SwingGui(controller: Controller) extends Frame with Observer{
       contents += new Button {
         val cell = controller.grid.cell(x,y).get
         background = char2Color(cell.color)
-        action = Action(if(cell.color != ' '){cell.height.toString}else{""}){
-          if(controller.gameState.isInstanceOf[Play]) {
-            controller.setStone(x, y)
+        action = if(controller.gameState.isInstanceOf[Prepare]) {
+          Action(""){controller.setColor(x,y,curColor)}
           }
-          else if(controller.gameState.isInstanceOf[Prepare]) {
-            controller.setColor(x,y,'z')
+          else {
+            Action(if(cell.color != ' '){cell.height.toString}else{""}){controller.setStone(x,y)}
           }
-        }
       }
     }
   }
@@ -63,20 +61,53 @@ class SwingGui(controller: Controller) extends Frame with Observer{
     }
   }
 
-  val item = new MenuItem(new Action("Say Hello") {
-    def apply = println("Hello World");
-  })
-
-  val popup = new PopupMenu
-  popup.add(item)
-  popup.setVisible(true)
-
   contents = new BorderPanel {
     add(new TextArea(controller.players.toString), BorderPanel.Position.West)
     add(gridPanel, BorderPanel.Position.Center)
     add(new TextField(controller.message, 20), BorderPanel.Position.North)
   }
 
+  def newMenuBar: MenuBar = {
+    new MenuBar {
+      contents += new Menu("File") {
+        mnemonic = Key.F
+        contents += new MenuItem(Action("New Grid") {
+          controller.newGrid("aabbbbaababb  bab ba ba ", 7)
+        })
+        contents += new MenuItem(Action("Add Player") {
+          controller.addPlayer("Hans")
+        })
+        contents += new MenuItem(Action("Start Game") {
+          controller.startGame()
+        })
+        contents += new MenuItem(Action("Next Player") {
+          controller.nextPlayer()
+        })
+        contents += new MenuItem(Action("Quit") {
+          System.exit(0)
+        })
+      }
+      contents += new Menu("Edit") {
+        mnemonic = Key.E
+        contents += new MenuItem(Action("Undo") {
+          controller.undo()
+        })
+        contents += new MenuItem(Action("Redo") {
+          controller.redo()
+        })
+      }
+      contents += new Menu("Grid Colors") {
+        mnemonic = Key.G
+        contents += getButtonColor('a')
+        contents += getButtonColor('g')
+        contents += getButtonColor('b')
+        contents += getButtonColor('r')
+        contents += getButtonColor('y')
+        contents += getButtonColor('o')
+        contents += getButtonColor(' ')
+      }
+    }
+  }
   menuBar = new MenuBar {
     contents += new Menu("File") {
       mnemonic = Key.F
@@ -91,8 +122,23 @@ class SwingGui(controller: Controller) extends Frame with Observer{
       contents += new MenuItem(Action("Undo") { controller.undo() })
       contents += new MenuItem(Action("Redo") { controller.redo() })
     }
+    contents += new Menu("Grid Colors") {
+      mnemonic = Key.G
+      contents += getButtonColor('a')
+      contents += getButtonColor('g')
+      contents += getButtonColor('b')
+      contents += getButtonColor('r')
+      contents += getButtonColor('y')
+      contents += getButtonColor('o')
+      contents += getButtonColor(' ')
+    }
   }
-
+  var curColor = ' '
+  def getButtonColor(color:Char):MenuItem = {
+    val newItem = new MenuItem(Action("       "){curColor = color})
+    newItem.background=char2Color(color)
+    newItem
+  }
   visible = true
   preferredSize = new Dimension(900,900)
 }
