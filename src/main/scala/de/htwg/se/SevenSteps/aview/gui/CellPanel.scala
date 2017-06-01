@@ -7,7 +7,6 @@ import de.htwg.se.SevenSteps.controller.{Controller, Prepare}
 import scala.xml.dtd.ContentModelParser
 
 class CellPanel(row: Int, col: Int, controller: Controller, curColorChar: Char) extends FlowPanel {
-  val curColor = Converter.char2Color(curColorChar)
   val cell = controller.grid.cell(row, col).get
   val label =
     new Label {
