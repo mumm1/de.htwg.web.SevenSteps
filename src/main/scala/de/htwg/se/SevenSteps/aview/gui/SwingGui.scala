@@ -1,7 +1,7 @@
 package de.htwg.se.SevenSteps.aview.gui
 
 import javax.swing.JPopupMenu
-
+import de.htwg.se.SevenSteps.aview.gui._
 import scala.swing._
 import scala.swing.Swing.LineBorder
 import scala.swing.event._
@@ -24,8 +24,8 @@ class PopupMenu extends Component
 class SwingGui(controller: Controller) extends Frame with Observer{
 
   controller.add(this)
+  var curColor = ' '
   override def update(): Unit = redraw()
-
   def redraw() = {
     contents = new BorderPanel {
       add(new TextArea(controller.players.toString), BorderPanel.Position.West)
@@ -33,31 +33,10 @@ class SwingGui(controller: Controller) extends Frame with Observer{
       add(new TextField(controller.message, 20), BorderPanel.Position.North)
     }
   }
-
   def gridPanel : GridPanel = new GridPanel(controller.grid.rows, controller.grid.cols) {
     for {x <- 0 until controller.grid.rows ; y <- 0 until controller.grid.cols} {
-      contents += new Button {
-        val cell = controller.grid.cell(x,y).get
-        background = char2Color(cell.color)
-        action = if(controller.gameState.isInstanceOf[Prepare]) {
-          Action(""){controller.setColor(x,y,curColor)}
-          }
-          else {
-            Action(if(cell.color != ' '){cell.height.toString}else{""}){controller.setStone(x,y)}
-          }
-      }
-    }
-  }
+      contents += new CellPanel(x, y, controller)
 
-  def char2Color(c:Char):Color = {
-    c match {
-      case 'a' => java.awt.Color.LIGHT_GRAY
-      case 'b' => java.awt.Color.BLUE
-      case 'g' => java.awt.Color.GREEN
-      case 'r' => java.awt.Color.RED
-      case 'y' => java.awt.Color.YELLOW
-      case 'o' => java.awt.Color.ORANGE
-      case _   => java.awt.Color.WHITE
     }
   }
 
@@ -66,7 +45,6 @@ class SwingGui(controller: Controller) extends Frame with Observer{
     add(gridPanel, BorderPanel.Position.Center)
     add(new TextField(controller.message, 20), BorderPanel.Position.North)
   }
-
   def newMenuBar: MenuBar = {
     new MenuBar {
       contents += new Menu("File") {
@@ -133,12 +111,21 @@ class SwingGui(controller: Controller) extends Frame with Observer{
       contents += getButtonColor(' ')
     }
   }
-  var curColor = ' '
   def getButtonColor(color:Char):MenuItem = {
     val newItem = new MenuItem(Action("       "){curColor = color})
     newItem.background=char2Color(color)
     newItem
   }
+  def char2Color(c: Char): Color = {
+    c match {
+      case 'a' => java.awt.Color.LIGHT_GRAY
+      case 'b' => java.awt.Color.BLUE
+      case 'g' => java.awt.Color.GREEN
+      case 'r' => java.awt.Color.RED
+      case 'y' => java.awt.Color.YELLOW
+      case 'o' => java.awt.Color.ORANGE
+      case _ => java.awt.Color.WHITE
+    }
+  }
   visible = true
-  preferredSize = new Dimension(900,900)
 }
