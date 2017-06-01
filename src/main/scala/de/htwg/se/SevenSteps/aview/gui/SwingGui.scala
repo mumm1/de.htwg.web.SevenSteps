@@ -67,47 +67,6 @@ class SwingGui(controller: Controller) extends Frame with Observer{
     add(new TextField(controller.message, 20), BorderPanel.Position.North)
   }
 
-  def newMenuBar: MenuBar = {
-    new MenuBar {
-      contents += new Menu("File") {
-        mnemonic = Key.F
-        contents += new MenuItem(Action("New Grid") {
-          controller.newGrid("aabbbbaababb  bab ba ba ", 7)
-        })
-        contents += new MenuItem(Action("Add Player") {
-          controller.addPlayer("Hans")
-        })
-        contents += new MenuItem(Action("Start Game") {
-          controller.startGame()
-        })
-        contents += new MenuItem(Action("Next Player") {
-          controller.nextPlayer()
-        })
-        contents += new MenuItem(Action("Quit") {
-          System.exit(0)
-        })
-      }
-      contents += new Menu("Edit") {
-        mnemonic = Key.E
-        contents += new MenuItem(Action("Undo") {
-          controller.undo()
-        })
-        contents += new MenuItem(Action("Redo") {
-          controller.redo()
-        })
-      }
-      contents += new Menu("Grid Colors") {
-        mnemonic = Key.G
-        contents += getButtonColor('a')
-        contents += getButtonColor('g')
-        contents += getButtonColor('b')
-        contents += getButtonColor('r')
-        contents += getButtonColor('y')
-        contents += getButtonColor('o')
-        contents += getButtonColor(' ')
-      }
-    }
-  }
   menuBar = new MenuBar {
     contents += new Menu("File") {
       mnemonic = Key.F
@@ -122,7 +81,7 @@ class SwingGui(controller: Controller) extends Frame with Observer{
       contents += new MenuItem(Action("Undo") { controller.undo() })
       contents += new MenuItem(Action("Redo") { controller.redo() })
     }
-    contents += new Menu("Grid Colors") {
+    contents += new Menu("GridColors") {
       mnemonic = Key.G
       contents += getButtonColor('a')
       contents += getButtonColor('g')
