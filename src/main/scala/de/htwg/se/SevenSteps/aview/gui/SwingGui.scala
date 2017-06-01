@@ -11,16 +11,16 @@ import scala.swing.BorderPanel.Position._
 import event._
 import java.awt.{Color, Graphics2D}
 import scala.util.Random
-
 import scala.io.Source._
 
-
-class PopupMenu extends Component
-{
-  override lazy val peer : JPopupMenu = new JPopupMenu
-
-  def add(item:MenuItem) : Unit = { peer.add(item.peer) }
-  def setVisible(visible:Boolean) : Unit = { peer.setVisible(visible) }
+class PopupMenu extends Component {
+  override lazy val peer: JPopupMenu = new JPopupMenu
+  def add(item: MenuItem): Unit = {
+    peer.add(item.peer)
+  }
+  def setVisible(visible: Boolean): Unit = {
+    peer.setVisible(visible)
+  }
   /* Create any other peer methods here */
 }
 
@@ -40,9 +40,8 @@ object ColorManager {
   }
 }
 
-class SwingGui(controller: Controller) extends Frame with Observer{
+class SwingGui(controller: Controller) extends Frame with Observer {
   title = "Seven Steps"
-
   controller.add(this)
   override def update(): Unit = redraw()
   def redraw() = {
@@ -52,32 +51,35 @@ class SwingGui(controller: Controller) extends Frame with Observer{
       add(new TextField(controller.message, 20), BorderPanel.Position.North)
     }
   }
-
-
-
   contents = new BorderPanel {
     add(new TextArea(controller.players.toString), BorderPanel.Position.West)
     add(gridPanel, BorderPanel.Position.Center)
     add(new TextField(controller.message, 20), BorderPanel.Position.North)
   }
-
   menuBar = new MenuBar {
     contents += new Menu("File") {
       mnemonic = Key.F
-      contents += new MenuItem(Action("New Grid") { controller.newGrid("aabbbbaababb  bab ba ba ",7) })
-      contents += new MenuItem(Action("Add Player") { controller.addPlayer("Hans") })
-      contents += new MenuItem(Action("Start Game") { controller.startGame() })
-      contents += new MenuItem(Action("Next Player") { controller.nextPlayer() })
-      contents += new MenuItem(Action("Test") {
+      contents += new MenuItem(Action("Prepare Game") {
         new PrepareWindow(controller)
       })
-
-      contents += new MenuItem(Action("Quit") { System.exit(0) })
+      contents += new MenuItem(Action("Start Game") {
+        controller.startGame()
+      })
+      contents += new MenuItem(Action("Next Player") {
+        controller.nextPlayer()
+      })
+      contents += new MenuItem(Action("Quit") {
+        System.exit(0)
+      })
     }
     contents += new Menu("Edit") {
       mnemonic = Key.E
-      contents += new MenuItem(Action("Undo") { controller.undo() })
-      contents += new MenuItem(Action("Redo") { controller.redo() })
+      contents += new MenuItem(Action("Undo") {
+        controller.undo()
+      })
+      contents += new MenuItem(Action("Redo") {
+        controller.redo()
+      })
     }
     contents += new Menu("GridColors") {
       mnemonic = Key.G
@@ -95,8 +97,10 @@ class SwingGui(controller: Controller) extends Frame with Observer{
       contents += new CellPanel(x, y, controller)
     }
   }
-  def getButtonColor(color:Char):MenuItem = {
-    val newItem = new MenuItem(Action("       "){ColorManager.curColer = color})
+  def getButtonColor(color: Char): MenuItem = {
+    val newItem = new MenuItem(Action("       ") {
+      ColorManager.curColer = color
+    })
     newItem.background = ColorManager.char2Color(color)
     newItem
   }
