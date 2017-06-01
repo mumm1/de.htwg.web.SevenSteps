@@ -19,7 +19,9 @@ class PopupMenu extends Component
   /* Create any other peer methods here */
 }
 
-object Converter {
+object ColorManager {
+  var curColer = ' '
+  def getCurColer: Color = char2Color(curColer)
   def char2Color(c: Char): Color = {
     c match {
       case 'a' => java.awt.Color.LIGHT_GRAY
@@ -36,7 +38,6 @@ object Converter {
 class SwingGui(controller: Controller) extends Frame with Observer{
 
   controller.add(this)
-  var curColor = ' '
   override def update(): Unit = redraw()
   def redraw() = {
     contents = new BorderPanel {
@@ -81,12 +82,12 @@ class SwingGui(controller: Controller) extends Frame with Observer{
   }
   def gridPanel: GridPanel = new GridPanel(controller.grid.rows, controller.grid.cols) {
     for {x <- 0 until controller.grid.rows; y <- 0 until controller.grid.cols} {
-      contents += new CellPanel(x, y, controller, curColor)
+      contents += new CellPanel(x, y, controller)
     }
   }
   def getButtonColor(color:Char):MenuItem = {
-    val newItem = new MenuItem(Action("       "){curColor = color})
-    newItem.background = Converter.char2Color(color)
+    val newItem = new MenuItem(Action("       "){ColorManager.curColer = color})
+    newItem.background = ColorManager.char2Color(color)
     newItem
   }
   visible = true
