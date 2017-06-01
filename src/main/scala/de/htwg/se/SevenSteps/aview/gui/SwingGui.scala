@@ -41,6 +41,7 @@ object ColorManager {
 }
 
 class SwingGui(controller: Controller) extends Frame with Observer{
+  title = "Seven Steps"
 
   controller.add(this)
   override def update(): Unit = redraw()
@@ -67,7 +68,9 @@ class SwingGui(controller: Controller) extends Frame with Observer{
       contents += new MenuItem(Action("Add Player") { controller.addPlayer("Hans") })
       contents += new MenuItem(Action("Start Game") { controller.startGame() })
       contents += new MenuItem(Action("Next Player") { controller.nextPlayer() })
-      contents += new MenuItem(Action("Test") {})
+      contents += new MenuItem(Action("Test") {
+        new PrepareWindow(controller)
+      })
 
       contents += new MenuItem(Action("Quit") { System.exit(0) })
     }
@@ -100,9 +103,44 @@ class SwingGui(controller: Controller) extends Frame with Observer{
   visible = true
 }
 
-class PrepareWindow() extends SimpleSwingApplication
-
-def gridPanel: GridPanel = new GridPanel () {
-  visi
-}
+class PrepareWindow(controller: Controller) extends MainFrame {
+  title = "Prepare Game"
+  val nameField = new TextField(" ", 20)
+  val rows = new TextField(" ", 5) {
+    listenTo(keys)
+    reactions += { case e: KeyTyped =>
+      if (!e.char.isDigit) e.consume
+    }
+  }
+  val col = new TextField(" ", 5) {
+    listenTo(keys)
+    reactions += { case e: KeyTyped =>
+      if (!e.char.isDigit) e.consume
+    }
+  }
+  val gridPanel = new FlowPanel() {
+    contents += new Label("Columns:")
+    contents += col
+    contents += new Label("Rows:")
+    contents += rows
+    contents += Button("Create") {
+      val rowNum = rows.text.trim.toInt
+      val colNum = col.text.trim.toInt
+      controller.newGrid(" " * rowNum * colNum, colNum)
+      close()
+    }
+  }
+  val playerPanel = new FlowPanel() {
+    contents += new Label("Name:")
+    contents += nameField
+    contents += Button("Add") {
+      controller.addPlayer(nameField.text)
+    }
+  }
+  val mainPanel = new BorderPanel() {
+    add(playerPanel, BorderPanel.Position.West)
+    add(gridPanel, BorderPanel.Position.East)
+  }
+  contents = mainPanel
+  visible = true
 }
