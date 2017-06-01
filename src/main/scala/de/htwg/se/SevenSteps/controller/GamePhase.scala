@@ -13,6 +13,7 @@ case class Prepare(c: Controller) extends GameState {
       case _: AddPlayer => c.undoManager.doIt(com)
       case _: NewGrid => c.undoManager.doIt(com)
       case _: StartGame => c.undoManager.doIt(com)
+      case _: SetColor => c.undoManager.doIt(com)
       case _ => Failure(new Exception("ILLEGAL COMMAND"))
     }
   }
