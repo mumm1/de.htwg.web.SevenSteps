@@ -1,6 +1,6 @@
 package de.htwg.se.SevenSteps.controller
 
-import de.htwg.se.SevenSteps.model.impl.Players
+import de.htwg.se.SevenSteps.model.impl.{Grid, Players}
 import de.htwg.se.SevenSteps.util.Observer
 import org.junit.runner.RunWith
 import org.scalatest.Matchers.{be, _}
@@ -17,12 +17,26 @@ class ControllerStatePrepareSpec extends WordSpec {
       c.addPlayer("Peter").get should be(c.copy(players = Players().push("Hugo").push("Peter"), message = "Added Player Peter"))
       c.undo().get should be(c.copy(players = Players().push("Hugo"), message = "Deleted Player Peter"))
     }
+    "set color of grid and undo this" in {
+      c = Controller()
+      c.newGrid("aabb",2).isSuccess should be(true)
+      c.setColor(0,0,'b').get should be(c.copy(grid = new Grid("babb",2) , message = "Grid was colored"))
+      c.undo().get should be(c.copy(grid = new Grid("aabb",2) , message = "Grid was colored back"))
+    }
+    "set color only inside of the grid" in {
+      c = Controller()
+      c.newGrid("a",1).isSuccess should be(true)
+      c.setColor(0,0,'b').isSuccess should be(true)
+      c.setColor(-1,0,'b').isSuccess should be(false)
+      c.setColor(1,0,'b').isSuccess should be(false)
+    }
     "generate a new Grid and undo this" in {
       c = Controller()
+      c.newGrid("z", 1).isSuccess should be(true)
       c.newGrid("ab sdd", 3).isSuccess should be(true)
       c.grid.cellsToString() should be("ab sdd")
       c.undo().isSuccess should be(true)
-      c.grid.cellsToString() should be("")
+      c.grid.cellsToString() should be("z")
     }
     "start the game (minimum 1 Player and a non empty grid) and can't undo that" in {
       c = Controller()

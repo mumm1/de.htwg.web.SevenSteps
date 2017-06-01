@@ -92,6 +92,7 @@ case class Controller(var grid: IGrid = ModelFactory1.newGrid(),
     }
     true
   }
+  def setColor(row: Int, col: Int,color:Char): Try[Controller] = doIt(SetColor(row,col,color,this))
   override def toString: String = {
     val text = "\n############  " + message + "  ############\n\n"
     val len = text.length()

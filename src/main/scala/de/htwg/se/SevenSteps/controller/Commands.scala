@@ -18,6 +18,27 @@ case class AddPlayer(name: String, c: Controller) extends Command {
   }
 }
 
+case class SetColor(row: Int, col: Int,color:Char, c: Controller) extends Command {
+  var oldColor = ' '
+  override def doIt(): Try[_] = {
+    c.grid.cell(row, col) match {
+      case Failure(_) => Failure(new Exception("You have to set a stone inside the grid"))
+      case Success(cell) => {
+        oldColor = cell.color
+        c.grid = c.grid.set(row, col,color)
+        c.message = "Grid was colored"
+        Success()
+      }
+    }
+
+  }
+  override def undo(): Try[_] = {
+    c.grid = c.grid.set(row, col,oldColor)
+    c.message = "Grid was colored back"
+    Success()
+  }
+}
+
 case class NewGrid(colors: String, cols: Int, c: Controller) extends Command {
   var oldGrid = c.grid
   override def doIt(): Try[_] = {
