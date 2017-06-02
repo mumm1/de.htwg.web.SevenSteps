@@ -9,7 +9,7 @@ trait GameState {
   def exploreCommand(com: Command): Try[_]
 }
 
-case class Prepare(c: Controller) extends GameState {
+case class Prepare(c: IController) extends GameState {
   override def exploreCommand(com: Command): Try[_] = {
     com match {
       case _: AddPlayer => c.undoManager.doIt(com)
@@ -21,7 +21,7 @@ case class Prepare(c: Controller) extends GameState {
   }
 }
 
-case class Play(c: Controller) extends GameState {
+case class Play(c: IController) extends GameState {
   override def exploreCommand(com: Command): Try[_] = {
     com match {
       case _: NextPlayer => c.undoManager.doIt(com)
@@ -31,7 +31,7 @@ case class Play(c: Controller) extends GameState {
   }
 }
 
-case class Finish(c: Controller) extends GameState {
+case class Finish(c: IController) extends GameState {
   override def exploreCommand(com: Command): Try[_] = {
     com match {
       case _ => Failure(new Exception("ILLEGAL COMMAND"))
