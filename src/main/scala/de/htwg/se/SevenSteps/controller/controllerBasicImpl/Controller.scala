@@ -6,12 +6,12 @@ import de.htwg.se.SevenSteps.model._
 import de.htwg.se.SevenSteps.model.bagComponent.IBag
 import de.htwg.se.SevenSteps.model.gridComponent.IGrid
 import de.htwg.se.SevenSteps.model.playerComponent.{IPlayer, IPlayers}
-import de.htwg.se.SevenSteps.util.{Command, Observable, UndoManager}
+import de.htwg.se.SevenSteps.util.{Command, UndoManager}
 
 import scala.collection.mutable
 import scala.util._
 
-case class Controller(modelFactory: ModelFactory = ModelFactory1) extends Observable {
+case class Controller(modelFactory: ModelFactory = ModelFactory1) extends IController{
   var gameState: GameState = Prepare(this)
   var message: String = "Welcome to SevenSteps"
   var curHeight: Int = 0

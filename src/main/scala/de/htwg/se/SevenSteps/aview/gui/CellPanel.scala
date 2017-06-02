@@ -4,12 +4,12 @@ import scala.swing._
 import javax.swing.table._
 
 import scala.swing.event._
-import de.htwg.se.SevenSteps.controller.Prepare
+import de.htwg.se.SevenSteps.controller.{IController, Prepare}
 import de.htwg.se.SevenSteps.controller.controllerBasicImpl.Controller
 
 import scala.xml.dtd.ContentModelParser
 
-class CellPanel(row: Int, col: Int, controller: Controller) extends FlowPanel {
+class CellPanel(row: Int, col: Int, controller: IController) extends FlowPanel {
   val cell = controller.grid.cell(row, col).get
   val label =
     new Label {

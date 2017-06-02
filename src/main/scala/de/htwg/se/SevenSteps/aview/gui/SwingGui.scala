@@ -45,7 +45,7 @@ object ColorManager {
   }
 }
 
-class SwingGui(controller: Controller) extends Frame with Observer {
+class SwingGui(controller: IController) extends Frame with Observer {
   title = "Seven Steps"
   controller.add(this)
   override def update(): Unit = redraw()
@@ -151,7 +151,7 @@ class SwingGui(controller: Controller) extends Frame with Observer {
   }
 }
 
-class PrepareWindow(controller: Controller) extends MainFrame {
+class PrepareWindow(controller: IController) extends MainFrame {
   title = "Prepare Game"
   val nameField = new TextField(" ", 20)
   val rows = new TextField(" ", 5) {
