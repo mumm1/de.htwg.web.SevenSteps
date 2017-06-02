@@ -1,6 +1,7 @@
 
 package de.htwg.se.SevenSteps.controller.controllerBasicImpl
 
+import de.htwg.se.SevenSteps.{Factory, FactoryBasic}
 import de.htwg.se.SevenSteps.controller._
 import de.htwg.se.SevenSteps.model._
 import de.htwg.se.SevenSteps.model.bagComponent.IBag
@@ -11,7 +12,7 @@ import de.htwg.se.SevenSteps.util.{Command, UndoManager}
 import scala.collection.mutable
 import scala.util._
 
-case class Controller(modelFactory: ModelFactory = ModelFactory1) extends IController{
+case class Controller(modelFactory: Factory = FactoryBasic) extends IController{
   var gameState: GameState = Prepare(this)
   var message: String = "Welcome to SevenSteps"
   var curHeight: Int = 0
