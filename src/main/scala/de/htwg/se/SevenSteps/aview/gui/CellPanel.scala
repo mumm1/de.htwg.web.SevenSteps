@@ -1,12 +1,9 @@
 package de.htwg.se.SevenSteps.aview.gui
 
 import scala.swing._
-import javax.swing.table._
 
 import scala.swing.event._
 import de.htwg.se.SevenSteps.controller.{IController, IPrepare}
-
-import scala.xml.dtd.ContentModelParser
 
 class CellPanel(row: Int, col: Int, controller: IController) extends FlowPanel {
   val cell = controller.grid.cell(row, col).get
