@@ -4,8 +4,8 @@ import scala.swing._
 import javax.swing.table._
 
 import scala.swing.event._
-import de.htwg.se.SevenSteps.controller.{IController, Prepare}
-import de.htwg.se.SevenSteps.controller.controllerBasicImpl.Controller
+import de.htwg.se.SevenSteps.controller.IController
+import de.htwg.se.SevenSteps.controller.controllerBasicImpl.{Controller, Prepare}
 
 import scala.xml.dtd.ContentModelParser
 

@@ -1,6 +1,7 @@
 package de.htwg.se.SevenSteps.aview.tui
 
 import de.htwg.se.SevenSteps.controller._
+import de.htwg.se.SevenSteps.controller.controllerBasicImpl.{Play, Prepare}
 import de.htwg.se.SevenSteps.util.Observer
 
 class Tui(var con: IController) extends Observer {

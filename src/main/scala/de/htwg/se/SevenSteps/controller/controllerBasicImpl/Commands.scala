@@ -1,6 +1,5 @@
 package de.htwg.se.SevenSteps.controller.controllerBasicImpl
 
-import de.htwg.se.SevenSteps.controller.Play
 import de.htwg.se.SevenSteps.model.gridComponent.ICell
 import de.htwg.se.SevenSteps.util.Command
 

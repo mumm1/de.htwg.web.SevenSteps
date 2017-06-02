@@ -1,5 +1,6 @@
 package de.htwg.se.SevenSteps.controller
 
+import de.htwg.se.SevenSteps.controller.controllerBasicImpl.GameState
 import de.htwg.se.SevenSteps.model.bagComponent.IBag
 import de.htwg.se.SevenSteps.model.gridComponent.IGrid
 import de.htwg.se.SevenSteps.model.playerComponent.IPlayers

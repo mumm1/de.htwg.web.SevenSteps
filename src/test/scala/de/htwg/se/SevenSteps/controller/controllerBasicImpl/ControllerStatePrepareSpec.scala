@@ -1,6 +1,5 @@
 package de.htwg.se.SevenSteps.controller.controllerBasicImpl
 
-import de.htwg.se.SevenSteps.controller.{Play, Prepare}
 import de.htwg.se.SevenSteps.model.gridComponent.gridBasicImpl.Grid
 import de.htwg.se.SevenSteps.model.playerComponent.playerBasicImpl.Players
 import de.htwg.se.SevenSteps.util.Observer

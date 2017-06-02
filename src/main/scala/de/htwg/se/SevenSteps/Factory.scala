@@ -26,13 +26,13 @@ object FactoryBasic extends Factory {
 }
 
 object FactoryMoc extends Factory {
-  import de.htwg.se.SevenSteps.model.bagComponent.bagMocImpl.BagMoc
-  import de.htwg.se.SevenSteps.model.gridComponent.gridMocImpl.GridMoc
-  import de.htwg.se.SevenSteps.model.playerComponent.playerMocImpl.PlayersMoc
+  import de.htwg.se.SevenSteps.model.bagComponent.bagMocImpl.Bag
+  import de.htwg.se.SevenSteps.model.gridComponent.gridMocImpl.Grid
+  import de.htwg.se.SevenSteps.model.playerComponent.playerMocImpl.Players
   import de.htwg.se.SevenSteps.controller.controllerMockImpl.Controller
-  def newGrid(colors: String, cols: Int): IGrid = GridMoc()
-  def newGrid(): IGrid = GridMoc()
-  def newPlayers(): IPlayers = PlayersMoc()
-  def newBag(): IBag = BagMoc()
+  def newGrid(colors: String, cols: Int): IGrid = Grid()
+  def newGrid(): IGrid = Grid()
+  def newPlayers(): IPlayers = Players()
+  def newBag(): IBag = Bag()
   def newController: IController = Controller()
 }

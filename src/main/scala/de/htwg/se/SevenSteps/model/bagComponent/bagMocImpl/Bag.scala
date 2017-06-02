@@ -2,7 +2,7 @@ package de.htwg.se.SevenSteps.model.bagComponent.bagMocImpl
 
 import de.htwg.se.SevenSteps.model.bagComponent.IBag
 
-case class BagMoc() extends IBag {
+case class Bag() extends IBag {
   def get(): Option[Char] = None
   def isEmpty(): Boolean = true
   def fillup(): Unit = ()

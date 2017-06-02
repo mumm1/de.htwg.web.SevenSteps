@@ -5,22 +5,22 @@ import de.htwg.se.SevenSteps.model.playerComponent.{IPlayer, IPlayers}
 import scala.collection.immutable.Map
 import scala.util.{Failure,Success, Try}
 
-case class PlayersMoc() extends IPlayers {
+case class Players() extends IPlayers {
   def push(name: String): IPlayers = this
   def pop(): IPlayers = this
   def length: Int = 1
   def updateCurPlayer(player: IPlayer): IPlayers = this
   def next(): IPlayers = this
   def nonEmpty: Boolean = true
-  def getCurPlayer: IPlayer = PlayerMoc()
+  def getCurPlayer: IPlayer = Player()
   def setColors(colors: List[Char]): IPlayers = this
   def setAllStonesTo(num: Int): IPlayers = this
-  def apply(i: Int): IPlayer = PlayerMoc()
+  def apply(i: Int): IPlayer = Player()
   def haveNoStones: Boolean = false
   def getAllPossibleColorsFromAllPlayers: List[Char] = List()
 }
 
-case class PlayerMoc() extends IPlayer {
+case class Player() extends IPlayer {
   def getStoneNumber: Int = 2
   def placeStone(color: Char, height: Int): Try[IPlayer] = Success(this)
   def incPoints(delta: Int): IPlayer = this
