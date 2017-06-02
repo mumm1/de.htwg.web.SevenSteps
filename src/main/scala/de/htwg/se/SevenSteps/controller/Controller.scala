@@ -6,7 +6,6 @@ import de.htwg.se.SevenSteps.model.bagComponent.IBag
 import de.htwg.se.SevenSteps.model.gridComponent.IGrid
 import de.htwg.se.SevenSteps.model.playerComponent.{IPlayer, IPlayers}
 import de.htwg.se.SevenSteps.util.{Command, Observable, UndoManager}
-
 import scala.collection.mutable
 import scala.util._
 
@@ -19,8 +18,6 @@ case class Controller(modelFactory: ModelFactory = ModelFactory1) extends Observ
   var players: IPlayers = modelFactory.newPlayers()
   var lastCells: mutable.Stack[(Int, Int)] = mutable.Stack()
   var message: String = "Welcome to SevenSteps"
-
-
   def prepareNewPlayer(): Unit = {
     for (_ <- players.getCurPlayer.getStoneNumber to 6) {
       bag.get() match {
@@ -41,7 +38,7 @@ case class Controller(modelFactory: ModelFactory = ModelFactory1) extends Observ
     Success(this)
   }
   def getWinningPlayer(): IPlayer = {
-      var winner = players(0)
+    var winner = players(0)
     for (i <- 1 to players.length - 1) {
       if (players(i).points > winner.points) {
         winner = players(i)
@@ -53,6 +50,7 @@ case class Controller(modelFactory: ModelFactory = ModelFactory1) extends Observ
   def newGrid(colors: String, cols: Int): Try[Controller] = doIt(NewGrid(colors, cols, this))
   def startGame(): Try[Controller] = doIt(StartGame(this))
   def nextPlayer(): Try[Controller] = doIt(NextPlayer(this))
+  def setStone(row: Int, col: Int): Try[Controller] = doIt(SetStone(row, col, this))
   def doIt(command: Command): Try[Controller] = {
     val result = gameState.exploreCommand(command)
     unpackError(result)
@@ -71,7 +69,6 @@ case class Controller(modelFactory: ModelFactory = ModelFactory1) extends Observ
       case _ =>
     }
   }
-  def setStone(row: Int, col: Int): Try[Controller] = doIt(SetStone(row, col, this))
   def undo(): Try[Controller] = {
     val result = undoManager.undo()
     unpackError(result)
@@ -94,7 +91,7 @@ case class Controller(modelFactory: ModelFactory = ModelFactory1) extends Observ
     }
     true
   }
-  def setColor(row: Int, col: Int,color:Char): Try[Controller] = doIt(SetColor(row,col,color,this))
+  def setColor(row: Int, col: Int, color: Char): Try[Controller] = doIt(SetColor(row, col, color, this))
   override def toString: String = {
     val text = "\n############  " + message + "  ############\n\n"
     val len = text.length()

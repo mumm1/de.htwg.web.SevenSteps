@@ -192,6 +192,7 @@ class BagSpecs extends WordSpec {
     }
     "bag should be empty now" in {
       bag2.isEmpty() should be(true)
+      bag2.getStoneNumber() should be(0)
     }
   }
 }
