@@ -1,4 +1,4 @@
-package de.htwg.se.SevenSteps.model.impl
+package de.htwg.se.SevenSteps.model.bagComponent.bagBasicImpl
 
 import de.htwg.se.SevenSteps.model.bagComponent.bagBasicImpl.Bag
 import org.junit.runner.RunWith

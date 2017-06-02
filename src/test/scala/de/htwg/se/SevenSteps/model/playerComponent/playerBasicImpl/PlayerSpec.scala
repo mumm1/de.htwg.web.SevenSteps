@@ -1,7 +1,5 @@
-package de.htwg.se.SevenSteps.model.impl
+package de.htwg.se.SevenSteps.model.playerComponent.playerBasicImpl
 
-import de.htwg.se.SevenSteps.model.playerComponent.IPlayer
-import de.htwg.se.SevenSteps.model.playerComponent.playerBasicImpl.{Player, Players}
 import org.junit.runner.RunWith
 import org.scalatest.Matchers._
 import org.scalatest._

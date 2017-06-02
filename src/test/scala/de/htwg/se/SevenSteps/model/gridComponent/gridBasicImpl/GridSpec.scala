@@ -1,4 +1,4 @@
-package de.htwg.se.SevenSteps.model.impl
+package de.htwg.se.SevenSteps.model.gridComponent.gridBasicImpl
 
 import de.htwg.se.SevenSteps.model.gridComponent.gridBasicImpl.Grid
 import org.junit.runner.RunWith
