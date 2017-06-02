@@ -1,5 +1,6 @@
-package de.htwg.se.SevenSteps.controller
+package de.htwg.se.SevenSteps.controller.controllerBasicImpl
 
+import de.htwg.se.SevenSteps.controller.Finish
 import de.htwg.se.SevenSteps.util.Observer
 import org.junit.runner.RunWith
 import org.scalatest.Matchers.{be, _}

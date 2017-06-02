@@ -1,6 +1,8 @@
 package de.htwg.se.SevenSteps.controller
 
+import de.htwg.se.SevenSteps.controller.controllerBasicImpl._
 import de.htwg.se.SevenSteps.util.Command
+
 import scala.util.{Failure, Try}
 
 trait GameState {

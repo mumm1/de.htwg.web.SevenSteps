@@ -1,15 +1,20 @@
 package de.htwg.se.SevenSteps.aview.gui
 
 import javax.swing.JPopupMenu
+
 import scala.swing._
 import scala.swing.Swing.LineBorder
 import scala.swing.event._
 import de.htwg.se.SevenSteps.controller._
 import de.htwg.se.SevenSteps.util.Observer
+
 import scala.swing._
 import scala.swing.BorderPanel.Position._
 import event._
 import java.awt.{Color, Graphics2D}
+
+import de.htwg.se.SevenSteps.controller.controllerBasicImpl.Controller
+
 import scala.util.Random
 import scala.io.Source._
 
