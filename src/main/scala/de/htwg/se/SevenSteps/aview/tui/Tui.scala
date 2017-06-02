@@ -35,15 +35,15 @@ class Tui(var con: IController) extends Observer {
     }
   }
   override def update(): Unit = printTui()
-  def printTui(): Unit = {
-    println("\n" * 30)
-    println(con.toString)
-    println("Enter command: q-Quit, u-Undo, r-Redo")
+  def generateTuiText: String = {
+    var result= "\n" * 30 + con.toString + "\nEnter command: q-Quit, u-Undo, r-Redo"
     if (con.gameState.isInstanceOf[Prepare]) {
-      println("               a-AddPlayer [Name], g-Grid [ColorString] [ColsInt], s-StartGame")
+      result+="               a-AddPlayer [Name], g-Grid [ColorString] [ColsInt], s-StartGame"
     }
     if (con.gameState.isInstanceOf[Play]) {
-      println("               SetStone [row] [col], n-NextPlayer")
+      result+="               SetStone [row] [col], n-NextPlayer"
     }
+    result
   }
+  def printTui(): Unit = println(generateTuiText)
 }
