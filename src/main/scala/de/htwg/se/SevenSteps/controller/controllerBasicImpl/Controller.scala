@@ -1,6 +1,7 @@
 
-package de.htwg.se.SevenSteps.controller
+package de.htwg.se.SevenSteps.controller.controllerBasicImpl
 
+import de.htwg.se.SevenSteps.controller._
 import de.htwg.se.SevenSteps.model._
 import de.htwg.se.SevenSteps.model.bagComponent.IBag
 import de.htwg.se.SevenSteps.model.gridComponent.IGrid
