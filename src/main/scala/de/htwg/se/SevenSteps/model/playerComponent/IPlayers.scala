@@ -1,4 +1,4 @@
-package de.htwg.se.SevenSteps.model
+package de.htwg.se.SevenSteps.model.playerComponent
 
 import scala.collection.immutable.Map
 import scala.util.Try

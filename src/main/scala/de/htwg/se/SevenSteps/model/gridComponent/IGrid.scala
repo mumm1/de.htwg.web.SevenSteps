@@ -1,4 +1,4 @@
-package de.htwg.se.SevenSteps.model
+package de.htwg.se.SevenSteps.model.gridComponent
 
 import scala.util.Try
 

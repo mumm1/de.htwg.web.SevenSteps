@@ -1,8 +1,11 @@
 
 package de.htwg.se.SevenSteps.controller
 
-//import de.htwg.se.SevenSteps.model.impl.Bag
+//import de.htwg.se.SevenSteps.model.bagComponent.bagBasicImpl.Bag
 import de.htwg.se.SevenSteps.model._
+import de.htwg.se.SevenSteps.model.bagComponent.IBag
+import de.htwg.se.SevenSteps.model.gridComponent.IGrid
+import de.htwg.se.SevenSteps.model.playerComponent.{IPlayer, IPlayers}
 import de.htwg.se.SevenSteps.util.{Command, Observable, UndoManager}
 
 import scala.collection.mutable

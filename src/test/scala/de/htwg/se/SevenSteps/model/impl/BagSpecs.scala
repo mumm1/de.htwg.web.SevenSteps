@@ -1,5 +1,6 @@
 package de.htwg.se.SevenSteps.model.impl
 
+import de.htwg.se.SevenSteps.model.bagComponent.bagBasicImpl.Bag
 import org.junit.runner.RunWith
 import org.scalatest.Matchers._
 import org.scalatest._

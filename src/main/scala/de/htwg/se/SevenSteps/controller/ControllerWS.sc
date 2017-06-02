@@ -1,4 +1,5 @@
-import de.htwg.se.SevenSteps.model.impl.{Player, Players}
+import de.htwg.se.SevenSteps.model.impl.Players
+import de.htwg.se.SevenSteps.model.playerComponent.playerBasicImpl.{Player, Players}
 
 val p1 = new Player("Player1")
 val p2 = new Player("Player2")

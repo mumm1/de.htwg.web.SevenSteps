@@ -1,6 +1,6 @@
-package de.htwg.se.SevenSteps.model.impl
+package de.htwg.se.SevenSteps.model.bagComponent.bagBasicImpl
 
-import de.htwg.se.SevenSteps.model.IBag
+import de.htwg.se.SevenSteps.model.bagComponent.IBag
 
 /**
   * Created by acer1 on 04.05.2017.

@@ -1,6 +1,11 @@
 package de.htwg.se.SevenSteps.model
 
-import de.htwg.se.SevenSteps.model.impl.{Grid, Players, Bag}
+import de.htwg.se.SevenSteps.model.bagComponent.IBag
+import de.htwg.se.SevenSteps.model.bagComponent.bagBasicImpl.Bag
+import de.htwg.se.SevenSteps.model.gridComponent.IGrid
+import de.htwg.se.SevenSteps.model.gridComponent.gridBasicImpl.Grid
+import de.htwg.se.SevenSteps.model.playerComponent.IPlayers
+import de.htwg.se.SevenSteps.model.playerComponent.playerBasicImpl.Players
 
 trait ModelFactory {
   def newGrid(colors: String, cols: Int): IGrid

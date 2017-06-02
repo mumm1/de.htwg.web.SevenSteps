@@ -1,4 +1,4 @@
-package de.htwg.se.SevenSteps.model
+package de.htwg.se.SevenSteps.model.bagComponent
 
 /**
   * Created by acer1 on 18.05.2017.
