@@ -137,6 +137,8 @@ class SwingGui(controller: Controller) extends Frame with Observer {
     }
   }
   visible = true
+  resizable = false
+
   def getButtonColor(color: Char): MenuItem = {
     val newItem = new MenuItem(Action("       ") {
       ColorManager.curColer = color
