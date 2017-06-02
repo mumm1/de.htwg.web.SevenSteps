@@ -2,7 +2,7 @@
 package de.htwg.se.SevenSteps.controller.controllerMockImpl
 
 import de.htwg.se.SevenSteps.controller._
-import de.htwg.se.SevenSteps.controller.controllerBasicImpl.{GameState, Prepare}
+import de.htwg.se.SevenSteps.controller.controllerBasicImpl.Prepare
 import de.htwg.se.SevenSteps.model.bagComponent.IBag
 import de.htwg.se.SevenSteps.model.bagComponent.bagMocImpl.Bag
 import de.htwg.se.SevenSteps.model.gridComponent.IGrid

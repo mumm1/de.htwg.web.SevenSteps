@@ -1,7 +1,6 @@
 package de.htwg.se.SevenSteps.aview.tui
 
 import de.htwg.se.SevenSteps.controller._
-import de.htwg.se.SevenSteps.controller.controllerBasicImpl.{Play, Prepare}
 import de.htwg.se.SevenSteps.util.Observer
 
 class Tui(var con: IController) extends Observer {
@@ -38,10 +37,10 @@ class Tui(var con: IController) extends Observer {
   override def update(): Unit = printTui()
   def generateTuiText: String = {
     var result= "\n" * 30 + con.toString + "\nEnter command: q-Quit, u-Undo, r-Redo"
-    if (con.gameState.isInstanceOf[Prepare]) {
+    if (con.gameState.isInstanceOf[IPrepare]) {
       result+="               a-AddPlayer [Name], g-Grid [ColorString] [ColsInt], s-StartGame"
     }
-    if (con.gameState.isInstanceOf[Play]) {
+    if (con.gameState.isInstanceOf[IPlay]) {
       result+="               SetStone [row] [col], n-NextPlayer"
     }
     result

@@ -4,8 +4,7 @@ import scala.swing._
 import javax.swing.table._
 
 import scala.swing.event._
-import de.htwg.se.SevenSteps.controller.IController
-import de.htwg.se.SevenSteps.controller.controllerBasicImpl.{Controller, Prepare}
+import de.htwg.se.SevenSteps.controller.{IController, IPrepare}
 
 import scala.xml.dtd.ContentModelParser
 
@@ -22,12 +21,12 @@ class CellPanel(row: Int, col: Int, controller: IController) extends FlowPanel {
     preferredSize = new Dimension(51, 51)
     listenTo(mouse.clicks)
     self.setBackground(ColorManager.char2Color(cell.color))
-    if (!controller.gameState.isInstanceOf[Prepare])
+    if (!controller.gameState.isInstanceOf[IPrepare])
     contents += label
 
     reactions += {
       case MouseClicked(src, pt, mod, clicks, pops) => {
-        if (controller.gameState.isInstanceOf[Prepare]) {
+        if (controller.gameState.isInstanceOf[IPrepare]) {
           controller.setColor(row, col, ColorManager.curColer)
           self.setBackground(ColorManager.getCurColer)
         }
