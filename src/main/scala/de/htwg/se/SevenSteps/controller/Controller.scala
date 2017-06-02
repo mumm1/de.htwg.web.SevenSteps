@@ -12,14 +12,13 @@ import scala.util._
 
 case class Controller(modelFactory: ModelFactory = ModelFactory1) extends Observable {
   var gameState: GameState = Prepare(this)
-  var undoManager = new UndoManager
-  var grid: IGrid = modelFactory.newGrid()
-  var bag: IBag = modelFactory.newBag()
-  var curHeight: Int = 0
-  var players: IPlayers = modelFactory.newPlayers()
-  var lastCells: mutable.Stack[(Int, Int)] = mutable.Stack()
   var message: String = "Welcome to SevenSteps"
-
+  var curHeight: Int = 0
+  var lastCells: mutable.Stack[(Int, Int)] = mutable.Stack()
+  var undoManager : UndoManager = new UndoManager
+  var grid: IGrid = modelFactory.newGrid()
+  var bag: IBag= modelFactory.newBag()
+  var players: IPlayers = modelFactory.newPlayers()
 
   def prepareNewPlayer(): Unit = {
     for (_ <- players.getCurPlayer.getStoneNumber to 6) {

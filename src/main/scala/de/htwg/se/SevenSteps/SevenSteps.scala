@@ -9,7 +9,7 @@ import scala.io.StdIn.readLine
 
 object SevenSteps {
   def main(args: Array[String]): Unit = {
-    val con = Controller(modelFactory = ModelMocFactory)
+    val con = new Controller(modelFactory = ModelMocFactory)
     val tui = new Tui(con)
     val gui = new SwingGui(con)
     while (tui.processInputLine(readLine())) {}
