@@ -15,14 +15,15 @@ class ControllerStatePrepareSpec extends WordSpec {
     "add Players and undo this" in {
       c = Controller()
       c.addPlayer("Hugo").isSuccess should be(true)
-      c.addPlayer("Peter").get should be(c.copy(players = Players().push("Hugo").push("Peter"), message = "Added Player Peter"))
-      c.undo().get should be(c.copy(players = Players().push("Hugo"), message = "Deleted Player Peter"))
+      c.addPlayer("Peter").isSuccess should be(true)
+      c.players should be(Players().push("Hugo").push("Peter"))
+      c.undo().get.players should be(Players().push("Hugo"))
     }
     "set color of grid and undo this" in {
       c = Controller()
       c.newGrid("aabb",2).isSuccess should be(true)
-      c.setColor(0,0,'b').get should be(c.copy(grid = new Grid("babb",2) , message = "Grid was colored"))
-      c.undo().get should be(c.copy(grid = new Grid("aabb",2) , message = "Grid was colored back"))
+      c.setColor(0,0,'b').get.grid should be(new Grid("babb",2))
+      c.undo().get.grid should be(new Grid("aabb",2))
     }
     "set color only inside of the grid" in {
       c = Controller()

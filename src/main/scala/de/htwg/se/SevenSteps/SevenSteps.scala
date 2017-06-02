@@ -3,7 +3,7 @@ package de.htwg.se.SevenSteps
 import de.htwg.se.SevenSteps.aview.gui.SwingGui
 import de.htwg.se.SevenSteps.controller._
 import de.htwg.se.SevenSteps.aview.tui._
-import de.htwg.se.SevenSteps.model.ModelMocFactory
+import de.htwg.se.SevenSteps.model.{ModelFactory1, ModelMocFactory}
 
 import scala.io.StdIn.readLine
 
