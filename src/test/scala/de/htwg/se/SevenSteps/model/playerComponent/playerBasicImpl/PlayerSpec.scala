@@ -1,11 +1,9 @@
-package de.htwg.se.SevenSteps.model.impl
+package de.htwg.se.SevenSteps.model.playerComponent.playerBasicImpl
 
 import org.junit.runner.RunWith
 import org.scalatest.Matchers._
 import org.scalatest._
 import org.scalatest.junit.JUnitRunner
-import de.htwg.se.SevenSteps.model.IPlayer
-
 
 @RunWith(classOf[JUnitRunner])
 class PlayerSpec extends WordSpec {

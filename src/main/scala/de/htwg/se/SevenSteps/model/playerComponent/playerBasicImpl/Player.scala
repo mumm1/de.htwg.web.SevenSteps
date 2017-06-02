@@ -1,6 +1,6 @@
-package de.htwg.se.SevenSteps.model.impl
+package de.htwg.se.SevenSteps.model.playerComponent.playerBasicImpl
 
-import de.htwg.se.SevenSteps.model.{IPlayer, IPlayers}
+import de.htwg.se.SevenSteps.model.playerComponent.{IPlayer, IPlayers}
 
 import scala.collection.immutable.Map
 import scala.collection.mutable.ListBuffer

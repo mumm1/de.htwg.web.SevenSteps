@@ -1,5 +1,6 @@
-package de.htwg.se.SevenSteps.model.impl
+package de.htwg.se.SevenSteps.model.gridComponent.gridBasicImpl
 
+import de.htwg.se.SevenSteps.model.gridComponent.gridBasicImpl.Cell
 import org.junit.runner.RunWith
 import org.scalatest.Matchers._
 import org.scalatest._
