@@ -22,3 +22,7 @@ resolvers += "Typesafe Repository" at "http://repo.typesafe.com/typesafe/release
 libraryDependencies += "com.typesafe.akka" % "akka-actor" % "2.0"
 
 libraryDependencies += "org.scala-lang" % "scala-swing" % "2.11+"
+
+libraryDependencies += "com.google.inject.extensions" % "guice-assistedinject" % "4.0"
+
+libraryDependencies += "com.google.inject" % "guice" % "4.0"
