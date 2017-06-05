@@ -22,7 +22,7 @@ object FactoryBasic extends Factory {
   def newGrid(): IGrid = new Grid(" ",1)
   def newPlayers(): IPlayers = Players()
   def newBag(): IBag = Bag(random = false)
-  def newController: IController = Controller(this)
+  def newController: IController = null
 }
 
 object FactoryMoc extends Factory {

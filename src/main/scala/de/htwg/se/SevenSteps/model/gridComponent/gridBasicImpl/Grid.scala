@@ -1,5 +1,6 @@
 package de.htwg.se.SevenSteps.model.gridComponent.gridBasicImpl
 
+import com.google.inject.Inject
 import de.htwg.se.SevenSteps.model.gridComponent.IGrid
 
 import scala.collection.mutable.ListBuffer
@@ -24,7 +25,8 @@ case class Grid(rows: Int, cols: Int, cells: Option[Vector[Cell]] = None) extend
     grid.foreach(cell => text += cell.color.toString)
     text
   }
-  def this(colors: String, cols: Int) = {
+  @Inject()
+  def this (colors: String, cols: Int) = {
     this(math.ceil(colors.length() / cols.toFloat).toInt, cols,
       cells = {
         val empty = " " * (math.ceil(colors.length() / cols.toFloat).toInt * cols - colors.length())

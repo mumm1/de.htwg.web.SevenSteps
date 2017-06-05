@@ -1,7 +1,8 @@
 
 package de.htwg.se.SevenSteps.controller.controllerBasicImpl
 
-import de.htwg.se.SevenSteps.{Factory, FactoryBasic}
+import com.google.inject.{Guice, Inject, Injector}
+import de.htwg.se.SevenSteps.{Factory, FactoryBasic, SevenStepsModule}
 import de.htwg.se.SevenSteps.controller._
 import de.htwg.se.SevenSteps.model._
 import de.htwg.se.SevenSteps.model.bagComponent.IBag
@@ -12,15 +13,15 @@ import de.htwg.se.SevenSteps.util.{Command, UndoManager}
 import scala.collection.mutable
 import scala.util._
 
-case class Controller(modelFactory: Factory = FactoryBasic) extends IController{
+case class Controller @Inject() (injector: Injector = Guice.createInjector(new SevenStepsModule)) extends IController{
   var gameState: GameState = Prepare(this)
   var message: String = "Welcome to SevenSteps"
   var curHeight: Int = 0
   var lastCells: mutable.Stack[(Int, Int)] = mutable.Stack()
   var undoManager : UndoManager = new UndoManager
-  var grid: IGrid = modelFactory.newGrid()
-  var bag: IBag= modelFactory.newBag()
-  var players: IPlayers = modelFactory.newPlayers()
+  var grid: IGrid = injector.getInstance(classOf[IGrid])
+  var bag: IBag= injector.getInstance(classOf[IBag])
+  var players: IPlayers = injector.getInstance(classOf[IPlayers])
 
   def prepareNewPlayer(): Unit = {
     for (_ <- players.getCurPlayer.getStoneNumber to 6) {

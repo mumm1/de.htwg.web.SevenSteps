@@ -1,5 +1,7 @@
 package de.htwg.se.SevenSteps.controller.controllerBasicImpl
 
+import com.google.inject.Guice
+import de.htwg.se.SevenSteps.{GridFactory, SevenStepsModule}
 import de.htwg.se.SevenSteps.model.gridComponent.ICell
 import de.htwg.se.SevenSteps.util.Command
 
@@ -43,7 +45,7 @@ case class NewGrid(colors: String, cols: Int, c: Controller) extends Command {
   var oldGrid = c.grid
   override def doIt(): Try[_] = {
     oldGrid = c.grid
-    c.grid = c.modelFactory.newGrid(colors, cols)
+    c.grid = Guice.createInjector(new SevenStepsModule).getInstance(classOf[GridFactory]).create(colors,cols)
     c.message = "Build new Grid"
     Success()
   }

@@ -1,11 +1,12 @@
 package de.htwg.se.SevenSteps.model.bagComponent.bagBasicImpl
 
+import com.google.inject.Inject
 import de.htwg.se.SevenSteps.model.bagComponent.IBag
 
 /**
   * Created by acer1 on 04.05.2017.
   */
-case class Bag(var bag: Array[Char] = new Array[Char](0),
+case class Bag @Inject() (var bag: Array[Char] = new Array[Char](0),
                var entfernt: Int = 0,
                var aktuell: Int = 0,
                var random: Boolean,
