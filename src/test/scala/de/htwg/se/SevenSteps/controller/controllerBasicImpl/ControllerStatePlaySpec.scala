@@ -8,9 +8,9 @@ import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
 class ControllerStatePlaySpec extends WordSpec {
-  var c = Controller()
+  var c = new Controller()
   def before(colors: String = "aabb", cols: Int = 2, numPlayers: Int = 3): Unit = {
-    c = Controller()
+    c = new Controller()
     for (i <- 1 to numPlayers)
       c.addPlayer("Hans" + i).isSuccess should be(true)
     c.newGrid(colors, cols).isSuccess should be(true)
@@ -164,7 +164,7 @@ class ControllerStatePlaySpec extends WordSpec {
   }
   "A Controller observed by an Observer" should {
     "notify its Observer after every Change" in {
-      c = Controller()
+      c = new Controller()
       val observer = new Observer {
         var updates: Int = 0
         override def update(): Unit = updates += 1

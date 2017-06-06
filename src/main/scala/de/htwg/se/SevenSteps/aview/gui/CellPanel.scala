@@ -25,7 +25,6 @@ class CellPanel(row: Int, col: Int, controller: IController) extends FlowPanel {
       case MouseClicked(src, pt, mod, clicks, pops) => {
         if (controller.gameState.isInstanceOf[IPrepare]) {
           controller.setColor(row, col, ColorManager.curColer)
-          self.setBackground(ColorManager.getCurColer)
         }
         else {
           controller.setStone(row, col)

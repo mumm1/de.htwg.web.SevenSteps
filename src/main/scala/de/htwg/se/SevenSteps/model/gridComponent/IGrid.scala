@@ -2,6 +2,10 @@ package de.htwg.se.SevenSteps.model.gridComponent
 
 import scala.util.Try
 
+trait GridFactory {
+  def newGrid(colors: String, cols: Int): IGrid
+}
+
 trait IGrid {
   def set(row: Int, col: Int, color: Char): IGrid
   def set(row: Int, col: Int, height: Int): IGrid

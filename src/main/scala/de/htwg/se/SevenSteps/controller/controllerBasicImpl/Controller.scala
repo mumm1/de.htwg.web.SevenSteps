@@ -2,26 +2,30 @@
 package de.htwg.se.SevenSteps.controller.controllerBasicImpl
 
 import com.google.inject.{Guice, Inject, Injector}
-import de.htwg.se.SevenSteps.{Factory, FactoryBasic, GridFactory, SevenStepsModule}
+import de.htwg.se.SevenSteps.{Factory, FactoryBasic, SevenStepsModule}
 import de.htwg.se.SevenSteps.controller._
-import de.htwg.se.SevenSteps.model._
 import de.htwg.se.SevenSteps.model.bagComponent.IBag
-import de.htwg.se.SevenSteps.model.gridComponent.IGrid
+import de.htwg.se.SevenSteps.model.gridComponent.{GridFactory, IGrid}
 import de.htwg.se.SevenSteps.model.playerComponent.{IPlayer, IPlayers}
 import de.htwg.se.SevenSteps.util.{Command, UndoManager}
 
 import scala.collection.mutable
 import scala.util._
 
-case class Controller @Inject() (injector: Injector = Guice.createInjector(new SevenStepsModule)) extends IController{
+case class Controller @Inject() (var players: IPlayers,
+                                 var bag: IBag,
+                                 var gridFactory: GridFactory
+                                ) extends IController{
+  def this(injetor: Injector=Guice.createInjector(new SevenStepsModule)) =
+    this( injetor.getInstance(classOf[IPlayers]),
+      injetor.getInstance(classOf[IBag]),
+      injetor.getInstance(classOf[GridFactory]))
   var gameState: GameState = Prepare(this)
   var message: String = "Welcome to SevenSteps"
   var curHeight: Int = 0
   var lastCells: mutable.Stack[(Int, Int)] = mutable.Stack()
   var undoManager : UndoManager = new UndoManager
-  var grid: IGrid = injector.getInstance(classOf[GridFactory]).create(" ",1)
-  var bag: IBag= injector.getInstance(classOf[IBag])
-  var players: IPlayers = injector.getInstance(classOf[IPlayers])
+  var grid: IGrid = gridFactory.newGrid(" ",1)
 
   def prepareNewPlayer(): Unit = {
     for (_ <- players.getCurPlayer.getStoneNumber to 6) {

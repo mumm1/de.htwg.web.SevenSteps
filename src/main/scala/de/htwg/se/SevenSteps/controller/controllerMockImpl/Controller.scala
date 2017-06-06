@@ -26,7 +26,7 @@ case class Controller() extends IController{
   def players: IPlayers = Players()
   def grid: IGrid = Grid()
   def bag: IBag = Bag()
-  var message: String = "Hello World"
+  var message: String = "Hello World, I'am a Mock"
   def undoManager : UndoManager= new UndoManager
 }
 
