@@ -1,8 +1,8 @@
 package de.htwg.se.SevenSteps.controller
 
-import de.htwg.se.SevenSteps.model.bagComponent.IBag
-import de.htwg.se.SevenSteps.model.gridComponent.IGrid
-import de.htwg.se.SevenSteps.model.playerComponent.IPlayers
+import de.htwg.se.SevenSteps.model.bag.IBag
+import de.htwg.se.SevenSteps.model.grid.IGrid
+import de.htwg.se.SevenSteps.model.player.IPlayers
 import de.htwg.se.SevenSteps.util.{Observable, UndoManager}
 
 import scala.util.Try

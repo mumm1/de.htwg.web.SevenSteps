@@ -1,9 +1,9 @@
 package de.htwg.se.SevenSteps
 
 import de.htwg.se.SevenSteps.controller.IController
-import de.htwg.se.SevenSteps.model.bagComponent.IBag
-import de.htwg.se.SevenSteps.model.gridComponent.{GridFactory, IGrid}
-import de.htwg.se.SevenSteps.model.playerComponent.IPlayers
+import de.htwg.se.SevenSteps.model.bag.IBag
+import de.htwg.se.SevenSteps.model.grid.{GridFactory, IGrid}
+import de.htwg.se.SevenSteps.model.player.IPlayers
 
 trait Factory extends GridFactory{
   def newPlayers(): IPlayers
@@ -12,10 +12,10 @@ trait Factory extends GridFactory{
 }
 
 object FactoryBasic extends Factory {
-  import de.htwg.se.SevenSteps.model.bagComponent.bagBasicImpl.Bag
-  import de.htwg.se.SevenSteps.model.gridComponent.gridBasicImpl.Grid
-  import de.htwg.se.SevenSteps.model.playerComponent.playerBasicImpl.Players
-  import de.htwg.se.SevenSteps.controller.controllerBasicImpl.Controller
+  import de.htwg.se.SevenSteps.model.bag.basicImpl.Bag
+  import de.htwg.se.SevenSteps.model.grid.basicImpl.Grid
+  import de.htwg.se.SevenSteps.model.player.basicImpl.Players
+  import de.htwg.se.SevenSteps.controller.basicImpl.Controller
   def newGrid(colors: String, cols: Int): IGrid = new Grid(colors, cols)
   def newPlayers(): IPlayers = new Players()
   def newBag(): IBag = Bag(random = false)
@@ -23,10 +23,10 @@ object FactoryBasic extends Factory {
 }
 
 object FactoryMoc extends Factory {
-  import de.htwg.se.SevenSteps.model.bagComponent.bagMocImpl.Bag
-  import de.htwg.se.SevenSteps.model.gridComponent.gridMocImpl.Grid
-  import de.htwg.se.SevenSteps.model.playerComponent.playerMocImpl.Players
-  import de.htwg.se.SevenSteps.controller.controllerMockImpl.Controller
+  import de.htwg.se.SevenSteps.model.bag.mockImpl.Bag
+  import de.htwg.se.SevenSteps.model.grid.mockImpl.Grid
+  import de.htwg.se.SevenSteps.model.player.mockImpl.Players
+  import de.htwg.se.SevenSteps.controller.mockImpl.Controller
   def newGrid(colors: String, cols: Int): IGrid = Grid()
   def newPlayers(): IPlayers = Players()
   def newBag(): IBag = Bag()

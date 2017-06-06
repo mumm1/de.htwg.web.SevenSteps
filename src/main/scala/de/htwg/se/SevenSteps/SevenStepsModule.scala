@@ -3,34 +3,34 @@ package de.htwg.se.SevenSteps
 import com.google.inject.AbstractModule
 import com.google.inject.assistedinject.FactoryModuleBuilder
 import de.htwg.se.SevenSteps.controller.IController
-import de.htwg.se.SevenSteps.model.bagComponent
-import de.htwg.se.SevenSteps.model.bagComponent.IBag
-import de.htwg.se.SevenSteps.model.gridComponent
-import de.htwg.se.SevenSteps.model.gridComponent.{GridFactory, IGrid}
-import de.htwg.se.SevenSteps.model.playerComponent
-import de.htwg.se.SevenSteps.model.playerComponent.IPlayers
+import de.htwg.se.SevenSteps.model.bag
+import de.htwg.se.SevenSteps.model.bag.IBag
+import de.htwg.se.SevenSteps.model.grid
+import de.htwg.se.SevenSteps.model.grid.{GridFactory, IGrid}
+import de.htwg.se.SevenSteps.model.player
+import de.htwg.se.SevenSteps.model.player.IPlayers
 
 
 class SevenStepsModule extends AbstractModule{
   override def configure(): Unit = {
-    bind(classOf[IPlayers]).to(classOf[playerComponent.playerBasicImpl.Players])
-    bind(classOf[IBag]).to(classOf[bagComponent.bagBasicImpl.Bag])
-    bind(classOf[IController]).to(classOf[controller.controllerBasicImpl.Controller])
+    bind(classOf[IPlayers]).to(classOf[player.basicImpl.Players])
+    bind(classOf[IBag]).to(classOf[bag.basicImpl.Bag])
+    bind(classOf[IController]).to(classOf[controller.basicImpl.Controller])
 
     install(new FactoryModuleBuilder()
-      .implement(classOf[IGrid],classOf[gridComponent.gridBasicImpl.Grid])
+      .implement(classOf[IGrid],classOf[grid.basicImpl.Grid])
       .build(classOf[GridFactory]))
   }
 }
 
 class SevenStepsMoc extends AbstractModule{
   override def configure(): Unit = {
-    bind(classOf[IPlayers]).to(classOf[playerComponent.playerMocImpl.Players])
-    bind(classOf[IBag]).to(classOf[bagComponent.bagMocImpl.Bag])
-    bind(classOf[IController]).to(classOf[controller.controllerMockImpl.Controller])
+    bind(classOf[IPlayers]).to(classOf[player.mockImpl.Players])
+    bind(classOf[IBag]).to(classOf[bag.mockImpl.Bag])
+    bind(classOf[IController]).to(classOf[controller.mockImpl.Controller])
 
     install(new FactoryModuleBuilder()
-      .implement(classOf[IGrid],classOf[gridComponent.gridMocImpl.Grid])
+      .implement(classOf[IGrid],classOf[grid.mockImpl.Grid])
       .build(classOf[GridFactory]))
   }
 }
