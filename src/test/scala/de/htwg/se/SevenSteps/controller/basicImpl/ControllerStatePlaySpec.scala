@@ -82,7 +82,6 @@ class ControllerStatePlaySpec extends WordSpec {
     "not set in one turn a grid cell twice" in {
       before()
       c.players = c.players.setAllStonesTo(999)
-      c.players = c.players.setAllStonesTo(99)
       c.setStone(0, 0).isSuccess should be(true)
       c.setStone(0, 1).isSuccess should be(true)
       c.setStone(1, 1).isSuccess should be(true)
@@ -96,6 +95,18 @@ class ControllerStatePlaySpec extends WordSpec {
       c.undo().isSuccess should be(true)
       c.grid.getHeights should be(List(1, 1, 0, 1))
       c.setStone(1, 0).isSuccess should be(true)
+    }
+    "only allow players to set stones on current height +0 or +1" in {
+      before()
+      c.players = c.players.setAllStonesTo(999)
+      c.setStone(0, 0).isSuccess should be(true)
+      c.grid.getHeights should be(List(1, 0, 0, 0))
+      c.nextPlayer().isSuccess should be(true)
+      c.setStone(0, 0).isSuccess should be(false)
+      c.setStone(0, 1).isSuccess should be(true)
+      c.setStone(0, 0).isSuccess should be(true)
+      c.setStone(1, 0).isSuccess should be(false)
+      c.grid.getHeights should be(List(2, 1, 0, 0))
     }
     "can check if the game is finished (there are no stones any more)" in {
       before()

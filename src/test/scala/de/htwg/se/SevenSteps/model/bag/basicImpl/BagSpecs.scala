@@ -160,6 +160,7 @@ class BagSpecs extends WordSpec {
 
     "have 7 stones"in {
       bag2.fillup()
+      bag2.getStoneNumber should be(7)
       bag2.bag.length should be (7)    }
     "can draw 7 stones" in {
       bag2.get(7) match {
