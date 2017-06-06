@@ -2,7 +2,7 @@
 package de.htwg.se.SevenSteps.controller.controllerBasicImpl
 
 import com.google.inject.{Guice, Inject, Injector}
-import de.htwg.se.SevenSteps.{Factory, FactoryBasic, SevenStepsModule}
+import de.htwg.se.SevenSteps.{Factory, FactoryBasic, GridFactory, SevenStepsModule}
 import de.htwg.se.SevenSteps.controller._
 import de.htwg.se.SevenSteps.model._
 import de.htwg.se.SevenSteps.model.bagComponent.IBag
@@ -19,7 +19,7 @@ case class Controller @Inject() (injector: Injector = Guice.createInjector(new S
   var curHeight: Int = 0
   var lastCells: mutable.Stack[(Int, Int)] = mutable.Stack()
   var undoManager : UndoManager = new UndoManager
-  var grid: IGrid = injector.getInstance(classOf[IGrid])
+  var grid: IGrid = injector.getInstance(classOf[GridFactory]).create(" ",1)
   var bag: IBag= injector.getInstance(classOf[IBag])
   var players: IPlayers = injector.getInstance(classOf[IPlayers])
 

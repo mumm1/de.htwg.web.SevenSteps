@@ -59,7 +59,7 @@ class PlayerSpec extends WordSpec {
     }
   }
   "Players without list" should {
-    val pls = Players()
+    val pls = new Players()
     "Have a curPlayer number" in {
       pls.curPlayer should be(0)
     }
@@ -75,7 +75,7 @@ class PlayerSpec extends WordSpec {
     }
   }
   "Players with a List" should {
-    var pls3 = Players()
+    var pls3 = new Players()
     val p1 = Player("Julius", 50)
     val p2 = Player("Tobias", 50)
     val pls2 = pls3.push(p1)
@@ -112,20 +112,20 @@ class PlayerSpec extends WordSpec {
       pls.next().toString() should be("-> Julius: Points=50\n")
     }
     "set colors to the the players" in {
-      val newPls = Players().push(Player("hans")).push(Player("hugo"))
+      val newPls = new Players().push(Player("hans")).push(Player("hugo"))
         .setColors("ab".toCharArray.toList)
       newPls(0).map.get.toList should be(List(('a', 0), ('b', 0)))
       newPls(1).map.get.toList should be(List(('a', 0), ('b', 0)))
     }
     "set all Stones of all players" in {
-      var newPls = Players().push(Player("hans")).push(Player("hugo"))
+      var newPls = new Players().push(Player("hans")).push(Player("hugo"))
         .setColors("ab".toCharArray.toList)
       newPls = newPls.setAllStonesTo(5)
       newPls(0).getStoneNumber should be(10)
       newPls(1).getStoneNumber should be(10)
     }
     "to string look like" in {
-      var players = Players()
+      var players = new Players()
       val pl1 = Player("Julius")
       val pl2 = Player("Tobias")
       val pl3 = Player("Peter")
@@ -138,7 +138,7 @@ class PlayerSpec extends WordSpec {
       pls3.toString() should be(text)
     }
     "return a list of colors from any player with more than zero stones" in {
-      var newPls = Players().push(Player("hans")).push(Player("hugo"))
+      var newPls = new Players().push(Player("hans")).push(Player("hugo"))
         .setColors("ab".toCharArray.toList)
       newPls.getAllPossibleColorsFromAllPlayers should be(List())
       newPls = newPls.setAllStonesTo(1)

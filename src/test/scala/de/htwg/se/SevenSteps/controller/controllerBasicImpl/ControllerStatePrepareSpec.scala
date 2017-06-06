@@ -16,8 +16,8 @@ class ControllerStatePrepareSpec extends WordSpec {
       c = Controller()
       c.addPlayer("Hugo").isSuccess should be(true)
       c.addPlayer("Peter").isSuccess should be(true)
-      c.players should be(Players().push("Hugo").push("Peter"))
-      c.undo().get.players should be(Players().push("Hugo"))
+      c.players should be(new Players().push("Hugo").push("Peter"))
+      c.undo().get.players should be(new Players().push("Hugo"))
     }
     "set color of grid and undo this" in {
       c = Controller()

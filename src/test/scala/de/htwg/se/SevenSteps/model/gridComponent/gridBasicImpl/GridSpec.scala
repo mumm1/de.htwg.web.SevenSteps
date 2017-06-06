@@ -9,7 +9,7 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class GridSpec extends WordSpec {
   "A new Grid with 1 empty Cell" should {
-    val grid = Grid(1, 1)
+    val grid = new Grid(1, 1)
     "have the right dimensions" in {
       grid.cols should be(1)
       grid.rows should be(1)
@@ -26,8 +26,8 @@ class GridSpec extends WordSpec {
   }
   "A Grid" should {
     "be possible to create empty" in {
-      Grid(3, 2)
-      Grid(10, 40)
+      new Grid(3, 2)
+      new Grid(10, 40)
     }
     "be possible to create colored" in {
       new Grid(colors = "abc", cols = 2).toString() should be("\n+---+---+\n|a 0|b 0|\n+---+---+\n|c 0|   |\n+---+---+\n")

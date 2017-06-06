@@ -20,7 +20,7 @@ object FactoryBasic extends Factory {
   import de.htwg.se.SevenSteps.controller.controllerBasicImpl.Controller
   def newGrid(colors: String, cols: Int): IGrid = new Grid(colors, cols)
   def newGrid(): IGrid = new Grid(" ",1)
-  def newPlayers(): IPlayers = Players()
+  def newPlayers(): IPlayers = new Players()
   def newBag(): IBag = Bag(random = false)
   def newController: IController = null
 }

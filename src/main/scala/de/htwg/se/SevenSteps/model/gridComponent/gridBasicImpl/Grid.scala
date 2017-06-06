@@ -1,13 +1,15 @@
 package de.htwg.se.SevenSteps.model.gridComponent.gridBasicImpl
 
 import com.google.inject.Inject
+import com.google.inject.assistedinject.Assisted
 import de.htwg.se.SevenSteps.model.gridComponent.IGrid
 
 import scala.collection.mutable.ListBuffer
 import scala.util._
 
-case class Grid(rows: Int, cols: Int, cells: Option[Vector[Cell]] = None) extends IGrid {
-  val grid: Vector[Cell] = cells getOrElse Vector.fill(rows * cols)(new Cell)
+case class Grid(rows: Int, cols: Int, grid: Vector[Cell]) extends IGrid {
+  def this(rows: Int, cols: Int) = this(rows: Int, cols: Int,Vector.fill(rows * cols)(new Cell))
+  def this() = this(1,1)
   def getColorsWithHeight0: List[Char] = {
     var result: ListBuffer[Char] = ListBuffer()
     for (cell <- grid) {
@@ -26,14 +28,14 @@ case class Grid(rows: Int, cols: Int, cells: Option[Vector[Cell]] = None) extend
     text
   }
   @Inject()
-  def this (colors: String, cols: Int) = {
+  def this (@Assisted() colors: String,@Assisted() cols: Int) = {
     this(math.ceil(colors.length() / cols.toFloat).toInt, cols,
-      cells = {
+      grid = {
         val empty = " " * (math.ceil(colors.length() / cols.toFloat).toInt * cols - colors.length())
         val cCells = for (c <- (colors + empty).toList) yield {
           Cell(c.toChar)
         }
-        Option(cCells.toVector)
+        cCells.toVector
       })
   }
   override def toString: String = {
@@ -60,7 +62,7 @@ case class Grid(rows: Int, cols: Int, cells: Option[Vector[Cell]] = None) extend
     }
   }
   def set(row: Int, col: Int, color: Char): Grid = {
-    copy(cells = Option(grid.updated(getIndex(row, col), cell(row, col).get.copy(color = color))))
+    copy(grid = grid.updated(getIndex(row, col), cell(row, col).get.copy(color = color)))
   }
   def cell(row: Int, col: Int): Try[Cell] = {
     try {
@@ -70,7 +72,7 @@ case class Grid(rows: Int, cols: Int, cells: Option[Vector[Cell]] = None) extend
     }
   }
   def set(row: Int, col: Int, height: Int): Grid = {
-    copy(cells = Option(grid.updated(getIndex(row, col), cell(row, col).get.copy(height = height))))
+    copy(grid = grid.updated(getIndex(row, col), cell(row, col).get.copy(height = height)))
   }
   def getColors: List[Char] = {
     var list: ListBuffer[Char] = ListBuffer()

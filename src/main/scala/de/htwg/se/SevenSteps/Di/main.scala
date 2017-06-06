@@ -18,6 +18,8 @@ class SudokuModule extends AbstractModule {
 
 }
 
+case class InjectorTag()
+
 /**
   * Created by tobias on 05.06.17.
   */
@@ -27,5 +29,6 @@ object main {
 
     val injetor = Guice.createInjector(new SudokuModule)
     println(injetor.getInstance(classOf[PaymentFactory]).create("Plablub"))
+    val imeth = injetor.getInstance(classOf[InjectorTag])
   }
 }

@@ -1,13 +1,13 @@
 package de.htwg.se.SevenSteps.model.playerComponent.playerBasicImpl
 
-import com.google.inject.Inject
 import de.htwg.se.SevenSteps.model.playerComponent.{IPlayer, IPlayers}
 
 import scala.collection.immutable.Map
 import scala.collection.mutable.ListBuffer
 import scala.util.{Failure, Success, Try}
 
-case class Players @Inject() (curPlayer: Int = 0, players: Vector[Player] = Vector()) extends IPlayers {
+case class Players (curPlayer: Int, players: Vector[Player]) extends IPlayers {
+  def this() = this(0,Vector())
   def push(name: String): Players = push(Player(name))
   def push(player: Player): Players = copy(players = players :+ player)
   def pop(): Players = {
