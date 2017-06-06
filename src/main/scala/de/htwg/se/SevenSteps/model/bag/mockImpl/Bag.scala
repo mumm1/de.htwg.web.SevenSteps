@@ -8,4 +8,5 @@ case class Bag() extends IBag {
   def fillup(): Unit = ()
   def copy1(newColors: List[Char]): IBag = this
   def getStoneNumber: Int = 0
+  def reset: IBag = this
 }

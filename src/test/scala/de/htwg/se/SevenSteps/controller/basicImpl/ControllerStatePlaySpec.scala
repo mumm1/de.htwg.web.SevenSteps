@@ -34,6 +34,11 @@ class ControllerStatePlaySpec extends WordSpec {
       c.newGrid("ab sdd", 3).isSuccess should be(false)
       c.startGame().isSuccess should be(false)
     }
+    "can restart the game" in {
+      before()
+      c.newGame().isSuccess should be(true)
+      c.gameState.isInstanceOf[Prepare] should be(true)
+    }
     "allow a player to set a stone on the grid" in {
       before()
       c.setStone(0, 0).isSuccess should be(true)

@@ -18,6 +18,7 @@ case class Players() extends IPlayers {
   def apply(i: Int): IPlayer = Player()
   def haveNoStones: Boolean = false
   def getAllPossibleColorsFromAllPlayers: List[Char] = List()
+  def reset: IPlayers = this
 }
 
 case class Player() extends IPlayer {

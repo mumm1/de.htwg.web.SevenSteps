@@ -4,6 +4,7 @@ import scala.collection.immutable.Map
 import scala.util.Try
 
 trait IPlayers {
+  def reset: IPlayers
   def push(name: String): IPlayers
   def pop(): IPlayers
   def length: Int

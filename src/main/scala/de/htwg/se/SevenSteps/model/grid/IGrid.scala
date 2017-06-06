@@ -17,4 +17,5 @@ trait IGrid {
   def getColorsWithHeight0: List[Char]
   def rows: Int
   def cols: Int
+  def resetHeights: IGrid
 }

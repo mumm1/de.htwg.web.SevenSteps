@@ -141,3 +141,18 @@ case class SetStone(row: Int, col: Int, c: Controller) extends Command {
     Success()
   }
 }
+
+case class NewGame(c: Controller) extends Command {
+  override def doIt(): Try[_] = {
+    c.gameState = Prepare(c)
+    c.grid = c.grid.resetHeights
+    c.players = c.players.reset
+    c.bag = c.bag.reset
+    c.message = "Started new Game"
+    Success()
+  }
+  override def undo(): Try[_] = {
+    c.undoManager.clearUndoStack()
+    Failure(new Exception("You can't undo the start of a new game!"))
+  }
+}

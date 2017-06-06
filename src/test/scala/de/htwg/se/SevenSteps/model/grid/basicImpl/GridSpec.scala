@@ -63,5 +63,8 @@ class GridSpec extends WordSpec {
       grid.getColorsWithHeight0 should be(List('a', 'b', 'c', 'd'))
       grid.set(0, 0, 1).getColorsWithHeight0 should be(List('b', 'c', 'd'))
     }
+    "can reset the heights" in {
+      grid.set(0,0,1).resetHeights should be(grid)
+    }
   }
 }

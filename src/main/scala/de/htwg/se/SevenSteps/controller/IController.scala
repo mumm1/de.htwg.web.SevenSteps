@@ -22,4 +22,5 @@ trait IController extends Observable{
   def bag: IBag
   var message: String
   def undoManager : UndoManager
+  def newGame(): Try[IController]
 }

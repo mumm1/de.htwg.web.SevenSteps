@@ -22,6 +22,9 @@ class BagSpecs extends WordSpec {
     "have a insert function" in {
       bag2.bag should be (bag3)
     }
+    "have a reset function" in {
+      bag2.reset.isInstanceOf[Bag] should be(true)
+    }
     "have a draw function" in {
       bag2.get() should be(Some('b'))
     }

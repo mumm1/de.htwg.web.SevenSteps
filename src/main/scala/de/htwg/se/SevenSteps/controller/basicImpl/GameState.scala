@@ -22,6 +22,7 @@ case class Play(c: IController) extends IPlay {
     com match {
       case _: NextPlayer => c.undoManager.doIt(com)
       case _: SetStone => c.undoManager.doIt(com)
+      case _: NewGame => c.undoManager.doIt(com)
       case _ => Failure(new Exception("ILLEGAL COMMAND Play"))
     }
   }
@@ -30,6 +31,7 @@ case class Play(c: IController) extends IPlay {
 case class Finish(c: IController) extends IFinish {
   override def exploreCommand(com: Command): Try[_] = {
     com match {
+      case _: NewGame => c.undoManager.doIt(com)
       case _ => Failure(new Exception("ILLEGAL COMMAND"))
     }
   }

@@ -28,5 +28,6 @@ case class Controller() extends IController{
   def bag: IBag = Bag()
   var message: String = "Hello World, I'am a Mock"
   def undoManager : UndoManager= new UndoManager
+  def newGame(): Try[IController] = Success(this)
 }
 

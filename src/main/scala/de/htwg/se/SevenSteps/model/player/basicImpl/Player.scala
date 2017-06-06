@@ -51,6 +51,14 @@ case class Players (curPlayer: Int, players: Vector[Player]) extends IPlayers {
     }
     result.toList
   }
+  def reset: Players = {
+    val newPlayers = {
+      for(player <- players) yield {
+        Player(player.name)
+      }
+    }
+    copy(players=newPlayers)
+  }
   override def toString: String = {
     var text = ""
     for (player <- players) {

@@ -101,7 +101,12 @@ class PlayerSpec extends WordSpec {
       val pls2 = pls.updateCurPlayer(iplayer)
       pls.getCurPlayer.toString should be("Tobias: Points=50")
       pls2.getCurPlayer.name should be("Peter")
-
+    }
+    "can reset all Points" in {
+      new Players()
+        .push(Player("Hans",3))
+        .push(Player("Alex",2))
+        .reset  should be(new Players().push("Hans").push("Alex"))
     }
     "have a players list" in {
       pls.players.isEmpty should be(false)

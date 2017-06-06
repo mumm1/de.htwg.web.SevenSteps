@@ -14,5 +14,6 @@ case class Grid() extends IGrid {
   def getColorsWithHeight0: List[Char] = List('b')
   def rows: Int = 2
   def cols: Int = 2
+  def resetHeights: IGrid = this
 }
 

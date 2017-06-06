@@ -86,5 +86,6 @@ case class Grid(rows: Int, cols: Int, grid: Vector[Cell]) extends IGrid {
     grid.foreach(cell => list += cell.height)
     list.toList
   }
+  def resetHeights: Grid = new Grid(this.cellsToString(),this.cols)
 }
 

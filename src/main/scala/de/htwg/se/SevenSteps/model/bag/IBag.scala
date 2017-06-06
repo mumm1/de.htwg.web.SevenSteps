@@ -9,4 +9,5 @@ trait IBag {
   def fillup(): Unit
   def copy1(newColors: List[Char]): IBag
   def getStoneNumber: Int
+  def reset: IBag
 }

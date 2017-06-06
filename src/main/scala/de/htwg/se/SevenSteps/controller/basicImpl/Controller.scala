@@ -12,21 +12,25 @@ import de.htwg.se.SevenSteps.util.{Command, UndoManager}
 import scala.collection.mutable
 import scala.util._
 
-case class Controller @Inject() (var players: IPlayers,
-                                 var bag: IBag,
-                                 var gridFactory: GridFactory
-                                ) extends IController{
+case class Controller (var players: IPlayers,
+                       var bag: IBag,
+                       var gridFactory: GridFactory,
+                       var grid: IGrid
+                      ) extends IController{
   def this(injetor: Injector=Guice.createInjector(new SevenStepsModule)) =
-    this( injetor.getInstance(classOf[IPlayers]),
+    this(injetor.getInstance(classOf[IPlayers]),
       injetor.getInstance(classOf[IBag]),
-      injetor.getInstance(classOf[GridFactory]))
+      injetor.getInstance(classOf[GridFactory]),
+      injetor.getInstance(classOf[GridFactory]).newGrid(" ",1))
+  @Inject()
+  def this(players: IPlayers,bag: IBag,gridFactory: GridFactory) = {
+    this(players,bag,gridFactory,gridFactory.newGrid(" ",1))
+  }
   var gameState: GameState = Prepare(this)
   var message: String = "Welcome to SevenSteps"
   var curHeight: Int = 0
   var lastCells: mutable.Stack[(Int, Int)] = mutable.Stack()
   var undoManager : UndoManager = new UndoManager
-  var grid: IGrid = gridFactory.newGrid(" ",1)
-
   def prepareNewPlayer(): Unit = {
     for (_ <- players.getCurPlayer.getStoneNumber to 6) {
       bag.get() match {
@@ -78,6 +82,7 @@ case class Controller @Inject() (var players: IPlayers,
     }
   }
   def setStone(row: Int, col: Int): Try[Controller] = doIt(SetStone(row, col, this))
+  def newGame(): Try[Controller] = doIt(NewGame(this))
   def undo(): Try[Controller] = {
     val result = undoManager.undo()
     unpackError(result)

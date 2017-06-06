@@ -66,6 +66,9 @@ class SwingGui(controller: IController) extends Frame with Observer {
       contents += new MenuItem(Action("Next Player") {
         controller.nextPlayer()
       })
+      contents += new MenuItem(Action("New Game") {
+        controller.newGame()
+      })
       contents += new MenuItem(Action("Quit") {
         System.exit(0)
       })
@@ -129,7 +132,7 @@ class SwingGui(controller: IController) extends Frame with Observer {
     new BorderPanel {
       add(playerP, BorderPanel.Position.West)
       add(colorP, BorderPanel.Position.East)
-      add(new Label{text="Bag: "+controller.bag.getStoneNumber();font = new Font("Verdana", 1, 20)},BorderPanel.Position.North)
+      add(new Label{text="Bag: "+controller.bag.getStoneNumber;font = new Font("Verdana", 1, 20)},BorderPanel.Position.North)
     }
   }
   visible = true
