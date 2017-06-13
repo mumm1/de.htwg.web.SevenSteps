@@ -31,6 +31,7 @@ class PlayerSpec extends WordSpec {
     }
     "Have no stones" in {
       p.haveNoStones should be(true)
+      p.getStoneNumber should be(0)
     }
     "Have no stones with a empty list" in {
       val p2 = p.setColors(List('a', 'b'))

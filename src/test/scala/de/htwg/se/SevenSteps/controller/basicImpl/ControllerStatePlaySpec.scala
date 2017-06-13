@@ -113,6 +113,12 @@ class ControllerStatePlaySpec extends WordSpec {
       c.setStone(1, 0).isSuccess should be(false)
       c.grid.getHeights should be(List(2, 1, 0, 0))
     }
+    "only allow players to set stones when they have stones from that color" in {
+      before()
+      c.players = c.players.setAllStonesTo(1)
+      c.setStone(0, 0).isSuccess should be(true)
+      c.setStone(0, 1).isSuccess should be(false)
+    }
     "can check if the game is finished (there are no stones any more)" in {
       before()
       c.isGameEnd should be(false)

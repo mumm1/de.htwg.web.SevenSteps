@@ -12,6 +12,11 @@ import org.scalatest.junit.JUnitRunner
 class ControllerStatePrepareSpec extends WordSpec {
   var c = new Controller()
   "A Controller in game phase prepare" should {
+    "have default values" in {
+      c = new Controller()
+      c.gameState.isInstanceOf[Prepare] should be (true)
+      c.message should be("Welcome to SevenSteps")
+    }
     "add Players and undo this" in {
       c = new Controller()
       c.addPlayer("Hugo").isSuccess should be(true)

@@ -39,20 +39,16 @@ case class Grid(rows: Int, cols: Int, grid: Vector[Cell]) extends IGrid {
       })
   }
   override def toString: String = {
-    if (grid.isEmpty) {
-      "\n"
-    } else {
-      val linesep = "+---" * cols + "+\n"
-      val line = "|XXX" * cols + "|\n"
-      var strGrid = "\n" + (linesep + line) * rows + linesep
-      for (
-        row <- 0 until rows;
-        col <- 0 until cols
-      ) {
-        strGrid = strGrid.replaceFirst("XXX", grid(getIndex(row, col)).toString)
-      }
-      strGrid
+    val linesep = "+---" * cols + "+\n"
+    val line = "|XXX" * cols + "|\n"
+    var strGrid = "\n" + (linesep + line) * rows + linesep
+    for (
+      row <- 0 until rows;
+      col <- 0 until cols
+    ) {
+      strGrid = strGrid.replaceFirst("XXX", grid(getIndex(row, col)).toString)
     }
+    strGrid
   }
   private def getIndex(row: Int, col: Int): Int = {
     if (row >= rows || col >= cols) {
