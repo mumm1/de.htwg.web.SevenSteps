@@ -23,6 +23,10 @@ parsers:
 ignore: # files and folders for processing
   - src/test/*
   - src/main/scala/de.htwg.se.SevenSteps/aview/*
+  - src/main/scala/de.htwg.se.SevenSteps/Factory.scala
+  - src/main/scala/de.htwg.se.SevenSteps/SevenSteps.scala
+  - src/main/scala/de.htwg.se.SevenSteps/SevenStepsModule.scala
+  - mockImpl/
 
 comment:
   layout: "header, diff"
