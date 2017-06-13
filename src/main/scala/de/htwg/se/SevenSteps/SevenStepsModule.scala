@@ -26,11 +26,11 @@ class SevenStepsModule extends AbstractModule{
 class SevenStepsMoc extends AbstractModule{
   override def configure(): Unit = {
     bind(classOf[IPlayers]).to(classOf[player.mockImpl.Players])
-    bind(classOf[IBag]).to(classOf[bag.mockImpl.Bag])
-    bind(classOf[IController]).to(classOf[controller.mockImpl.Controller])
+    bind(classOf[IBag]).to(classOf[bag.mockImpl.BagMock])
+    bind(classOf[IController]).to(classOf[controller.mockImpl.ControllerMock])
 
     install(new FactoryModuleBuilder()
-      .implement(classOf[IGrid],classOf[grid.mockImpl.Grid])
+      .implement(classOf[IGrid],classOf[grid.mockImpl.GridMock])
       .build(classOf[GridFactory]))
   }
 }

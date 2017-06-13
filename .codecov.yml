@@ -26,7 +26,7 @@ ignore: # files and folders for processing
   - src/main/scala/de.htwg.se.SevenSteps/Factory.scala
   - src/main/scala/de.htwg.se.SevenSteps/SevenSteps.scala
   - src/main/scala/de.htwg.se.SevenSteps/SevenStepsModule.scala
-  - mockImpl/
+  - *Mock*
 
 comment:
   layout: "header, diff"

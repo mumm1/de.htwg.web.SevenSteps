@@ -17,6 +17,7 @@ class Software Engineering at the University of Applied Science HTWG Konstanz
 * Design Pattern
 * Test Driven Development
 * clean code
+* Dependency Injection
 * Scala (FP and OOP)
 
 
@@ -25,3 +26,5 @@ class Software Engineering at the University of Applied Science HTWG Konstanz
 * Observer Pattern (for MVC inversion of control)
 * Command Pattern (for undo-redo Stack)
 * State Pattern (for game phases)
+* Factory Pattern (alternative to Dependency Injection)
+
