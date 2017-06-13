@@ -1,7 +1,7 @@
 [![Travis](https://travis-ci.org/t123obi/de.htwg.se.SevenSteps.svg?branch=master)]()
 
 
-[![codecov](https://codecov.io/gh/t123obi/de.htwg.se.SevenSteps/branch/master/graph/badge.svg)](https://codecov.io/gh/t123obi/de.htwg.se.SevenSteps)
+[![codecov](https://codecov.io/gh/t123obi/de.htwg.se.SevenSteps/branch/master/graph/badge.svg)](https://codecov.io/gh/t123obi/de.htwg.se.SevenSteps) (without View-Layer, Mocks & main)
 
 
 SevenSteps (Game)
