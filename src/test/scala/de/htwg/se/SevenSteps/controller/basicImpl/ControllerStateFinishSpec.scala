@@ -10,18 +10,18 @@ import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
 class ControllerStateFinishSpec extends WordSpec {
-  var c = new Controller()
-  def before(colors: String = "aabb", cols: Int = 2, numPlayers: Int = 3): Unit = {
-    c = new Controller()
+  def before(colors: String = "aabb", cols: Int = 2, numPlayers: Int = 3): Controller = {
+    val c = new Controller()
     for (i <- 1 to numPlayers)
       c.addPlayer("Hans" + i).isSuccess should be(true)
     c.newGrid(colors, cols).isSuccess should be(true)
     c.startGame().isSuccess should be(true)
     c.gameState = Finish(c)
+    c
   }
   "A Controller in game phase finish" should {
     "can only use newGame Command and can't undo that" in {
-      before()
+      val c=before()
       c.nextPlayer().isSuccess should be(false)
       c.newGrid(" ", 1).isSuccess should be(false)
       c.startGame().isSuccess should be(false)
@@ -31,12 +31,12 @@ class ControllerStateFinishSpec extends WordSpec {
       c.undo().isSuccess should be(false)
     }
     "on command newGame go into state Prepare" in{
-      before()
+      val c=before()
       c.newGame().isSuccess should be(true)
       c.gameState.isInstanceOf[Prepare] should be(true)
     }
     "reset on command newGame all Points from Players and Heights of the grid" in{
-      before()
+      val c=before()
       c.players = new Players().push(Player("Hans",10))
       c.grid = new Grid("a",1).set(0,0,5)
       c.newGame().isSuccess should be(true)
