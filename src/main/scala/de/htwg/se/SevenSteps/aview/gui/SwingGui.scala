@@ -152,13 +152,13 @@ class PrepareWindow(controller: IController) extends MainFrame {
   val rows = new TextField(" ", 5) {
     listenTo(keys)
     reactions += { case e: KeyTyped =>
-      if (!e.char.isDigit || e.char.equals('0')) e.consume
+      if (!e.char.isDigit) e.consume
     }
   }
   val col = new TextField(" ", 5) {
     listenTo(keys)
     reactions += { case e: KeyTyped =>
-      if (!e.char.isDigit || e.char.equals('0')) e.consume
+      if (!e.char.isDigit) e.consume
     }
   }
   val gridPanel = new FlowPanel() {
@@ -169,8 +169,10 @@ class PrepareWindow(controller: IController) extends MainFrame {
     contents += Button("Create") {
       val rowNum = rows.text.trim.toInt
       val colNum = col.text.trim.toInt
-      controller.newGrid(" " * rowNum * colNum, colNum)
-      close()
+      if (rowNum != 0 && colNum != 0) {
+        controller.newGrid(" " * rowNum * colNum, colNum)
+        close()
+      }
     }
   }
   val playerPanel = new FlowPanel() {
