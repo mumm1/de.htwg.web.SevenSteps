@@ -1,10 +1,8 @@
 package de.htwg.se.SevenSteps.aview.gui
 
 import javax.swing.JPopupMenu
-
 import de.htwg.se.SevenSteps.controller._
 import de.htwg.se.SevenSteps.util.Observer
-
 import scala.swing._
 import event._
 import java.awt.{Color, Graphics2D}
@@ -42,9 +40,8 @@ class SwingGui(controller: IController) extends Frame with Observer {
   override def update(): Unit = redraw()
   def redraw() = {
     contents = new BorderPanel {
-
       add(playerPanel, BorderPanel.Position.West)
- //     add(new TextArea(controller.players.toString), BorderPanel.Position.West)
+      //     add(new TextArea(controller.players.toString), BorderPanel.Position.West)
       add(gridPanel, BorderPanel.Position.Center)
       add(new TextField(controller.message, 20), BorderPanel.Position.North)
     }
@@ -99,7 +96,6 @@ class SwingGui(controller: IController) extends Frame with Observer {
     }
   }
   def playerPanel: BorderPanel = {
-
     val colorP = new GridPanel(controller.players.length, controller.grid.getColors.length) {
       for {x <- 0 until controller.players.length; color <- controller.grid.getColors} {
         val player = controller.players(x)
@@ -113,7 +109,7 @@ class SwingGui(controller: IController) extends Frame with Observer {
         }
       }
     }
-    val playerP = new GridPanel(controller.players.length,1){
+    val playerP = new GridPanel(controller.players.length, 1) {
       for {x <- 0 until controller.players.length} {
         val player = controller.players(x)
         if (player == controller.players.getCurPlayer) {
@@ -128,11 +124,13 @@ class SwingGui(controller: IController) extends Frame with Observer {
         }
       }
     }
-
     new BorderPanel {
       add(playerP, BorderPanel.Position.West)
       add(colorP, BorderPanel.Position.East)
-      add(new Label{text="Bag: "+controller.bag.getStoneNumber;font = new Font("Verdana", 1, 20)},BorderPanel.Position.North)
+      add(new Label {
+        text = "Bag: " + controller.bag.getStoneNumber;
+        font = new Font("Verdana", 1, 20)
+      }, BorderPanel.Position.North)
     }
   }
   visible = true
@@ -169,11 +167,15 @@ class PrepareWindow(controller: IController) extends MainFrame {
     contents += Button("Create") {
       val rowNum = rows.text.trim.toInt
       val colNum = col.text.trim.toInt
+
       if (rowNum != 0 && rowNum < 20 && colNum != 0 && colNum < 20) {
         controller.newGrid(" " * rowNum * colNum, colNum)
         close()
       }
     }
+  }
+  val infoPanel = new FlowPanel() {
+    val infoField = new TextField(" ", 20)
   }
   val playerPanel = new FlowPanel() {
     contents += new Label("Name:")
@@ -184,6 +186,8 @@ class PrepareWindow(controller: IController) extends MainFrame {
     }
   }
   val mainPanel = new BorderPanel() {
+    if (infoPanel._contents.length != 0)
+      add(infoPanel, BorderPanel.Position.North)
     add(playerPanel, BorderPanel.Position.West)
     add(gridPanel, BorderPanel.Position.East)
   }
