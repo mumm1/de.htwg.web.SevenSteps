@@ -3,19 +3,17 @@ package de.htwg.se.SevenSteps
 import com.google.inject.AbstractModule
 import com.google.inject.assistedinject.FactoryModuleBuilder
 import de.htwg.se.SevenSteps.controller.IController
-import de.htwg.se.SevenSteps.model.bag
 import de.htwg.se.SevenSteps.model.bag.IBag
-import de.htwg.se.SevenSteps.model.grid
 import de.htwg.se.SevenSteps.model.grid.{GridFactory, IGrid}
-import de.htwg.se.SevenSteps.model.player
+import de.htwg.se.SevenSteps.model.{bag, grid, player}
 import de.htwg.se.SevenSteps.model.player.IPlayers
+import net.codingwell.scalaguice.ScalaModule
 
-
-class SevenStepsModule extends AbstractModule{
+class SevenStepsModule extends AbstractModule with ScalaModule {
   override def configure(): Unit = {
-    bind(classOf[IPlayers]).to(classOf[player.basicImpl.Players])
-    bind(classOf[IBag]).to(classOf[bag.basicImpl.Bag])
-    bind(classOf[IController]).to(classOf[controller.basicImpl.Controller])
+    bind[IPlayers].to[player.basicImpl.Players]
+    bind[IBag].to[bag.basicImpl.Bag]
+    bind[IController].to[controller.basicImpl.Controller]
 
     install(new FactoryModuleBuilder()
       .implement(classOf[IGrid],classOf[grid.basicImpl.Grid])
@@ -23,11 +21,11 @@ class SevenStepsModule extends AbstractModule{
   }
 }
 
-class SevenStepsMoc extends AbstractModule{
+class SevenStepsMoc extends AbstractModule with ScalaModule {
   override def configure(): Unit = {
-    bind(classOf[IPlayers]).to(classOf[player.mockImpl.Players])
-    bind(classOf[IBag]).to(classOf[bag.mockImpl.BagMock])
-    bind(classOf[IController]).to(classOf[controller.mockImpl.ControllerMock])
+    bind[IPlayers].to[player.mockImpl.Players]
+    bind[IBag].to[bag.mockImpl.BagMock]
+    bind[IController].to[controller.mockImpl.ControllerMock]
 
     install(new FactoryModuleBuilder()
       .implement(classOf[IGrid],classOf[grid.mockImpl.GridMock])
