@@ -1,20 +1,16 @@
 package de.htwg.se.SevenSteps.aview.gui
 
 import javax.swing.JPopupMenu
-
 import scala.swing._
 import scala.swing.Swing.LineBorder
 import scala.swing.event._
 import de.htwg.se.SevenSteps.controller._
 import de.htwg.se.SevenSteps.util.Observer
-
 import scala.swing._
 import scala.swing.BorderPanel.Position._
 import event._
 import java.awt.{Color, Graphics2D}
-
 import de.htwg.se.SevenSteps.controller.controllerBasicImpl.Controller
-
 import scala.util.Random
 import scala.io.Source._
 
@@ -51,9 +47,8 @@ class SwingGui(controller: Controller) extends Frame with Observer {
   override def update(): Unit = redraw()
   def redraw() = {
     contents = new BorderPanel {
-
       add(playerPanel, BorderPanel.Position.West)
- //     add(new TextArea(controller.players.toString), BorderPanel.Position.West)
+      //     add(new TextArea(controller.players.toString), BorderPanel.Position.West)
       add(gridPanel, BorderPanel.Position.Center)
       add(new TextField(controller.message, 20), BorderPanel.Position.North)
     }
@@ -105,7 +100,6 @@ class SwingGui(controller: Controller) extends Frame with Observer {
     }
   }
   def playerPanel: BorderPanel = {
-
     val colorP = new GridPanel(controller.players.length, controller.grid.getColors.length) {
       for {x <- 0 until controller.players.length; color <- controller.grid.getColors} {
         val player = controller.players(x)
@@ -119,7 +113,7 @@ class SwingGui(controller: Controller) extends Frame with Observer {
         }
       }
     }
-    val playerP = new GridPanel(controller.players.length,1){
+    val playerP = new GridPanel(controller.players.length, 1) {
       for {x <- 0 until controller.players.length} {
         val player = controller.players(x)
         if (player == controller.players.getCurPlayer) {
@@ -134,16 +128,17 @@ class SwingGui(controller: Controller) extends Frame with Observer {
         }
       }
     }
-
     new BorderPanel {
       add(playerP, BorderPanel.Position.West)
       add(colorP, BorderPanel.Position.East)
-      add(new Label{text="Bag: "+controller.bag.getStoneNumber();font = new Font("Verdana", 1, 20)},BorderPanel.Position.North)
+      add(new Label {
+        text = "Bag: " + controller.bag.getStoneNumber();
+        font = new Font("Verdana", 1, 20)
+      }, BorderPanel.Position.North)
     }
   }
   visible = true
   resizable = false
-
   def getButtonColor(color: Char): MenuItem = {
     val newItem = new MenuItem(Action("       ") {
       ColorManager.curColer = color
@@ -159,13 +154,13 @@ class PrepareWindow(controller: Controller) extends MainFrame {
   val rows = new TextField(" ", 5) {
     listenTo(keys)
     reactions += { case e: KeyTyped =>
-      if (!e.char.isDigit) e.consume
+      if (!e.char.isDigit || e.char.equals('0')) e.consume
     }
   }
   val col = new TextField(" ", 5) {
     listenTo(keys)
     reactions += { case e: KeyTyped =>
-      if (!e.char.isDigit) e.consume
+      if (!e.char.isDigit || e.char.equals('0')) e.consume
     }
   }
   val gridPanel = new FlowPanel() {
@@ -184,7 +179,8 @@ class PrepareWindow(controller: Controller) extends MainFrame {
     contents += new Label("Name:")
     contents += nameField
     contents += Button("Add") {
-      controller.addPlayer(nameField.text)
+      if (!nameField.text.trim.isEmpty)
+        controller.addPlayer(nameField.text)
     }
   }
   val mainPanel = new BorderPanel() {
