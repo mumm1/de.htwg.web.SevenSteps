@@ -136,6 +136,7 @@ class SwingGui(controller: IController) extends Frame with Observer {
     }
   }
   visible = true
+  resizable = false
   def getButtonColor(color: Char): MenuItem = {
     val newItem = new MenuItem(Action("       ") {
       ColorManager.curColer = color
@@ -151,13 +152,13 @@ class PrepareWindow(controller: IController) extends MainFrame {
   val rows = new TextField(" ", 5) {
     listenTo(keys)
     reactions += { case e: KeyTyped =>
-      if (!e.char.isDigit) e.consume
+      if (!e.char.isDigit || e.char.equals('0')) e.consume
     }
   }
   val col = new TextField(" ", 5) {
     listenTo(keys)
     reactions += { case e: KeyTyped =>
-      if (!e.char.isDigit) e.consume
+      if (!e.char.isDigit || e.char.equals('0')) e.consume
     }
   }
   val gridPanel = new FlowPanel() {
@@ -176,7 +177,8 @@ class PrepareWindow(controller: IController) extends MainFrame {
     contents += new Label("Name:")
     contents += nameField
     contents += Button("Add") {
-      controller.addPlayer(nameField.text)
+      if (!nameField.text.trim.isEmpty)
+        controller.addPlayer(nameField.text)
     }
   }
   val mainPanel = new BorderPanel() {
