@@ -169,7 +169,7 @@ class PrepareWindow(controller: IController) extends MainFrame {
     contents += Button("Create") {
       val rowNum = rows.text.trim.toInt
       val colNum = col.text.trim.toInt
-      if (rowNum != 0 && colNum != 0) {
+      if (rowNum != 0 && rowNum < 20 && colNum != 0 && colNum < 20) {
         controller.newGrid(" " * rowNum * colNum, colNum)
         close()
       }
