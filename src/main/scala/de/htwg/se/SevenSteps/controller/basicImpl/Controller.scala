@@ -1,9 +1,8 @@
 
 package de.htwg.se.SevenSteps.controller.basicImpl
 
-import com.google.inject.{Guice, Inject, Injector}
+import com.google.inject.Inject
 import com.owlike.genson.annotation.JsonCreator
-import de.htwg.se.SevenSteps.SevenStepsModule
 import de.htwg.se.SevenSteps.controller._
 import de.htwg.se.SevenSteps.model.bag.IBag
 import de.htwg.se.SevenSteps.model.grid.{GridFactory, IGrid}
@@ -24,11 +23,6 @@ case class Controller @JsonCreator()
   var curHeight: Int = 0
   var lastCells: mutable.Stack[(Int, Int)] = mutable.Stack()
   var undoManager: UndoManager = new UndoManager
-  def this(injetor: Injector=Guice.createInjector(new SevenStepsModule)) =
-    this(injetor.getInstance(classOf[IPlayers]),
-      injetor.getInstance(classOf[IBag]),
-      injetor.getInstance(classOf[GridFactory]),
-      injetor.getInstance(classOf[GridFactory]).newGrid(" ",1))
   @Inject()
   def this(players: IPlayers,bag: IBag,gridFactory: GridFactory) = {
     this(players,bag,gridFactory,gridFactory.newGrid(" ",1))

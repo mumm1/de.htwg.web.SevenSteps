@@ -1,5 +1,10 @@
 package de.htwg.se.SevenSteps.controller.basicImpl
 
+import com.google.inject.Guice
+import de.htwg.se.SevenSteps.SevenStepsModule
+import de.htwg.se.SevenSteps.model.bag.IBag
+import de.htwg.se.SevenSteps.model.grid.GridFactory
+import de.htwg.se.SevenSteps.model.player.IPlayers
 import de.htwg.se.SevenSteps.util.Observer
 import org.junit.runner.RunWith
 import org.scalatest.Matchers.{be, _}
@@ -9,12 +14,19 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class ControllerStatePlaySpec extends WordSpec {
   def before(colors: String = "aabb", cols: Int = 2, numPlayers: Int = 3): Controller = {
-    val c = new Controller()
+    val c = getController
     for (i <- 1 to numPlayers)
       c.addPlayer("Hans" + i).isSuccess should be(true)
     c.newGrid(colors, cols).isSuccess should be(true)
     c.startGame().isSuccess should be(true)
     c
+  }
+  def getController: Controller = {
+    val injector = Guice.createInjector(new SevenStepsModule)
+    Controller(injector.getInstance(classOf[IPlayers]),
+      injector.getInstance(classOf[IBag]),
+      injector.getInstance(classOf[GridFactory]),
+      injector.getInstance(classOf[GridFactory]).newGrid(" ", 1))
   }
   "A Controller in game phase play" should {
     "switch between different Players and can't undo that" in {
@@ -186,7 +198,7 @@ class ControllerStatePlaySpec extends WordSpec {
   }
   "A Controller observed by an Observer" should {
     "notify its Observer after every Change" in {
-      val c = new Controller()
+      val c = getController
       val observer = new Observer {
         var updates: Int = 0
         override def update(): Unit = updates += 1

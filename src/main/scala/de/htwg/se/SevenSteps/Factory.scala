@@ -12,21 +12,24 @@ trait Factory extends GridFactory{
 }
 
 object FactoryBasic extends Factory {
+
+  import de.htwg.se.SevenSteps.controller.basicImpl.Controller
   import de.htwg.se.SevenSteps.model.bag.basicImpl.Bag
   import de.htwg.se.SevenSteps.model.grid.basicImpl.Grid
   import de.htwg.se.SevenSteps.model.player.basicImpl.Players
-  import de.htwg.se.SevenSteps.controller.basicImpl.Controller
+
+  def newController: IController = Controller(newPlayers(), newBag(), this, newGrid(" ", 1))
   def newGrid(colors: String, cols: Int): IGrid = new Grid(colors, cols)
   def newPlayers(): IPlayers = new Players()
   def newBag(): IBag = Bag(random = false)
-  def newController: IController = new Controller()
 }
 
 object FactoryMoc extends Factory {
+
+  import de.htwg.se.SevenSteps.controller.mockImpl.ControllerMock
   import de.htwg.se.SevenSteps.model.bag.mockImpl.BagMock
   import de.htwg.se.SevenSteps.model.grid.mockImpl.GridMock
   import de.htwg.se.SevenSteps.model.player.mockImpl.Players
-  import de.htwg.se.SevenSteps.controller.mockImpl.ControllerMock
   def newGrid(colors: String, cols: Int): IGrid = GridMock()
   def newPlayers(): IPlayers = Players()
   def newBag(): IBag = BagMock()
