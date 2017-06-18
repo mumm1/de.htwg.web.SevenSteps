@@ -1,11 +1,13 @@
 package de.htwg.se.SevenSteps.aview.gui
 
+import java.awt.Color
 import javax.swing.JPopupMenu
+
 import de.htwg.se.SevenSteps.controller._
 import de.htwg.se.SevenSteps.util.Observer
+
 import scala.swing._
-import event._
-import java.awt.{Color, Graphics2D}
+import scala.swing.event._
 
 class PopupMenu extends Component {
   override lazy val peer: JPopupMenu = new JPopupMenu
@@ -186,7 +188,7 @@ class PrepareWindow(controller: IController) extends MainFrame {
     }
   }
   val mainPanel = new BorderPanel() {
-    if (infoPanel._contents.length != 0)
+    if (infoPanel.contents.length != 0)
       add(infoPanel, BorderPanel.Position.North)
     add(playerPanel, BorderPanel.Position.West)
     add(gridPanel, BorderPanel.Position.East)
