@@ -56,7 +56,7 @@ case class NewGrid(colors: String, cols: Int, c: Controller) extends Command {
 case class StartGame(c: Controller) extends Command {
   override def doIt(): Try[_] = {
     if (c.players.nonEmpty && c.grid.nonEmpty) {
-      c.gameState = Play(c)
+      c.gameState = Play()
       val colors = c.grid.getColors
       c.players = c.players.setColors(colors)
       c.bag = c.bag.copy1(colors)
@@ -144,7 +144,7 @@ case class SetStone(row: Int, col: Int, c: Controller) extends Command {
 
 case class NewGame(c: Controller) extends Command {
   override def doIt(): Try[_] = {
-    c.gameState = Prepare(c)
+    c.gameState = Prepare()
     c.grid = c.grid.resetHeights
     c.players = c.players.reset
     c.bag = c.bag.reset

@@ -18,7 +18,7 @@ case class Controller @JsonCreator()
                        var gridFactory: GridFactory,
                        var grid: IGrid
                       ) extends IController{
-  var gameState: GameState = Prepare(this)
+  var gameState: GameState = Prepare()
   var message: String = "Welcome to SevenSteps"
   var curHeight: Int = 0
   var lastCells: mutable.Stack[(Int, Int)] = mutable.Stack()
@@ -42,7 +42,7 @@ case class Controller @JsonCreator()
   }
   def isGameEnd: Boolean = bag.isEmpty && players.haveNoStones
   def finish(): Try[Controller] = {
-    gameState = Finish(this)
+    gameState = Finish()
     message = "Winner is " + getWinningPlayer.name
     Success(this)
   }
@@ -57,7 +57,7 @@ case class Controller @JsonCreator()
   }
   def addPlayer(name: String): Try[Controller] = doIt(AddPlayer(name, this))
   def doIt(command: Command): Try[Controller] = {
-    val result = gameState.exploreCommand(command)
+    val result = gameState.exploreCommand(command, this)
     unpackError(result)
     notifyObservers()
     wrapController(result)

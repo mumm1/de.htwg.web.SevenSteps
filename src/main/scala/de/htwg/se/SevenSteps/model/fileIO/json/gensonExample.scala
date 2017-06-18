@@ -10,6 +10,7 @@ import de.htwg.se.SevenSteps.model.bag.IBag
 import de.htwg.se.SevenSteps.model.grid.{GridFactory, IGrid}
 import de.htwg.se.SevenSteps.model.player.{IPlayer, IPlayers}
 import de.htwg.se.SevenSteps.util.{Command, UndoManager}
+
 import scala.collection.mutable
 import scala.util.{Failure, Success, Try}
 
@@ -72,7 +73,7 @@ case class Controller2 @JsonCreator()
   }
   def isGameEnd: Boolean = bag.isEmpty && players.haveNoStones
   def finish(): Try[Controller2] = {
-    gameState = Finish(this)
+    gameState = Finish()
     message = "Winner is " + getWinningPlayer.name
     Success(this)
   }
@@ -90,7 +91,7 @@ case class Controller2 @JsonCreator()
   def startGame(): Try[Controller2] = Success(this)
   def nextPlayer(): Try[Controller2] = Success(this)
   def doIt(command: Command): Try[Controller2] = {
-    val result = gameState.exploreCommand(command)
+    val result = gameState.exploreCommand(command, this)
     unpackError(result)
     notifyObservers()
     wrapController(result)

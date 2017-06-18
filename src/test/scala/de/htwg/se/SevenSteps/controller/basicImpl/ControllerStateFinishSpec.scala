@@ -24,7 +24,7 @@ class ControllerStateFinishSpec extends WordSpec {
       c.addPlayer("Hans" + i).isSuccess should be(true)
     c.newGrid(colors, cols).isSuccess should be(true)
     c.startGame().isSuccess should be(true)
-    c.gameState = Finish(c)
+    c.gameState = Finish()
     c
   }
   "A Controller in game phase finish" should {
