@@ -1,6 +1,5 @@
 package de.htwg.se.SevenSteps.model.grid.basicImpl
 
-import de.htwg.se.SevenSteps.model.grid.basicImpl.Grid
 import org.junit.runner.RunWith
 import org.scalatest.Matchers._
 import org.scalatest._
@@ -9,7 +8,7 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class GridSpec extends WordSpec {
   "A new Grid with 1 empty Cell" should {
-    val grid = new Grid(1, 1)
+    val grid = Grid(1, 1, Vector(Cell()))
     "have the right dimensions" in {
       grid.cols should be(1)
       grid.rows should be(1)
@@ -25,11 +24,6 @@ class GridSpec extends WordSpec {
     }
   }
   "A Grid" should {
-    "be possible to create empty" in {
-      new Grid(3, 2)
-      new Grid(10, 40)
-      new Grid() should be(new Grid(1,1))
-    }
     "be possible to create colored" in {
       new Grid(colors = "abc", cols = 2).toString() should be("\n+---+---+\n|a 0|b 0|\n+---+---+\n|c 0|   |\n+---+---+\n")
       new Grid(colors = "abc  abc", cols = 3)

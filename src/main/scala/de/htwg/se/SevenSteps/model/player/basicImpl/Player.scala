@@ -1,12 +1,13 @@
 package de.htwg.se.SevenSteps.model.player.basicImpl
 
+import com.owlike.genson.annotation.JsonCreator
 import de.htwg.se.SevenSteps.model.player.{IPlayer, IPlayers}
 
 import scala.collection.immutable.Map
 import scala.collection.mutable.ListBuffer
 import scala.util.{Failure, Success, Try}
 
-case class Players (curPlayer: Int, players: Vector[Player]) extends IPlayers {
+case class Players @JsonCreator()(curPlayer: Int, players: Vector[Player]) extends IPlayers {
   def this() = this(0,Vector())
   def push(name: String): Players = push(Player(name))
   def push(player: Player): Players = copy(players = players :+ player)
@@ -72,7 +73,7 @@ case class Players (curPlayer: Int, players: Vector[Player]) extends IPlayers {
   }
 }
 
-case class Player(name: String, points: Int = 0, map: Option[Map[Char, Int]] = None) extends IPlayer {
+case class Player @JsonCreator()(name: String, points: Int = 0, map: Option[Map[Char, Int]] = None) extends IPlayer {
   def setColors(colors: List[Char]): Player = {
     var newMap: Map[Char, Int] = Map()
     for ((c) <- colors) {

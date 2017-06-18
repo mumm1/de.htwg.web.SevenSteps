@@ -2,7 +2,8 @@
 package de.htwg.se.SevenSteps.controller.basicImpl
 
 import com.google.inject.{Guice, Inject, Injector}
-import de.htwg.se.SevenSteps.{Factory, FactoryBasic, SevenStepsModule}
+import com.owlike.genson.annotation.JsonCreator
+import de.htwg.se.SevenSteps.SevenStepsModule
 import de.htwg.se.SevenSteps.controller._
 import de.htwg.se.SevenSteps.model.bag.IBag
 import de.htwg.se.SevenSteps.model.grid.{GridFactory, IGrid}
@@ -12,11 +13,17 @@ import de.htwg.se.SevenSteps.util.{Command, UndoManager}
 import scala.collection.mutable
 import scala.util._
 
-case class Controller (var players: IPlayers,
+case class Controller @JsonCreator()
+(var players: IPlayers,
                        var bag: IBag,
                        var gridFactory: GridFactory,
                        var grid: IGrid
                       ) extends IController{
+  var gameState: GameState = Prepare(this)
+  var message: String = "Welcome to SevenSteps"
+  var curHeight: Int = 0
+  var lastCells: mutable.Stack[(Int, Int)] = mutable.Stack()
+  var undoManager: UndoManager = new UndoManager
   def this(injetor: Injector=Guice.createInjector(new SevenStepsModule)) =
     this(injetor.getInstance(classOf[IPlayers]),
       injetor.getInstance(classOf[IBag]),
@@ -26,11 +33,6 @@ case class Controller (var players: IPlayers,
   def this(players: IPlayers,bag: IBag,gridFactory: GridFactory) = {
     this(players,bag,gridFactory,gridFactory.newGrid(" ",1))
   }
-  var gameState: GameState = Prepare(this)
-  var message: String = "Welcome to SevenSteps"
-  var curHeight: Int = 0
-  var lastCells: mutable.Stack[(Int, Int)] = mutable.Stack()
-  var undoManager : UndoManager = new UndoManager
   def prepareNewPlayer(): Unit = {
     for (_ <- players.getCurPlayer.getStoneNumber to 6) {
       bag.get() match {
@@ -60,9 +62,6 @@ case class Controller (var players: IPlayers,
     winner
   }
   def addPlayer(name: String): Try[Controller] = doIt(AddPlayer(name, this))
-  def newGrid(colors: String, cols: Int): Try[Controller] = doIt(NewGrid(colors, cols, this))
-  def startGame(): Try[Controller] = doIt(StartGame(this))
-  def nextPlayer(): Try[Controller] = doIt(NextPlayer(this))
   def doIt(command: Command): Try[Controller] = {
     val result = gameState.exploreCommand(command)
     unpackError(result)
@@ -81,6 +80,9 @@ case class Controller (var players: IPlayers,
       case _ =>
     }
   }
+  def newGrid(colors: String, cols: Int): Try[Controller] = doIt(NewGrid(colors, cols, this))
+  def startGame(): Try[Controller] = doIt(StartGame(this))
+  def nextPlayer(): Try[Controller] = doIt(NextPlayer(this))
   def setStone(row: Int, col: Int): Try[Controller] = doIt(SetStone(row, col, this))
   def newGame(): Try[Controller] = doIt(NewGame(this))
   def undo(): Try[Controller] = {

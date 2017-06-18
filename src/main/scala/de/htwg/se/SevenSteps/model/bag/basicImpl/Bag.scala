@@ -1,15 +1,16 @@
 package de.htwg.se.SevenSteps.model.bag.basicImpl
 
+import com.owlike.genson.annotation.JsonCreator
 import de.htwg.se.SevenSteps.model.bag.IBag
 
 /**
   * Created by acer1 on 04.05.2017.
   */
-case class Bag (var bag: Array[Char] = new Array[Char](0),
-               var entfernt: Int = 0,
-               var aktuell: Int = 0,
-               var random: Boolean,
-               var colors: List[Char] = List[Char]())
+case class Bag @JsonCreator()(var bag: Array[Char] = new Array[Char](0),
+                              var entfernt: Int = 0,
+                              var aktuell: Int = 0,
+                              var random: Boolean,
+                              var colors: List[Char] = List[Char]())
   extends IBag {
   def this() = this(random=true)
   def fillup(): Unit = {
