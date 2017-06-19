@@ -10,11 +10,17 @@ import de.htwg.se.SevenSteps.model.grid.mockImpl.GridMock
 import de.htwg.se.SevenSteps.model.player.IPlayers
 import de.htwg.se.SevenSteps.model.player.mockImpl.Players
 import de.htwg.se.SevenSteps.util.UndoManager
-
+import scala.collection.mutable
 import scala.util._
 
-case class ControllerMock() extends IController{
-  var message: String = "Hello World, I'am a Mock"
+case class ControllerMock(var players: IPlayers = Players(),
+                          var bag: IBag = BagMock(),
+                          var grid: IGrid = GridMock(),
+                          var gameState: GameState = Prepare(),
+                          var message: String = "Welcome to SevenSteps",
+                          var curHeight: Int = 0,
+                          var lastCells: mutable.Stack[(Int, Int)] = mutable.Stack(),
+                          var undoManager: UndoManager = new UndoManager) extends IController {
   def addPlayer(name: String): Try[IController] = Success(this)
   def newGrid(colors: String, cols: Int): Try[IController]= Success(this)
   def startGame(): Try[IController]= Success(this)
@@ -23,11 +29,6 @@ case class ControllerMock() extends IController{
   def undo(): Try[IController]= Success(this)
   def redo(): Try[IController]= Success(this)
   def setColor(row: Int, col: Int,color:Char): Try[IController]= Success(this)
-  def gameState: GameState = Prepare()
-  def players: IPlayers = Players()
-  def grid: IGrid = GridMock()
-  def bag: IBag = BagMock()
-  def undoManager : UndoManager= new UndoManager
   def newGame(): Try[IController] = Success(this)
 }
 

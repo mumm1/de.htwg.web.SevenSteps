@@ -17,7 +17,7 @@ import scala.util.{Failure, Success, Try}
 object CustomGenson {
   val customGenson = new ScalaGenson(
     new GensonBuilder()
-      .useIndentation(true) // use pretti-print
+      //.useIndentation(true) // use pretti-print
       .useClassMetadata(true) // save full class name (traits)
       .useRuntimeType(true) //
       .withBundle(ScalaBundle().useOnlyConstructorFields(true)) // also internal vals & vars
@@ -97,14 +97,6 @@ case class Controller2 @JsonCreator()
     notifyObservers()
     wrapController(result)
   }
-  def setStone(row: Int, col: Int): Try[Controller2] = Success(this)
-  def newGame(): Try[Controller2] = Success(this)
-  def undo(): Try[Controller2] = {
-    val result = undoManager.undo()
-    unpackError(result)
-    notifyObservers()
-    wrapController(result)
-  }
   def wrapController(t: Try[_]): Try[Controller2] = {
     t match {
       case Success(_) => Success(this)
@@ -116,6 +108,14 @@ case class Controller2 @JsonCreator()
       case Failure(e) => message = e.getMessage
       case _ =>
     }
+  }
+  def setStone(row: Int, col: Int): Try[Controller2] = Success(this)
+  def newGame(): Try[Controller2] = Success(this)
+  def undo(): Try[Controller2] = {
+    val result = undoManager.undo()
+    unpackError(result)
+    notifyObservers()
+    wrapController(result)
   }
   def redo(): Try[Controller2] = {
     val result = undoManager.redo()
