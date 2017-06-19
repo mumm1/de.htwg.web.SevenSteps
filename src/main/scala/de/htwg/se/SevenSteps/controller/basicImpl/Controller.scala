@@ -15,13 +15,14 @@ import scala.util._
 case class ControllerState @JsonCreator()(var players: IPlayers,
                                           var bag: IBag,
                                           var grid: IGrid,
-                                          var gameState: GameState = Prepare(),
-                                          var message: String = "Welcome to SevenSteps",
-                                          var curHeight: Int = 0,
-                                          var lastCells: mutable.Stack[(Int, Int)] = mutable.Stack()) {
+                                          var lastCells: mutable.Stack[(Int, Int)],
+                                          var gameState: GameState,
+                                          var message: String,
+                                          var curHeight: Int
+                                         ) {
   @Inject()
   def this(players: IPlayers, bag: IBag, gridFactory: IGridFactory) = {
-    this(players, bag, gridFactory.newGrid(" ", 1))
+    this(players, bag, gridFactory.newGrid(" ", 1), mutable.Stack(), Prepare(), "Welcome to SevenSteps", 0)
   }
 }
 
@@ -84,17 +85,15 @@ case class Controller @JsonCreator()
   def nextPlayer(): Try[Controller] = doIt(NextPlayer(this))
   def setStone(row: Int, col: Int): Try[Controller] = doIt(SetStone(row, col, this))
   def newGame(): Try[Controller] = doIt(NewGame(this))
-  def undo(): Try[Controller] = {
-    val result = undoManager.undo()
+  def doIt(command: Command): Try[Controller] = {
+    val result = gameState.exploreCommand(command, this)
     unpackError(result)
     notifyObservers()
     wrapController(result)
   }
-  def redo(): Try[Controller] = {
-    val result = undoManager.redo()
-    unpackError(result)
-    notifyObservers()
-    wrapController(result)
+  override def gameState: GameState = c.gameState
+  override def gameState_=(gameState: GameState) {
+    this.c.gameState = gameState
   }
   def wrapController(t: Try[_]): Try[Controller] = {
     t match {
@@ -108,6 +107,18 @@ case class Controller @JsonCreator()
       case _ =>
     }
   }
+  def undo(): Try[Controller] = {
+    val result = undoManager.undo()
+    unpackError(result)
+    notifyObservers()
+    wrapController(result)
+  }
+  def redo(): Try[Controller] = {
+    val result = undoManager.redo()
+    unpackError(result)
+    notifyObservers()
+    wrapController(result)
+  }
   def isDeadlock: Boolean = {
     val possibleColorsGrid = grid.getColorsWithHeight0
     val possibleColorsPlayer = players.getAllPossibleColorsFromAllPlayers
@@ -119,28 +130,18 @@ case class Controller @JsonCreator()
     true
   }
   def setColor(row: Int, col: Int,color:Char): Try[Controller] = doIt(SetColor(row,col,color,this))
-  def doIt(command: Command): Try[Controller] = {
-    val result = gameState.exploreCommand(command, this)
-    unpackError(result)
-    notifyObservers()
-    wrapController(result)
-  }
-  override def gameState: GameState = c.gameState
-  override def gameState_=(gameState: GameState) {
-    this.c.gameState = gameState
-  }
   override def toString: String = {
     val text = "\n############  " + message + "  ############\n\n"
     val len = text.length()
     text + players.toString + grid.toString + "#" * (len - 2) + "\n"
   }
-  override def grid: IGrid = c.grid
-  override def grid_=(grid: IGrid) {
-    this.c.grid = grid
-  }
   override def message: String = c.message
   override def message_=(message: String) {
     this.c.message = message
+  }
+  override def grid: IGrid = c.grid
+  override def grid_=(grid: IGrid) {
+    this.c.grid = grid
   }
 }
 
