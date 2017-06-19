@@ -5,7 +5,7 @@ import com.google.inject.Inject
 import com.owlike.genson.annotation.JsonCreator
 import de.htwg.se.SevenSteps.controller._
 import de.htwg.se.SevenSteps.model.bag.IBag
-import de.htwg.se.SevenSteps.model.grid.{GridFactory, IGrid}
+import de.htwg.se.SevenSteps.model.grid.{IGrid, IGridFactory}
 import de.htwg.se.SevenSteps.model.player.{IPlayer, IPlayers}
 import de.htwg.se.SevenSteps.util.{Command, UndoManager}
 
@@ -14,17 +14,18 @@ import scala.util._
 
 case class Controller @JsonCreator()
 (var players: IPlayers,
-                       var bag: IBag,
-                       var gridFactory: GridFactory,
-                       var grid: IGrid
+ var bag: IBag,
+ var gridFactory: IGridFactory,
+ var grid: IGrid,
+ var gameState: GameState = Prepare(),
+ var message: String = "Welcome to SevenSteps",
+ var curHeight: Int = 0,
+ var lastCells: mutable.Stack[(Int, Int)] = mutable.Stack(),
+ var undoManager: UndoManager = new UndoManager
                       ) extends IController{
-  var gameState: GameState = Prepare()
-  var message: String = "Welcome to SevenSteps"
-  var curHeight: Int = 0
-  var lastCells: mutable.Stack[(Int, Int)] = mutable.Stack()
-  var undoManager: UndoManager = new UndoManager
+
   @Inject()
-  def this(players: IPlayers,bag: IBag,gridFactory: GridFactory) = {
+  def this(players: IPlayers, bag: IBag, gridFactory: IGridFactory) = {
     this(players,bag,gridFactory,gridFactory.newGrid(" ",1))
   }
   def prepareNewPlayer(): Unit = {
@@ -56,6 +57,10 @@ case class Controller @JsonCreator()
     winner
   }
   def addPlayer(name: String): Try[Controller] = doIt(AddPlayer(name, this))
+  def newGrid(colors: String, cols: Int): Try[Controller] = doIt(NewGrid(colors, cols, this))
+  def startGame(): Try[Controller] = doIt(StartGame(this))
+  def nextPlayer(): Try[Controller] = doIt(NextPlayer(this))
+  def setStone(row: Int, col: Int): Try[Controller] = doIt(SetStone(row, col, this))
   def doIt(command: Command): Try[Controller] = {
     val result = gameState.exploreCommand(command, this)
     unpackError(result)
@@ -74,10 +79,6 @@ case class Controller @JsonCreator()
       case _ =>
     }
   }
-  def newGrid(colors: String, cols: Int): Try[Controller] = doIt(NewGrid(colors, cols, this))
-  def startGame(): Try[Controller] = doIt(StartGame(this))
-  def nextPlayer(): Try[Controller] = doIt(NextPlayer(this))
-  def setStone(row: Int, col: Int): Try[Controller] = doIt(SetStone(row, col, this))
   def newGame(): Try[Controller] = doIt(NewGame(this))
   def undo(): Try[Controller] = {
     val result = undoManager.undo()

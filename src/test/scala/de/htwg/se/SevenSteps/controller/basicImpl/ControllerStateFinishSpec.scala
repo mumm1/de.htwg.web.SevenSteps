@@ -3,7 +3,7 @@ package de.htwg.se.SevenSteps.controller.basicImpl
 import com.google.inject.Guice
 import de.htwg.se.SevenSteps.SevenStepsModule
 import de.htwg.se.SevenSteps.model.bag.IBag
-import de.htwg.se.SevenSteps.model.grid.GridFactory
+import de.htwg.se.SevenSteps.model.grid.IGridFactory
 import de.htwg.se.SevenSteps.model.grid.basicImpl.Grid
 import de.htwg.se.SevenSteps.model.player.IPlayers
 import de.htwg.se.SevenSteps.model.player.basicImpl.{Player, Players}
@@ -18,8 +18,8 @@ class ControllerStateFinishSpec extends WordSpec {
     val injector = Guice.createInjector(new SevenStepsModule)
     val c = Controller(injector.getInstance(classOf[IPlayers]),
       injector.getInstance(classOf[IBag]),
-      injector.getInstance(classOf[GridFactory]),
-      injector.getInstance(classOf[GridFactory]).newGrid(" ", 1))
+      injector.getInstance(classOf[IGridFactory]),
+      injector.getInstance(classOf[IGridFactory]).newGrid(" ", 1))
     for (i <- 1 to numPlayers)
       c.addPlayer("Hans" + i).isSuccess should be(true)
     c.newGrid(colors, cols).isSuccess should be(true)

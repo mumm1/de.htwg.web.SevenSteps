@@ -5,7 +5,7 @@ import de.htwg.se.SevenSteps.SevenStepsModule
 import de.htwg.se.SevenSteps.controller.basicImpl.Controller
 import de.htwg.se.SevenSteps.model.bag.IBag
 import de.htwg.se.SevenSteps.model.fileIO.json.FileIO
-import de.htwg.se.SevenSteps.model.grid.GridFactory
+import de.htwg.se.SevenSteps.model.grid.IGridFactory
 import de.htwg.se.SevenSteps.model.player.IPlayers
 import org.junit.runner.RunWith
 import org.scalatest._
@@ -17,8 +17,8 @@ class FileIOSpec extends WordSpec {
     val injector = Guice.createInjector(new SevenStepsModule)
     Controller(injector.getInstance(classOf[IPlayers]),
       injector.getInstance(classOf[IBag]),
-      injector.getInstance(classOf[GridFactory]),
-      injector.getInstance(classOf[GridFactory]).newGrid(" ", 1))
+      injector.getInstance(classOf[IGridFactory]),
+      injector.getInstance(classOf[IGridFactory]).newGrid(" ", 1))
   }
   "A FileIO" should {
     "can save & restore the Controller" ignore {

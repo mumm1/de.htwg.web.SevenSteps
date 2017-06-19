@@ -2,7 +2,7 @@ package de.htwg.se.SevenSteps.model.grid
 
 import scala.util.Try
 
-trait GridFactory {
+trait IGridFactory {
   def newGrid(colors: String, cols: Int): IGrid
 }
 

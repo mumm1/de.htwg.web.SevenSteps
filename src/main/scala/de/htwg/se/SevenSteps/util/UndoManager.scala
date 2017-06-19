@@ -6,10 +6,10 @@ import scala.util.{Failure, Try}
 /**
   * Created by tobias on 11.05.17.
   */
-class UndoManager {
-
-  var undoStack: mutable.Stack[Command] = mutable.Stack()
-  var redoStack: mutable.Stack[Command] = mutable.Stack()
+case class UndoManager(
+                        var undoStack: mutable.Stack[Command] = mutable.Stack(),
+                        var redoStack: mutable.Stack[Command] = mutable.Stack()
+                      ) {
   def clearUndoStack(): Unit = undoStack.clear()
   def doIt(com: Command): Try[_] = {
     val result = com.doIt()

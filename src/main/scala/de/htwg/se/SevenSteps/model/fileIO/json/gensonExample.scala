@@ -3,13 +3,13 @@ package de.htwg.se.SevenSteps.model.fileIO.json
 import com.google.inject.{Guice, Inject}
 import com.owlike.genson._
 import com.owlike.genson.annotation.JsonCreator
-import de.htwg.se.SevenSteps.SevenStepsModule
 import de.htwg.se.SevenSteps.controller.basicImpl._
 import de.htwg.se.SevenSteps.controller.{GameState, IController}
 import de.htwg.se.SevenSteps.model.bag.IBag
-import de.htwg.se.SevenSteps.model.grid.{GridFactory, IGrid}
+import de.htwg.se.SevenSteps.model.grid.{IGrid, IGridFactory}
 import de.htwg.se.SevenSteps.model.player.{IPlayer, IPlayers}
 import de.htwg.se.SevenSteps.util.{Command, UndoManager}
+import de.htwg.se.SevenSteps.{GridFactory, SevenStepsModule}
 
 import scala.collection.mutable
 import scala.util.{Failure, Success, Try}
@@ -31,23 +31,24 @@ case class Teacher(name: String) extends Person {
   def this() = this("hans")
 }
 
-case class Student(name: String) extends Person
-
-case class School(persons: Vector[Person]) {
-  val num: Int = persons.length
-}
-
+//case class Student(name: String) extends Person
+//case class MyTuple(x:Int,y:Int,z:Int)
+//case class School(persons: Vector[Person]) {
+//  val num: Int = persons.length
+//}
 case class Controller2 @JsonCreator()
 (var players: IPlayers,
  var bag: IBag,
- var gridFactory: GridFactory,
- var grid: IGrid
+ var gridFactory: IGridFactory,
+ var grid: IGrid,
+ var gameState: GameState = null,
+ var message: String = "Welcome to SevenSteps",
+ var curHeight: Int = 0,
+ var undoManager: UndoManager = new UndoManager,
+ var lastCellX: mutable.Stack[Int] = mutable.Stack(),
+ var lastCellY: mutable.Stack[Int] = mutable.Stack()
 ) extends IController {
-  var gameState: GameState = null
-  var message: String = "Welcome to SevenSteps"
-  var curHeight: Int = 0
-  var lastCells: mutable.Stack[(Int, Int)] = mutable.Stack()
-  var undoManager: UndoManager = new UndoManager
+  //  var lastCells: mutable.Stack[(Int, Int)] = mutable.Stack()
   // def this(injetor: Injector) = {
   //    this(injetor.getInstance(classOf[IPlayers]),
   //      injetor.getInstance(classOf[IBag]),
@@ -55,7 +56,7 @@ case class Controller2 @JsonCreator()
   //      injetor.getInstance(classOf[GridFactory]).newGrid(" ", 1))
   //  }
   @Inject()
-  def this(players: IPlayers, bag: IBag, gridFactory: GridFactory) = {
+  def this(players: IPlayers, bag: IBag, gridFactory: IGridFactory) = {
     this(players, bag, gridFactory, gridFactory.newGrid(" ", 1))
   }
   def prepareNewPlayer(): Unit = {
@@ -66,7 +67,7 @@ case class Controller2 @JsonCreator()
       }
     }
     curHeight = 0
-    lastCells.clear()
+    //lastCells.clear()
   }
   def getCurPlayer: IPlayer = {
     players.getCurPlayer
@@ -144,22 +145,14 @@ case class Controller2 @JsonCreator()
 object gensonExample {
   def main(args: Array[String]): Unit = {
     import CustomGenson.customGenson._
-    //val school = School(Vector(Teacher("Hans"), Student("Peter")))
-    //val jsonSchool = toJson(school)
-    //println(jsonSchool)
-    //val schoolFromJson = fromJson[School](jsonSchool)
-    //println(schoolFromJson)
-    //println(school == schoolFromJson)
-    //val grid =  new Grid("qefwefwew",6)
-    val injetor = Guice.createInjector(new SevenStepsModule)
-    val c = injetor.getInstance(classOf[IController])
-    val grid = new Controller2(injetor.getInstance(classOf[IPlayers]),
-      injetor.getInstance(classOf[IBag]),
-      injetor.getInstance(classOf[GridFactory]),
-      injetor.getInstance(classOf[GridFactory]).newGrid(" ", 1))
-    //val grid = Cell('c',1)
-    //val grid = new Bag()
-    //val grid = Players(0,Vector(Player("Hans")))
-    println(toJson(grid))
+    val injector = Guice.createInjector(new SevenStepsModule)
+    val c = injector.getInstance(classOf[IController])
+    val c2 = Controller2(c.players, c.bag, GridFactory(), c.grid)
+    val json = toJson(c2)
+    println(json)
+    val t2 = (1, 2)
+    println(toJson(t2))
+    //val cFromJson = fromJson[IController](json)
+    //print(cFromJson)
   }
 }

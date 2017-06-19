@@ -4,9 +4,9 @@ import com.google.inject.AbstractModule
 import com.google.inject.assistedinject.FactoryModuleBuilder
 import de.htwg.se.SevenSteps.controller.IController
 import de.htwg.se.SevenSteps.model.bag.IBag
-import de.htwg.se.SevenSteps.model.grid.{GridFactory, IGrid}
-import de.htwg.se.SevenSteps.model.{bag, grid, player}
+import de.htwg.se.SevenSteps.model.grid.{IGrid, IGridFactory}
 import de.htwg.se.SevenSteps.model.player.IPlayers
+import de.htwg.se.SevenSteps.model.{bag, grid, player}
 import net.codingwell.scalaguice.ScalaModule
 
 class SevenStepsModule extends AbstractModule with ScalaModule {
@@ -14,11 +14,16 @@ class SevenStepsModule extends AbstractModule with ScalaModule {
     bind[IPlayers].to[player.basicImpl.Players]
     bind[IBag].to[bag.basicImpl.Bag]
     bind[IController].to[controller.basicImpl.Controller]
-
-    install(new FactoryModuleBuilder()
-      .implement(classOf[IGrid],classOf[grid.basicImpl.Grid])
-      .build(classOf[GridFactory]))
+    bind[IGridFactory].to[GridFactory]
+    //    install(GridFactory)
   }
+}
+
+case class GridFactory() extends IGridFactory {
+
+  import de.htwg.se.SevenSteps.model.grid.basicImpl.Grid
+
+  override def newGrid(colors: String, cols: Int): IGrid = new Grid(colors, cols)
 }
 
 class SevenStepsMoc extends AbstractModule with ScalaModule {
@@ -29,6 +34,6 @@ class SevenStepsMoc extends AbstractModule with ScalaModule {
 
     install(new FactoryModuleBuilder()
       .implement(classOf[IGrid],classOf[grid.mockImpl.GridMock])
-      .build(classOf[GridFactory]))
+      .build(classOf[IGridFactory]))
   }
 }
