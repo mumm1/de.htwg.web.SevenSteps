@@ -2,9 +2,7 @@ package de.htwg.se.SevenSteps.controller.basicImpl
 
 import com.google.inject.Guice
 import de.htwg.se.SevenSteps.SevenStepsModule
-import de.htwg.se.SevenSteps.model.bag.IBag
 import de.htwg.se.SevenSteps.model.grid.IGridFactory
-import de.htwg.se.SevenSteps.model.player.IPlayers
 import de.htwg.se.SevenSteps.util.Observer
 import org.junit.runner.RunWith
 import org.scalatest.Matchers.{be, _}
@@ -23,10 +21,8 @@ class ControllerStatePlaySpec extends WordSpec {
   }
   def getController: Controller = {
     val injector = Guice.createInjector(new SevenStepsModule)
-    Controller(injector.getInstance(classOf[IPlayers]),
-      injector.getInstance(classOf[IBag]),
-      injector.getInstance(classOf[IGridFactory]),
-      injector.getInstance(classOf[IGridFactory]).newGrid(" ", 1))
+    new Controller(injector.getInstance(classOf[ControllerState]),
+      injector.getInstance(classOf[IGridFactory]))
   }
   "A Controller in game phase play" should {
     "switch between different Players and can't undo that" in {

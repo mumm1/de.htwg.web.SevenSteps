@@ -2,10 +2,8 @@ package de.htwg.se.SevenSteps.controller.basicImpl
 
 import com.google.inject.Guice
 import de.htwg.se.SevenSteps.SevenStepsModule
-import de.htwg.se.SevenSteps.model.bag.IBag
 import de.htwg.se.SevenSteps.model.grid.IGridFactory
 import de.htwg.se.SevenSteps.model.grid.basicImpl.Grid
-import de.htwg.se.SevenSteps.model.player.IPlayers
 import de.htwg.se.SevenSteps.model.player.basicImpl.{Player, Players}
 import org.junit.runner.RunWith
 import org.scalatest.Matchers.{be, _}
@@ -16,10 +14,8 @@ import org.scalatest.junit.JUnitRunner
 class ControllerStateFinishSpec extends WordSpec {
   def before(colors: String = "aabb", cols: Int = 2, numPlayers: Int = 3): Controller = {
     val injector = Guice.createInjector(new SevenStepsModule)
-    val c = Controller(injector.getInstance(classOf[IPlayers]),
-      injector.getInstance(classOf[IBag]),
-      injector.getInstance(classOf[IGridFactory]),
-      injector.getInstance(classOf[IGridFactory]).newGrid(" ", 1))
+    val c = new Controller(injector.getInstance(classOf[ControllerState]),
+      injector.getInstance(classOf[IGridFactory]))
     for (i <- 1 to numPlayers)
       c.addPlayer("Hans" + i).isSuccess should be(true)
     c.newGrid(colors, cols).isSuccess should be(true)
