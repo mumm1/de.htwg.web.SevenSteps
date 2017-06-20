@@ -20,7 +20,7 @@ class ControllerStateFinishSpec extends WordSpec {
       c.addPlayer("Hans" + i).isSuccess should be(true)
     c.newGrid(colors, cols).isSuccess should be(true)
     c.startGame().isSuccess should be(true)
-    c.gameState = Finish()
+    c.state.gameState = Finish()
     c
   }
   "A Controller in game phase finish" should {
@@ -37,15 +37,15 @@ class ControllerStateFinishSpec extends WordSpec {
     "on command newGame go into state Prepare" in{
       val c=before()
       c.newGame().isSuccess should be(true)
-      c.gameState.isInstanceOf[Prepare] should be(true)
+      c.state.gameState.isInstanceOf[Prepare] should be(true)
     }
     "reset on command newGame all Points from Players and Heights of the grid" in{
       val c=before()
-      c.players = new Players().push(Player("Hans", 10, None))
-      c.grid = new Grid("a",1).set(0,0,5)
+      c.state.players = new Players().push(Player("Hans", 10, None))
+      c.state.grid = new Grid("a", 1).set(0, 0, 5)
       c.newGame().isSuccess should be(true)
-      c.players should be(new Players().push("Hans"))
-      c.grid should be(new Grid("a",1))
+      c.state.players should be(new Players().push("Hans"))
+      c.state.grid should be(new Grid("a", 1))
     }
   }
 }

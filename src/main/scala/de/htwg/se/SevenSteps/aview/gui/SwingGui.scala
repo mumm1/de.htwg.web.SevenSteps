@@ -45,13 +45,13 @@ class SwingGui(controller: IController) extends Frame with Observer {
       add(playerPanel, BorderPanel.Position.West)
       //     add(new TextArea(controller.players.toString), BorderPanel.Position.West)
       add(gridPanel, BorderPanel.Position.Center)
-      add(new TextField(controller.message, 20), BorderPanel.Position.North)
+      add(new TextField(controller.state.message, 20), BorderPanel.Position.North)
     }
   }
   contents = new BorderPanel {
-    add(new TextArea(controller.players.toString), BorderPanel.Position.West)
+    add(new TextArea(controller.state.players.toString), BorderPanel.Position.West)
     add(gridPanel, BorderPanel.Position.Center)
-    add(new TextField(controller.message, 20), BorderPanel.Position.North)
+    add(new TextField(controller.state.message, 20), BorderPanel.Position.North)
   }
   menuBar = new MenuBar {
     contents += new Menu("File") {
@@ -92,15 +92,15 @@ class SwingGui(controller: IController) extends Frame with Observer {
       contents += getButtonColor(' ')
     }
   }
-  def gridPanel: GridPanel = new GridPanel(controller.grid.rows, controller.grid.cols) {
-    for {x <- 0 until controller.grid.rows; y <- 0 until controller.grid.cols} {
+  def gridPanel: GridPanel = new GridPanel(controller.state.grid.rows, controller.state.grid.cols) {
+    for {x <- 0 until controller.state.grid.rows; y <- 0 until controller.state.grid.cols} {
       contents += new CellPanel(x, y, controller)
     }
   }
   def playerPanel: BorderPanel = {
-    val colorP = new GridPanel(controller.players.length, controller.grid.getColors.length) {
-      for {x <- 0 until controller.players.length; color <- controller.grid.getColors} {
-        val player = controller.players(x)
+    val colorP = new GridPanel(controller.state.players.length, controller.state.grid.getColors.length) {
+      for {x <- 0 until controller.state.players.length; color <- controller.state.grid.getColors} {
+        val player = controller.state.players(x)
         player.map match {
           case None => contents += new Label("")
           case Some(m) => contents += new Label {
@@ -111,10 +111,10 @@ class SwingGui(controller: IController) extends Frame with Observer {
         }
       }
     }
-    val playerP = new GridPanel(controller.players.length, 1) {
-      for {x <- 0 until controller.players.length} {
-        val player = controller.players(x)
-        if (player == controller.players.getCurPlayer) {
+    val playerP = new GridPanel(controller.state.players.length, 1) {
+      for {x <- 0 until controller.state.players.length} {
+        val player = controller.state.players(x)
+        if (player == controller.state.players.getCurPlayer) {
           contents += new Label {
             text = player.name + " " + player.points + " "
             font = new Font("Verdana", 1, 20)
@@ -130,7 +130,7 @@ class SwingGui(controller: IController) extends Frame with Observer {
       add(playerP, BorderPanel.Position.West)
       add(colorP, BorderPanel.Position.East)
       add(new Label {
-        text = "Bag: " + controller.bag.getStoneNumber;
+        text = "Bag: " + controller.state.bag.getStoneNumber;
         font = new Font("Verdana", 1, 20)
       }, BorderPanel.Position.North)
     }

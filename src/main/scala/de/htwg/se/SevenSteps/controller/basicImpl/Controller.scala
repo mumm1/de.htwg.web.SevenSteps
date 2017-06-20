@@ -26,50 +26,38 @@ case class ControllerState @JsonCreator()(var players: IPlayers,
 }
 
 case class Controller @JsonCreator()
-(var c: ControllerState,
+(var state: ControllerState,
  var gridFactory: IGridFactory,
  var undoManager: UndoManager
 ) extends IController {
   @Inject()
-  def this(cState: ControllerState, gridFactory: IGridFactory) = {
-    this(cState, gridFactory, new UndoManager)
+  def this(state: ControllerState, gridFactory: IGridFactory) = {
+    this(state, gridFactory, new UndoManager)
   }
   def prepareNewPlayer(): Unit = {
-    for (_ <- players.getCurPlayer.getStoneNumber to 6) {
-      bag.get() match {
-        case Some(col: Char) => players = players.updateCurPlayer(players.getCurPlayer.incColor(col, 1))
+    for (_ <- state.players.getCurPlayer.getStoneNumber to 6) {
+      state.bag.get() match {
+        case Some(col: Char) => state.players = state.players.updateCurPlayer(state.players.getCurPlayer.incColor(col, 1))
         case None =>
       }
     }
-    curHeight = 0
-    c.lastCells = Vector()
-  }
-  override def bag: IBag = c.bag
-  override def bag_=(bag: IBag) {
-    this.c.bag = bag
-  }
-  override def curHeight: Int = c.curHeight
-  override def curHeight_=(curHeight: Int) {
-    this.c.curHeight = curHeight
-  }
-  override def lastCells: Vector[(Int, Int)] = c.lastCells
-  override def lastCells_=(lastCells: Vector[(Int, Int)]) {
-    this.c.lastCells = lastCells
+    state.curHeight = 0
+    state.lastCells = Vector()
   }
   def getCurPlayer: IPlayer = {
-    players.getCurPlayer
+    state.players.getCurPlayer
   }
-  def isGameEnd: Boolean = bag.isEmpty && players.haveNoStones
+  def isGameEnd: Boolean = state.bag.isEmpty && state.players.haveNoStones
   def finish(): Try[Controller] = {
-    gameState = Finish()
-    message = "Winner is " + getWinningPlayer.name
+    state.gameState = Finish()
+    state.message = "Winner is " + getWinningPlayer.name
     Success(this)
   }
   def getWinningPlayer: IPlayer = {
-      var winner = players(0)
-    for (i <- 1 until players.length) {
-      if (players(i).points > winner.points) {
-        winner = players(i)
+    var winner = state.players(0)
+    for (i <- 1 until state.players.length) {
+      if (state.players(i).points > winner.points) {
+        winner = state.players(i)
       }
     }
     winner
@@ -78,17 +66,11 @@ case class Controller @JsonCreator()
   def newGrid(colors: String, cols: Int): Try[Controller] = doIt(NewGrid(colors, cols, this))
   def startGame(): Try[Controller] = doIt(StartGame(this))
   def nextPlayer(): Try[Controller] = doIt(NextPlayer(this))
-  def setStone(row: Int, col: Int): Try[Controller] = doIt(SetStone(row, col, this))
-  def newGame(): Try[Controller] = doIt(NewGame(this))
   def doIt(command: Command): Try[Controller] = {
-    val result = gameState.exploreCommand(command, this)
+    val result = state.gameState.exploreCommand(command, this)
     unpackError(result)
     notifyObservers()
     wrapController(result)
-  }
-  override def gameState: GameState = c.gameState
-  override def gameState_=(gameState: GameState) {
-    this.c.gameState = gameState
   }
   def wrapController(t: Try[_]): Try[Controller] = {
     t match {
@@ -98,14 +80,12 @@ case class Controller @JsonCreator()
   }
   def unpackError(e: Try[_]): Unit = {
     e match {
-      case Failure(e) => message = e.getMessage
+      case Failure(e) => state.message = e.getMessage
       case _ =>
     }
   }
-  override def message: String = c.message
-  override def message_=(message: String) {
-    this.c.message = message
-  }
+  def setStone(row: Int, col: Int): Try[Controller] = doIt(SetStone(row, col, this))
+  def newGame(): Try[Controller] = doIt(NewGame(this))
   def undo(): Try[Controller] = {
     val result = undoManager.undo()
     unpackError(result)
@@ -119,8 +99,8 @@ case class Controller @JsonCreator()
     wrapController(result)
   }
   def isDeadlock: Boolean = {
-    val possibleColorsGrid = grid.getColorsWithHeight0
-    val possibleColorsPlayer = players.getAllPossibleColorsFromAllPlayers
+    val possibleColorsGrid = state.grid.getColorsWithHeight0
+    val possibleColorsPlayer = state.players.getAllPossibleColorsFromAllPlayers
     for (color <- possibleColorsGrid) {
       if (possibleColorsPlayer.contains(color)) {
         return false
@@ -128,19 +108,11 @@ case class Controller @JsonCreator()
     }
     true
   }
-  override def players: IPlayers = c.players
-  override def players_=(players: IPlayers) {
-    this.c.players = players
-  }
-  override def grid: IGrid = c.grid
-  override def grid_=(grid: IGrid) {
-    this.c.grid = grid
-  }
   def setColor(row: Int, col: Int,color:Char): Try[Controller] = doIt(SetColor(row,col,color,this))
   override def toString: String = {
-    val text = "\n############  " + message + "  ############\n\n"
+    val text = "\n############  " + state.message + "  ############\n\n"
     val len = text.length()
-    text + players.toString + grid.toString + "#" * (len - 2) + "\n"
+    text + state.players.toString + state.grid.toString + "#" * (len - 2) + "\n"
   }
 }
 

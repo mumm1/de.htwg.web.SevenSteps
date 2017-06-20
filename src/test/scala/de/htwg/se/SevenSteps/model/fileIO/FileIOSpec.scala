@@ -21,8 +21,8 @@ class FileIOSpec extends WordSpec {
     val fileIO = json.FileIO()
     "can save & restore the default ControllerState" in {
       val c = getController
-      fileIO.save(c.c)
-      fileIO.load should be(c.c)
+      fileIO.save(c.state)
+      fileIO.load should be(c.state)
     }
     "can save & restore a complex ControllerState" in {
       implicit val doubleEquality = TolerantNumerics.tolerantDoubleEquality(0.01)
@@ -30,12 +30,12 @@ class FileIOSpec extends WordSpec {
       c
         .addPlayer("Hans").get.addPlayer("Alex").get
         .newGrid("aabb", 2).get.startGame().get
-      fileIO.save(c.c)
+      fileIO.save(c.state)
       val c2 = fileIO.load
-      c2.players should be(c.c.players)
-      c2.bag should be(c.c.bag)
-      c2.grid should be(c.c.grid)
-      fileIO.load should be(c.c)
+      c2.players should be(c.state.players)
+      c2.bag should be(c.state.bag)
+      c2.grid should be(c.state.grid)
+      fileIO.load should be(c.state)
     }
     "Double" in {
       val x: Double = 1.0

@@ -21,21 +21,21 @@ class ControllerStatePrepareSpec extends WordSpec {
   "A Controller in game phase prepare" should {
     "have default values" in {
       val c = getController
-      c.gameState.isInstanceOf[Prepare] should be (true)
-      c.message should be("Welcome to SevenSteps")
+      c.state.gameState.isInstanceOf[Prepare] should be(true)
+      c.state.message should be("Welcome to SevenSteps")
     }
     "add Players and undo this" in {
       val c = getController
       c.addPlayer("Hugo").isSuccess should be(true)
       c.addPlayer("Peter").isSuccess should be(true)
-      c.players should be(new Players().push("Hugo").push("Peter"))
-      c.undo().get.players should be(new Players().push("Hugo"))
+      c.state.players should be(new Players().push("Hugo").push("Peter"))
+      c.undo().get.state.players should be(new Players().push("Hugo"))
     }
     "set color of grid and undo this" in {
       val c = getController
       c.newGrid("aabb",2).isSuccess should be(true)
-      c.setColor(0,0,'b').get.grid should be(new Grid("babb",2))
-      c.undo().get.grid should be(new Grid("aabb",2))
+      c.setColor(0, 0, 'b').get.state.grid should be(new Grid("babb", 2))
+      c.undo().get.state.grid should be(new Grid("aabb", 2))
     }
     "set color only inside of the grid" in {
       val c = getController
@@ -48,44 +48,44 @@ class ControllerStatePrepareSpec extends WordSpec {
       val c = getController
       c.newGrid("z", 1).isSuccess should be(true)
       c.newGrid("ab sdd", 3).isSuccess should be(true)
-      c.grid.cellsToString() should be("ab sdd")
+      c.state.grid.cellsToString() should be("ab sdd")
       c.undo().isSuccess should be(true)
-      c.grid.cellsToString() should be("z")
+      c.state.grid.cellsToString() should be("z")
     }
     "start the game (minimum 1 Player and a non empty grid) and can't undo that" in {
       val c = getController
-      c.gameState.isInstanceOf[Prepare] should be(true)
+      c.state.gameState.isInstanceOf[Prepare] should be(true)
       c.startGame().isSuccess should be(false)
-      c.gameState.isInstanceOf[Prepare] should be(true)
+      c.state.gameState.isInstanceOf[Prepare] should be(true)
       c.addPlayer("Hugo")
       c.startGame().isSuccess should be(false)
       c.newGrid("aabb", 2).isSuccess should be(true)
       c.startGame().isSuccess should be(true)
-      c.gameState.isInstanceOf[Play] should be(true)
+      c.state.gameState.isInstanceOf[Play] should be(true)
       c.undo().isSuccess should be(false)
-      c.gameState.isInstanceOf[Play] should be(true)
+      c.state.gameState.isInstanceOf[Play] should be(true)
     }
     "do undo redo stuff" in {
       val c = getController
-      c.players.length should be(0)
+      c.state.players.length should be(0)
       c.addPlayer("Hans").isSuccess should be(true)
       c.addPlayer("Hans").isSuccess should be(true)
-      c.players.length should be(2)
+      c.state.players.length should be(2)
       c.undo().isSuccess should be(true)
       c.undo().isSuccess should be(true)
-      c.players.length should be(0)
+      c.state.players.length should be(0)
       c.undo().isSuccess should be(false)
-      c.players.length should be(0)
+      c.state.players.length should be(0)
       c.redo().isSuccess should be(true)
       c.redo().isSuccess should be(true)
-      c.players.length should be(2)
+      c.state.players.length should be(2)
       c.redo().isSuccess should be(false)
     }
     "generate a cool String" in {
       val c = getController
       c.addPlayer("Hans").isSuccess should be(true)
       c.addPlayer("Peter").isSuccess should be(true)
-      c.toString()
+      c.state.toString()
     }
     " only use prepare commands" in {
       val c = getController

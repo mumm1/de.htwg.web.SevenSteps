@@ -30,7 +30,7 @@ class SevenStepsMoc extends AbstractModule with ScalaModule {
   override def configure(): Unit = {
     bind[IPlayers].to[player.mockImpl.Players]
     bind[IBag].to[bag.mockImpl.BagMock]
-    bind[IController].to[controller.mockImpl.ControllerMock]
+    // bind[IController].to[controller.mockImpl.ControllerMock]
 
     install(new FactoryModuleBuilder()
       .implement(classOf[IGrid],classOf[grid.mockImpl.GridMock])
