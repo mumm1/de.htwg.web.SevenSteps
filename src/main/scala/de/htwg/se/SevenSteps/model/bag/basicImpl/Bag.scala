@@ -5,25 +5,25 @@ import de.htwg.se.SevenSteps.model.bag.IBag
 
 import scala.collection.mutable
 
-case class Bag @JsonCreator()(var bag: Vector[Char],
-                              var colors: Vector[Char])
+case class Bag @JsonCreator()(var bag: Vector[String],
+                              var colors: Vector[String])
   extends IBag {
   def fillup(): Unit = {
-    val randomList: mutable.ListBuffer[Char] = mutable.ListBuffer()
+    val randomList: mutable.ListBuffer[String] = mutable.ListBuffer()
     for ((c) <- colors) {
       for (i <- 0 to 6) {
         val rand = (Math.random() * (randomList.length - 1)).asInstanceOf[Int]
-        randomList.insert(rand, c)
+        randomList.insert(rand, c.toString)
       }
     }
     bag = randomList.toVector
   }
-  def insert(x: Char): Unit = bag :+= x
+  def insert(x: Char): Unit = bag :+= x.toString
   def get(): Option[Char] = {
     if (bag.nonEmpty) {
       val result = bag.last
       bag = bag.init
-      Some(result)
+      Some(result.charAt(0))
     }
     else {
       None
@@ -32,20 +32,11 @@ case class Bag @JsonCreator()(var bag: Vector[Char],
   def isEmpty: Boolean = bag.isEmpty
   def getStoneNumber: Int = bag.length
   def reset: Bag = new Bag()
-  def this() = this(Vector[Char](), Vector[Char]())
+  def this() = this(Vector[String](), Vector[String]())
   def copy1(newColors: List[Char]): Bag = {
-    copy(colors = newColors.toVector)
-  }
-  override def equals(that: Any): Boolean =
-    that match {
-      case that: Bag => colors.sameElements(that.colors) //&&bag.sameElements(that.bag)
-      case _ => false
+    val newList = for (c <- newColors) yield {
+      c.toString
     }
-  override def hashCode: Int = {
-    val prime = 31
-    var result = 1
-    result = prime * result + bag.hashCode();
-    result = prime * result + colors.hashCode()
-    result
+    copy(colors = newList.toVector)
   }
 }

@@ -9,14 +9,14 @@ import scala.collection.mutable.ListBuffer
 
 @RunWith(classOf[JUnitRunner])
 class BagSpecs extends WordSpec {
-  def getBag: Bag = Bag(Vector(), Vector('a', 'b'))
+  def getBag: Bag = Bag(Vector(), Vector("a", "b"))
   "A Bag" should {
     "have a insert function" in {
       val bag = getBag
       bag.insert('a')
       bag.insert('b')
       bag.insert('c')
-      bag.bag should be(ListBuffer('a', 'b', 'c'))
+      bag.bag should be(ListBuffer("a", "b", "c"))
     }
     "have a reset function" in {
       val bag = getBag
