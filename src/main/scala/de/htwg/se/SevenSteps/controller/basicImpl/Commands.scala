@@ -104,7 +104,7 @@ case class SetStone(row: Int, col: Int, c: Controller) extends Command {
             case Success(player) => c.grid = c.grid.set(row, col, cell.height + 1)
               c.players = c.players.updateCurPlayer(player)
               c.curHeight = cell.height + 1
-              c.lastCells.push((row, col))
+              c.lastCells :+= (row, col)
               c.message = "You set a stone"
               Success()
           }
@@ -130,13 +130,13 @@ case class SetStone(row: Int, col: Int, c: Controller) extends Command {
         }
     }
   }
-  def isNeighbour(row: Int, col: Int, c: Controller): Boolean = (math.abs(row - c.lastCells.head._1) + math.abs(col - c.lastCells.head._2)) == 1
+  def isNeighbour(row: Int, col: Int, c: Controller): Boolean = (math.abs(row - c.lastCells.last._1) + math.abs(col - c.lastCells.last._2)) == 1
   override def undo(): Try[_] = {
     val cell = c.grid.cell(row, col).get
     c.grid = c.grid.set(row, col, cell.height - 1)
     c.players = c.players.updateCurPlayer(c.players.getCurPlayer.incPoints(-cell.height).incColor(cell.color, +1))
     c.curHeight = cell.height - 1
-    c.lastCells.pop()
+    c.lastCells = c.lastCells.init
     c.message = "You take the Stone back"
     Success()
   }

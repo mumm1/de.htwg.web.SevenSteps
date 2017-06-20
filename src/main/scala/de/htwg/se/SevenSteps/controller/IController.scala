@@ -5,7 +5,6 @@ import de.htwg.se.SevenSteps.model.grid.IGrid
 import de.htwg.se.SevenSteps.model.player.IPlayers
 import de.htwg.se.SevenSteps.util.{Observable, UndoManager}
 
-import scala.collection.mutable
 import scala.util.Try
 
 trait IController extends Observable{
@@ -15,7 +14,7 @@ trait IController extends Observable{
   var bag: IBag
   var message: String
   var curHeight: Int
-  var lastCells: mutable.Stack[(Int, Int)]
+  var lastCells: Vector[(Int, Int)]
   def undoManager: UndoManager
   def addPlayer(name: String): Try[IController]
   def newGrid(colors: String, cols: Int): Try[IController]

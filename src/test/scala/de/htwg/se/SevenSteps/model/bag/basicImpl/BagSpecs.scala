@@ -1,6 +1,5 @@
 package de.htwg.se.SevenSteps.model.bag.basicImpl
 
-import de.htwg.se.SevenSteps.model.bag.basicImpl.Bag
 import org.junit.runner.RunWith
 import org.scalatest.Matchers._
 import org.scalatest._
@@ -51,50 +50,7 @@ class BagSpecs extends WordSpec {
 
   "A second Bag " should {
     val bag2 =  Bag(random = false, colors = List('a','b'))
-    bag2.insert('a')
-    bag2.insert('b')
     bag2.insert('c')
-    "have a function to draw 2 stones" in {
-      bag2.get(2) match {
-        case Some(n) => n should be(Array('b', 'a'))
-        case None =>
-      }
-    }
-    "can draw the last Stone" in {
-      bag2.get() should be(Some('c'))
-    }
-    "cant draw another stone" in {
-      bag2.get() should be(None)
-    }
-  }
-
-  "A third Bag " should {
-    val bag2 =  Bag(random = false, colors = List('a','b'))
-    bag2.insert('a')
-    bag2.insert('b')
-    bag2.insert('c')
-    "can draw all stones" in {
-      bag2.get(3) match {
-        case Some(n) => n should be(Array('b', 'a', 'c'))
-        case None =>
-      }
-    }
-    "cant draw another stone" in {
-      bag2.get() should be(None)
-    }
-  }
-
-  "Another Bag " should {
-    val bag2 = Bag(random = false, colors = List('a','b'))
-    bag2.insert('a')
-    bag2.insert('b')
-    bag2.insert('c')
-    "have a function to draw 2 stones" in {
-      bag2.get(2) match {
-        case Some(n) => n should be(Array('b', 'a'))
-        case None =>
-      }
-    }
     "can draw the last Stone" in {
       bag2.get() should be(Some('c'))
     }
@@ -107,7 +63,6 @@ class BagSpecs extends WordSpec {
     val bag2 =  Bag(random = false, colors = List('a','b'))
     bag2.insert('a')
 
-
     "can insert a second stone" in {
       bag2.insert('a')
       bag2.bag should be (Array('a','a'))
@@ -119,23 +74,12 @@ class BagSpecs extends WordSpec {
   "A random Bag " should {
     val bag2 = Bag(random = true, colors = List('a','b'))
     bag2.insert('a')
-
-
     "can insert a second stone" in {
       bag2.insert('a')
       bag2.bag should be (Array('a','a'))
     }
     "have a boolen" in {
       bag2.random should be (true)
-    }
-    "can draw 2 stones " in {
-      bag2.get(2) match {
-        case Some(n) => n should be(Array('a', 'a'))
-        case None =>
-      }
-    }
-    "cant draw antoher stone" in {
-      bag2.get() should be(None)
     }
     "can draw another stone after insert" in {
       bag2.insert('a')
@@ -150,13 +94,6 @@ class BagSpecs extends WordSpec {
       bag2.fillup()
       bag2.bag.length should be (7)
     }
-    "can draw 7 stones" in {
-      bag2.get(7) match {
-        case Some(n) => n should be(Array('a', 'a', 'a', 'a', 'a', 'a', 'a'))
-        case None =>
-      }
-    }
-
   }
   "A bag with a color List and random" should {
     val bag2 = Bag(random = true, colors = List('a'))
@@ -165,14 +102,8 @@ class BagSpecs extends WordSpec {
       bag2.fillup()
       bag2.getStoneNumber should be(7)
       bag2.bag.length should be (7)    }
-    "can draw 7 stones" in {
-      bag2.get(7) match {
-        case Some(n) => n should be(Array('a', 'a', 'a', 'a', 'a', 'a', 'a'))
-        case None =>
-      }
-    }
     "should be not empty" in {
-      bag2.isEmpty should be(true)
+      bag2.isEmpty should be(false)
     }
     "should have a copy Colors function" in {
       val bag3 = bag2.copy1(List('a', 'b'))
@@ -188,12 +119,6 @@ class BagSpecs extends WordSpec {
   }
   "A bag with a color List2" should {
     val bag2 = Bag(random = false, colors = List('a'))
-    "can draw 7 stones" in {
-      bag2.get(7) match {
-        case Some(n) => n should be(Array('a', 'a', 'a', 'a', 'a', 'a', 'a'))
-        case None =>
-      }
-    }
     "bag should be empty now" in {
       bag2.getStoneNumber should be(0)
       bag2.isEmpty should be(true)

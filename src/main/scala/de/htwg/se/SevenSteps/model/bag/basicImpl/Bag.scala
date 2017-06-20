@@ -2,11 +2,12 @@ package de.htwg.se.SevenSteps.model.bag.basicImpl
 
 import com.owlike.genson.annotation.JsonCreator
 import de.htwg.se.SevenSteps.model.bag.IBag
+import scala.collection.mutable
 
 /**
   * Created by acer1 on 04.05.2017.
   */
-case class Bag @JsonCreator()(var bag: Array[Char] = new Array[Char](0),
+case class Bag @JsonCreator()(var bag: mutable.ListBuffer[Char] = new mutable.ListBuffer(),
                               var entfernt: Int = 0,
                               var aktuell: Int = 0,
                               var random: Boolean,
@@ -19,32 +20,12 @@ case class Bag @JsonCreator()(var bag: Array[Char] = new Array[Char](0),
         insert(c)
     }
   }
-  def insert(x: Char): Unit = {
-    var bag2 = new Array[Char](bag.length + 1)
-    var i = 0
-    while (i < bag.length) {
-      bag2(i) = bag(i)
-      i += 1
-    }
-    bag2(bag2.length - 1) = x
-    bag = bag2
-  }
-  def get(m: Int): Option[Array[Char]] = {
-    var bag3 = new Array[Char](m)
-    var i = 0
-    while (i < m) {
-      get() match {
-        case Some(col: Char) => bag3(i) = col
-        case None => return None
-      }
-      i += 1
-    }
-    Some(bag3)
-  }
+  def insert(x: Char): Unit = bag :+= x
   def get(): Option[Char] = {
     var rand = 0.35
-    if (random)
+    if (random) {
       rand = Math.random()
+    }
     var tmp = 'a'
     var Ausgabe = 'a'
     if (bag.length >= (entfernt + 1)) {

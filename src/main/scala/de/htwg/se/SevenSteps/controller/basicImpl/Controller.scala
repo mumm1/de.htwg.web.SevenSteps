@@ -9,20 +9,19 @@ import de.htwg.se.SevenSteps.model.grid.{IGrid, IGridFactory}
 import de.htwg.se.SevenSteps.model.player.{IPlayer, IPlayers}
 import de.htwg.se.SevenSteps.util.{Command, UndoManager}
 
-import scala.collection.mutable
 import scala.util._
 
 case class ControllerState @JsonCreator()(var players: IPlayers,
                                           var bag: IBag,
                                           var grid: IGrid,
-                                          var lastCells: mutable.Stack[(Int, Int)],
+                                          var lastCells: Vector[(Int, Int)],
                                           var gameState: GameState,
                                           var message: String,
                                           var curHeight: Int
                                          ) {
   @Inject()
   def this(players: IPlayers, bag: IBag, gridFactory: IGridFactory) = {
-    this(players, bag, gridFactory.newGrid(" ", 1), mutable.Stack(), Prepare(), "Welcome to SevenSteps", 0)
+    this(players, bag, gridFactory.newGrid(" ", 1), Vector(), Prepare(), "Welcome to SevenSteps", 0)
   }
 }
 
@@ -43,7 +42,7 @@ case class Controller @JsonCreator()
       }
     }
     curHeight = 0
-    lastCells.clear()
+    c.lastCells = Vector()
   }
   override def bag: IBag = c.bag
   override def bag_=(bag: IBag) {
@@ -53,16 +52,12 @@ case class Controller @JsonCreator()
   override def curHeight_=(curHeight: Int) {
     this.c.curHeight = curHeight
   }
-  override def lastCells: mutable.Stack[(Int, Int)] = c.lastCells
-  override def lastCells_=(lastCells: mutable.Stack[(Int, Int)]) {
+  override def lastCells: Vector[(Int, Int)] = c.lastCells
+  override def lastCells_=(lastCells: Vector[(Int, Int)]) {
     this.c.lastCells = lastCells
   }
   def getCurPlayer: IPlayer = {
     players.getCurPlayer
-  }
-  override def players: IPlayers = c.players
-  override def players_=(players: IPlayers) {
-    this.c.players = players
   }
   def isGameEnd: Boolean = bag.isEmpty && players.haveNoStones
   def finish(): Try[Controller] = {
@@ -107,6 +102,10 @@ case class Controller @JsonCreator()
       case _ =>
     }
   }
+  override def message: String = c.message
+  override def message_=(message: String) {
+    this.c.message = message
+  }
   def undo(): Try[Controller] = {
     val result = undoManager.undo()
     unpackError(result)
@@ -129,19 +128,19 @@ case class Controller @JsonCreator()
     }
     true
   }
+  override def players: IPlayers = c.players
+  override def players_=(players: IPlayers) {
+    this.c.players = players
+  }
+  override def grid: IGrid = c.grid
+  override def grid_=(grid: IGrid) {
+    this.c.grid = grid
+  }
   def setColor(row: Int, col: Int,color:Char): Try[Controller] = doIt(SetColor(row,col,color,this))
   override def toString: String = {
     val text = "\n############  " + message + "  ############\n\n"
     val len = text.length()
     text + players.toString + grid.toString + "#" * (len - 2) + "\n"
-  }
-  override def message: String = c.message
-  override def message_=(message: String) {
-    this.c.message = message
-  }
-  override def grid: IGrid = c.grid
-  override def grid_=(grid: IGrid) {
-    this.c.grid = grid
   }
 }
 

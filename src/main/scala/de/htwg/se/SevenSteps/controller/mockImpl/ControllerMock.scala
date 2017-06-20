@@ -10,7 +10,7 @@ import de.htwg.se.SevenSteps.model.grid.mockImpl.GridMock
 import de.htwg.se.SevenSteps.model.player.IPlayers
 import de.htwg.se.SevenSteps.model.player.mockImpl.Players
 import de.htwg.se.SevenSteps.util.UndoManager
-import scala.collection.mutable
+
 import scala.util._
 
 case class ControllerMock(var players: IPlayers = Players(),
@@ -19,7 +19,7 @@ case class ControllerMock(var players: IPlayers = Players(),
                           var gameState: GameState = Prepare(),
                           var message: String = "Welcome to SevenSteps",
                           var curHeight: Int = 0,
-                          var lastCells: mutable.Stack[(Int, Int)] = mutable.Stack(),
+                          var lastCells: Vector[(Int, Int)] = Vector(),
                           var undoManager: UndoManager = new UndoManager) extends IController {
   def addPlayer(name: String): Try[IController] = Success(this)
   def newGrid(colors: String, cols: Int): Try[IController]= Success(this)
