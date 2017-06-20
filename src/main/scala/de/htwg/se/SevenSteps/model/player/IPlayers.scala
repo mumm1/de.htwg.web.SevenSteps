@@ -26,6 +26,6 @@ trait IPlayer {
   def incColor(color: Char, delta: Int): IPlayer
   def name: String
   def points: Int
-  def map: Option[Map[Char, Int]]
+  def map: Option[Map[String, Double]]
   def haveNoStones: Boolean
 }

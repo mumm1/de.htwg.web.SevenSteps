@@ -4,61 +4,31 @@ import org.junit.runner.RunWith
 import org.scalatest.Matchers._
 import org.scalatest._
 import org.scalatest.junit.JUnitRunner
+import scala.collection.mutable.ListBuffer
 
 @RunWith(classOf[JUnitRunner])
 class BagSpecs extends WordSpec {
 
   "A new Bag" should {
-    val bag2 = Bag(random = false, colors = List('a','b'))
-    val bag2_copy = bag2
-    bag2.insert('a')
-    bag2.insert('b')
-    bag2.insert('c')
-    val bag3 = Array('a', 'b', 'c')
-    val bag3_after_1draw = Array('a','c','b')
-    val bag3_after_2draw = Array('c','a','b')
-    val bag3_after_3draw = Array('c','a','b')
     "have a insert function" in {
-      bag2.bag should be (bag3)
+      val bag = Bag(random = false, colors = List('a', 'b'))
+      bag.insert('a')
+      bag.insert('b')
+      bag.insert('c')
+      bag.bag should be(ListBuffer('a', 'b', 'c'))
     }
     "have a reset function" in {
-      bag2.reset.isInstanceOf[Bag] should be(true)
+      val bag = Bag(random = false, colors = List('a', 'b'))
+      bag.insert('a')
+      bag.reset.bag should be(ListBuffer())
     }
     "have a draw function" in {
-      bag2.get() should be(Some('b'))
-    }
-    "have less stones after draw" in {
-      bag2.bag should be (bag3_after_1draw)
-    }
-    "can draw 2 times" in {
-      bag2.get() should be(Some('a'))
-    }
-    "have less stones second after second draw" in {
-      bag2.bag should be (bag3_after_2draw)
-    }
-
-    "can draw 3 times" in {
-      bag2.get() should be(Some('c'))
-    }
-    "have less stones second after third draw" in {
-      bag2.bag should be (bag3_after_3draw)
-    }
-    "cant draw 4 times" in {
-      bag2.get() should be(None)
+      val bag = Bag(random = false, colors = List('a', 'b'))
+      bag.insert('a')
+      bag.get() should be(Some('a'))
+      bag.get() should be(None)
     }
   }
-
-  "A second Bag " should {
-    val bag2 =  Bag(random = false, colors = List('a','b'))
-    bag2.insert('c')
-    "can draw the last Stone" in {
-      bag2.get() should be(Some('c'))
-    }
-    "cant draw another stone" in {
-      bag2.get() should be(None)
-    }
-  }
-
   "A fourth Bag " should {
     val bag2 =  Bag(random = false, colors = List('a','b'))
     bag2.insert('a')

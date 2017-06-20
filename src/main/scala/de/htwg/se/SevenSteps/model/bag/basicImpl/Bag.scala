@@ -2,14 +2,13 @@ package de.htwg.se.SevenSteps.model.bag.basicImpl
 
 import com.owlike.genson.annotation.JsonCreator
 import de.htwg.se.SevenSteps.model.bag.IBag
+
 import scala.collection.mutable
 
 /**
   * Created by acer1 on 04.05.2017.
   */
 case class Bag @JsonCreator()(var bag: mutable.ListBuffer[Char] = new mutable.ListBuffer(),
-                              var entfernt: Int = 0,
-                              var aktuell: Int = 0,
                               var random: Boolean,
                               var colors: List[Char] = List[Char]())
   extends IBag {
@@ -26,26 +25,15 @@ case class Bag @JsonCreator()(var bag: mutable.ListBuffer[Char] = new mutable.Li
     if (random) {
       rand = Math.random()
     }
-    var tmp = 'a'
-    var Ausgabe = 'a'
-    if (bag.length >= (entfernt + 1)) {
-      aktuell = bag.length - entfernt
-      val gezogen = (rand * aktuell).asInstanceOf[Int]
-      Ausgabe = bag(gezogen)
-      tmp = bag(gezogen)
-      bag(gezogen) = bag(bag.length - (entfernt + 1))
-      bag(bag.length - entfernt - 1) = tmp
-      entfernt += 1
-      Some(Ausgabe)
+    if (bag.nonEmpty) {
+      Some(bag.remove((rand * (bag.length - 1)).asInstanceOf[Int]))
     }
-    else None
+    else {
+      None
+    }
   }
-  def isEmpty: Boolean = {
-    !(bag.length >= entfernt + 1)
-  }
-  def getStoneNumber: Int = {
-    bag.length - entfernt
-  }
+  def isEmpty: Boolean = bag.isEmpty
+  def getStoneNumber: Int = bag.length
   def reset: Bag = Bag(random=this.random)
   def copy1(newColors: List[Char]): Bag = {
     copy(colors = newColors)

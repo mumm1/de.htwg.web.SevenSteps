@@ -3,7 +3,7 @@ package de.htwg.se.SevenSteps.model.player.mockImpl
 import de.htwg.se.SevenSteps.model.player.{IPlayer, IPlayers}
 
 import scala.collection.immutable.Map
-import scala.util.{Failure,Success, Try}
+import scala.util.{Success, Try}
 
 case class Players() extends IPlayers {
   def push(name: String): IPlayers = this
@@ -28,6 +28,6 @@ case class Player() extends IPlayer {
   def incColor(color: Char, delta: Int): IPlayer = this
   def name: String = "Hans"
   def points: Int = 10
-  def map: Option[Map[Char, Int]] = None
+  def map: Option[Map[String, Double]] = None
   def haveNoStones: Boolean = true
 }

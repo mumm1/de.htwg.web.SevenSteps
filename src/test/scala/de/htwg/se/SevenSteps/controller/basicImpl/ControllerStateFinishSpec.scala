@@ -41,7 +41,7 @@ class ControllerStateFinishSpec extends WordSpec {
     }
     "reset on command newGame all Points from Players and Heights of the grid" in{
       val c=before()
-      c.players = new Players().push(Player("Hans",10))
+      c.players = new Players().push(Player("Hans", 10, None))
       c.grid = new Grid("a",1).set(0,0,5)
       c.newGame().isSuccess should be(true)
       c.players should be(new Players().push("Hans"))

@@ -9,7 +9,7 @@ import scala.util.{Failure, Success, Try}
 
 case class Players @JsonCreator()(curPlayer: Int, players: Vector[Player]) extends IPlayers {
   def this() = this(0,Vector())
-  def push(name: String): Players = push(Player(name))
+  def push(name: String): Players = push(new Player(name))
   def push(player: Player): Players = copy(players = players :+ player)
   def pop(): Players = {
     copy(players = players.init)
@@ -46,7 +46,7 @@ case class Players @JsonCreator()(curPlayer: Int, players: Vector[Player]) exten
     for (player <- players) {
       for ((color, num) <- player.map.get) {
         if (num > 0 && !result.contains(color)) {
-          result += color
+          result += color.charAt(0)
         }
       }
     }
@@ -55,7 +55,7 @@ case class Players @JsonCreator()(curPlayer: Int, players: Vector[Player]) exten
   def reset: Players = {
     val newPlayers = {
       for(player <- players) yield {
-        Player(player.name)
+        new Player(player.name)
       }
     }
     copy(players=newPlayers)
@@ -73,11 +73,12 @@ case class Players @JsonCreator()(curPlayer: Int, players: Vector[Player]) exten
   }
 }
 
-case class Player @JsonCreator()(name: String, points: Int = 0, map: Option[Map[Char, Int]] = None) extends IPlayer {
+case class Player @JsonCreator()(name: String, points: Int, map: Option[Map[String, Double]]) extends IPlayer {
+  def this(name: String) = this(name, 0, None)
   def setColors(colors: List[Char]): Player = {
-    var newMap: Map[Char, Int] = Map()
+    var newMap: Map[String, Double] = Map()
     for ((c) <- colors) {
-      newMap = newMap + (c -> 0)
+      newMap = newMap + (c.toString -> 0)
     }
     copy(map = Some(newMap))
   }
@@ -85,7 +86,7 @@ case class Player @JsonCreator()(name: String, points: Int = 0, map: Option[Map[
     map match {
       case None    => this
       case Some(m) =>
-        var newMap: Map[Char, Int] = Map()
+        var newMap: Map[String, Double] = Map()
         for ((k, _) <- m) {
           newMap = newMap + (k -> num)
         }
@@ -97,9 +98,9 @@ case class Player @JsonCreator()(name: String, points: Int = 0, map: Option[Map[
     map match {
       case None => 0
       case Some(m) =>
-        var num = 0
+        var num: Double = 0
         for ((_, v) <- m) num += v
-        num
+        num.toInt
     }
 
   }
@@ -107,7 +108,7 @@ case class Player @JsonCreator()(name: String, points: Int = 0, map: Option[Map[
     map match {
       case None => Failure(new Exception("You can't place here!"))
       case Some(m) =>
-        m.get(color) match {
+        m.get(color.toString) match {
           case None => Failure(new Exception("You can't place here!"))
           case Some(0) => Failure(new Exception("You don't have Stones from color '" + color + "'"))
           case Some(_) => Success(incPoints(height + 1).incColor(color, -1))
@@ -121,7 +122,7 @@ case class Player @JsonCreator()(name: String, points: Int = 0, map: Option[Map[
   def incColor(color: Char, delta: Int): Player = {
     map match {
       case None => this
-      case Some(m) => copy(map = Some(m.updated(color, m(color) + delta)))
+      case Some(m) => copy(map = Some(m.updated(color.toString, m(color.toString) + delta)))
     }
   }
   def haveNoStones: Boolean = {

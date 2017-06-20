@@ -104,7 +104,7 @@ class SwingGui(controller: IController) extends Frame with Observer {
         player.map match {
           case None => contents += new Label("")
           case Some(m) => contents += new Label {
-            text = " " + m(color).toString + " "
+            text = " " + m(color.toString).toString + " "
             foreground = ColorManager.char2Color(color)
             font = new Font("Verdana", 1, 20)
           }
