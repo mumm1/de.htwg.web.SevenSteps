@@ -32,7 +32,12 @@ class BagSpecs extends WordSpec {
     "can fillUp with the colors" in {
       val bag = getBag
       bag.fillup()
-      println(bag)
+    }
+    "can get the stone number" in {
+      val bag = getBag
+      bag.getStoneNumber should be(0)
+      bag.insert('a')
+      bag.getStoneNumber should be(1)
     }
   }
 }
