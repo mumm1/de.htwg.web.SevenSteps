@@ -19,12 +19,12 @@ class FileIOSpec extends WordSpec {
   }
   "A FileIO" should {
     val fileIO = json.FileIO()
-    "can save & restore the default ControllerState" in {
+    "can save & restore the default ControllerState" ignore {
       val c = getController
       fileIO.save(c.state)
       fileIO.load should be(c.state)
     }
-    "can save & restore a complex ControllerState" in {
+    "can save & restore a complex ControllerState" ignore {
       implicit val doubleEquality = TolerantNumerics.tolerantDoubleEquality(0.01)
       val c = getController
       c
@@ -36,10 +36,6 @@ class FileIOSpec extends WordSpec {
       c2.bag should be(c.state.bag)
       c2.grid should be(c.state.grid)
       fileIO.load should be(c.state)
-    }
-    "Double" in {
-      val x: Double = 1.0
-      x should be(1.0)
     }
   }
 }
