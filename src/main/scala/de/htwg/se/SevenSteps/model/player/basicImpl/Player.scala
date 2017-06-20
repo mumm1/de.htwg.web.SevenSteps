@@ -45,7 +45,7 @@ case class Players @JsonCreator()(curPlayer: Int, players: Vector[Player]) exten
     var result: ListBuffer[Char] = ListBuffer()
     for (player <- players) {
       for ((color, num) <- player.map.get) {
-        if (num > 0 && !result.contains(color)) {
+        if (num > 0.5 && !result.contains(color.charAt(0))) {
           result += color.charAt(0)
         }
       }
