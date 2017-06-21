@@ -7,13 +7,13 @@ import scala.util.{Failure, Success, Try}
 
 case class AddPlayer(name: String, c: Controller) extends Command {
   override def doIt(): Try[_] = {
-    c.players = c.players.push(name)
-    c.message = "Added Player " + name
+    c.state.players = c.state.players.push(name)
+    c.state.message = "Added Player " + name
     Success()
   }
   override def undo(): Try[_] = {
-    c.players = c.players.pop()
-    c.message = "Deleted Player " + name
+    c.state.players = c.state.players.pop()
+    c.state.message = "Deleted Player " + name
     Success()
   }
 }
@@ -21,48 +21,48 @@ case class AddPlayer(name: String, c: Controller) extends Command {
 case class SetColor(row: Int, col: Int,color:Char, c: Controller) extends Command {
   var oldColor = ' '
   override def doIt(): Try[_] = {
-    c.grid.cell(row, col) match {
+    c.state.grid.cell(row, col) match {
       case Failure(_) => Failure(new Exception("You have to set a stone inside the grid"))
       case Success(cell) =>
         oldColor = cell.color
-        c.grid = c.grid.set(row, col,color)
-        c.message = "Grid was colored"
+        c.state.grid = c.state.grid.set(row, col, color)
+        c.state.message = "Grid was colored"
         Success()
     }
 
   }
   override def undo(): Try[_] = {
-    c.grid = c.grid.set(row, col,oldColor)
-    c.message = "Grid was colored back"
+    c.state.grid = c.state.grid.set(row, col, oldColor)
+    c.state.message = "Grid was colored back"
     Success()
   }
 }
 
 case class NewGrid(colors: String, cols: Int, c: Controller) extends Command {
-  var oldGrid: IGrid = c.grid
+  var oldGrid: IGrid = c.state.grid
   override def doIt(): Try[_] = {
-    oldGrid = c.grid
-    c.grid = c.gridFactory.newGrid(colors,cols)
-    c.message = "Build new Grid"
+    oldGrid = c.state.grid
+    c.state.grid = c.gridFactory.newGrid(colors, cols)
+    c.state.message = "Build new Grid"
     Success()
   }
   override def undo(): Try[_] = {
-    c.grid = oldGrid
-    c.message = "Deleted new Grid"
+    c.state.grid = oldGrid
+    c.state.message = "Deleted new Grid"
     Success()
   }
 }
 
 case class StartGame(c: Controller) extends Command {
   override def doIt(): Try[_] = {
-    if (c.players.nonEmpty && c.grid.nonEmpty) {
-      c.gameState = Play(c)
-      val colors = c.grid.getColors
-      c.players = c.players.setColors(colors)
-      c.bag = c.bag.copy1(colors)
-      c.bag.fillup()
+    if (c.state.players.nonEmpty && c.state.grid.nonEmpty) {
+      c.state.gameState = Play()
+      val colors = c.state.grid.getColors
+      c.state.players = c.state.players.setColors(colors)
+      c.state.bag = c.state.bag.copy1(colors)
+      c.state.bag.fillup()
       c.prepareNewPlayer()
-      c.message = "Started the game"
+      c.state.message = "Started the game"
       Success()
     } else {
       Failure(new Exception("Can't start the game: Not enough Players"))
@@ -79,9 +79,9 @@ case class NextPlayer(c: Controller) extends Command {
     if (c.isGameEnd || c.isDeadlock) {
       c.finish()
     } else {
-      c.players = c.players.next()
+      c.state.players = c.state.players.next()
       c.prepareNewPlayer()
-      c.message = "Player " + c.players.getCurPlayer.name + " it is your turn!"
+      c.state.message = "Player " + c.state.players.getCurPlayer.name + " it is your turn!"
     }
     Success()
   }
@@ -97,31 +97,31 @@ case class SetStone(row: Int, col: Int, c: Controller) extends Command {
     isCellLegal match {
       case Failure(e) => Failure(e)
       case Success(cell) =>
-        val dif = c.curHeight - cell.height
+        val dif = c.state.curHeight - cell.height
         if (dif == 0 | dif == 1) {
-          c.players.getCurPlayer.placeStone(cell.color, cell.height) match {
+          c.state.players.getCurPlayer.placeStone(cell.color, cell.height) match {
             case Failure(e) => Failure(e)
-            case Success(player) => c.grid = c.grid.set(row, col, cell.height + 1)
-              c.players = c.players.updateCurPlayer(player)
-              c.curHeight = cell.height + 1
-              c.lastCells.push((row, col))
-              c.message = "You set a stone"
+            case Success(player) => c.state.grid = c.state.grid.set(row, col, cell.height + 1)
+              c.state.players = c.state.players.updateCurPlayer(player)
+              c.state.curHeight = cell.height + 1
+              c.state.lastCells :+= (row, col)
+              c.state.message = "You set a stone"
               Success()
           }
         } else {
-          Failure(new Exception("You have to set a Stone on height " + (c.curHeight - 1) + " or " + c.curHeight))
+          Failure(new Exception("You have to set a Stone on height " + (c.state.curHeight - 1) + " or " + c.state.curHeight))
         }
     }
   }
   def isCellLegal: Try[ICell] = {
-    c.grid.cell(row, col) match {
+    c.state.grid.cell(row, col) match {
       case Failure(_) => Failure(new Exception("You have to set a stone inside the grid"))
       case Success(cell) =>
-        if (c.lastCells.nonEmpty && !isNeighbour(row, col, c)) {
+        if (c.state.lastCells.nonEmpty && !isNeighbour(row, col, c)) {
           Failure(new Exception("You have to set a Stone neighboring to the last Stone!"))
         }
         else {
-          if (c.lastCells.contains((row, col))) {
+          if (c.state.lastCells.contains((row, col))) {
             Failure(new Exception("You can't set on a cell twice!"))
           }
           else {
@@ -130,25 +130,25 @@ case class SetStone(row: Int, col: Int, c: Controller) extends Command {
         }
     }
   }
-  def isNeighbour(row: Int, col: Int, c: Controller): Boolean = (math.abs(row - c.lastCells.head._1) + math.abs(col - c.lastCells.head._2)) == 1
+  def isNeighbour(row: Int, col: Int, c: Controller): Boolean = (math.abs(row - c.state.lastCells.last._1) + math.abs(col - c.state.lastCells.last._2)) == 1
   override def undo(): Try[_] = {
-    val cell = c.grid.cell(row, col).get
-    c.grid = c.grid.set(row, col, cell.height - 1)
-    c.players = c.players.updateCurPlayer(c.players.getCurPlayer.incPoints(-cell.height).incColor(cell.color, +1))
-    c.curHeight = cell.height - 1
-    c.lastCells.pop()
-    c.message = "You take the Stone back"
+    val cell = c.state.grid.cell(row, col).get
+    c.state.grid = c.state.grid.set(row, col, cell.height - 1)
+    c.state.players = c.state.players.updateCurPlayer(c.state.players.getCurPlayer.incPoints(-cell.height).incColor(cell.color, +1))
+    c.state.curHeight = cell.height - 1
+    c.state.lastCells = c.state.lastCells.init
+    c.state.message = "You take the Stone back"
     Success()
   }
 }
 
 case class NewGame(c: Controller) extends Command {
   override def doIt(): Try[_] = {
-    c.gameState = Prepare(c)
-    c.grid = c.grid.resetHeights
-    c.players = c.players.reset
-    c.bag = c.bag.reset
-    c.message = "Started new Game"
+    c.state.gameState = Prepare()
+    c.state.grid = c.state.grid.resetHeights
+    c.state.players = c.state.players.reset
+    c.state.bag = c.state.bag.reset
+    c.state.message = "Started new Game"
     Success()
   }
   override def undo(): Try[_] = {

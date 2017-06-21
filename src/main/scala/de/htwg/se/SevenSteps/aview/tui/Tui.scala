@@ -25,7 +25,7 @@ class Tui(var con: IController) extends Observer {
       case "a" :: player :: Nil => con.addPlayer(player)
       case "g" :: colors :: cols :: Nil => con.newGrid(colors.replace('-', ' '), str2Int(cols, DEFAULT_GRID_COLS))
       case row :: col :: Nil => con.setStone(str2Int(row, -1), str2Int(col, -1))
-      case _ => con.message = "False Input!!!"
+      case _ => con.state.message = "False Input!!!"
     }
   }
   def str2Int(s: String, default: Int): Int = {
@@ -43,13 +43,13 @@ class Tui(var con: IController) extends Observer {
   }
   def generateTuiText: String = {
     var result = "\n" + con.toString + "\nEnter command: q-Quit, u-Undo, r-Redo"
-    if (con.gameState.isInstanceOf[IPrepare]) {
+    if (con.state.gameState.isInstanceOf[IPrepare]) {
       result+="\n               a-AddPlayer [Name], g-Grid [ColorString] [ColsInt], s-StartGame"
     }
-    if (con.gameState.isInstanceOf[IPlay]) {
+    if (con.state.gameState.isInstanceOf[IPlay]) {
       result+="\n               SetStone [row] [col], n-NextPlayer"
     }
-    if (con.gameState.isInstanceOf[IFinish]) {
+    if (con.state.gameState.isInstanceOf[IFinish]) {
       result+="\n               t-restart Game"
     }
     result

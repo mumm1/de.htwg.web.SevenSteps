@@ -8,22 +8,22 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class PlayerSpec extends WordSpec {
   "A Player" should {
-    val p = Player("Julius", 50)
+    val p = Player("Julius", 50, None)
     "have a name" in {
-      Player("Julius", 50).name should be("Julius")
+      Player("Julius", 50, None).name should be("Julius")
     }
     "have points" in {
-      Player("Julius", 50).points should be(50)
+      Player("Julius", 50, None).points should be(50)
     }
     "can set colors" in {
-      p.setColors(List('g', 'b', 'a', 'c')).map.get.contains('g') should be(true)
+      p.setColors(List('g', 'b', 'a', 'c')).map.get.contains("g") should be(true)
     }
     "toString look like" in {
       p.toString should be("Julius: Points=50")
     }
     "toString with a map look like" in {
       val p2 = p.setColors(List('a', 'b'))
-      p2.toString should be("Julius: a=0, b=0, Points=50")
+      p2.toString should be("Julius: a=0.0, b=0.0, Points=50")
     }
     "can get more points" in {
       val p2 = p.incPoints(10)
@@ -65,7 +65,7 @@ class PlayerSpec extends WordSpec {
       pls.curPlayer should be(0)
     }
     "push a Player" in {
-      val plJulius = Player("Julius")
+      val plJulius = new Player("Julius")
       val pls2 = pls.push("Julius")
       pls2.apply(0) should be(plJulius)
     }
@@ -77,8 +77,8 @@ class PlayerSpec extends WordSpec {
   }
   "Players with a List" should {
     var pls3 = new Players()
-    val p1 = Player("Julius", 50)
-    val p2 = Player("Tobias", 50)
+    val p1 = new Player("Julius", 50, None)
+    val p2 = new Player("Tobias", 50, None)
     val pls2 = pls3.push(p1)
     var pls = pls2.push(p2)
     "current player" in {
@@ -98,15 +98,15 @@ class PlayerSpec extends WordSpec {
       pls2.haveNoStones should be(false)
     }
     "have an update function" in {
-      val iplayer = Player("Peter")
+      val iplayer = new Player("Peter")
       val pls2 = pls.updateCurPlayer(iplayer)
       pls.getCurPlayer.toString should be("Tobias: Points=50")
       pls2.getCurPlayer.name should be("Peter")
     }
     "can reset all Points" in {
       new Players()
-        .push(Player("Hans",3))
-        .push(Player("Alex",2))
+        .push(new Player("Hans", 3, None))
+        .push(new Player("Alex", 2, None))
         .reset  should be(new Players().push("Hans").push("Alex"))
     }
     "have a players list" in {
@@ -118,13 +118,11 @@ class PlayerSpec extends WordSpec {
       pls.next().toString() should be("-> Julius: Points=50\n")
     }
     "set colors to the the players" in {
-      val newPls = new Players().push(Player("hans")).push(Player("hugo"))
+      val newPls = new Players().push(new Player("hans")).push(new Player("hugo"))
         .setColors("ab".toCharArray.toList)
-      newPls(0).map.get.toList should be(List(('a', 0), ('b', 0)))
-      newPls(1).map.get.toList should be(List(('a', 0), ('b', 0)))
     }
     "set all Stones of all players" in {
-      var newPls = new Players().push(Player("hans")).push(Player("hugo"))
+      var newPls = new Players().push(new Player("hans")).push(new Player("hugo"))
         .setColors("ab".toCharArray.toList)
       newPls = newPls.setAllStonesTo(5)
       newPls(0).getStoneNumber should be(10)
@@ -132,9 +130,9 @@ class PlayerSpec extends WordSpec {
     }
     "to string look like" in {
       var players = new Players()
-      val pl1 = Player("Julius")
-      val pl2 = Player("Tobias")
-      val pl3 = Player("Peter")
+      val pl1 = new Player("Julius")
+      val pl2 = new Player("Tobias")
+      val pl3 = new Player("Peter")
       val pls2 = players.push(pl1)
       val pls3 = pls2.push(pl2)
       val sb = new StringBuilder()
@@ -144,7 +142,7 @@ class PlayerSpec extends WordSpec {
       pls3.toString() should be(text)
     }
     "return a list of colors from any player with more than zero stones" in {
-      var newPls = new Players().push(Player("hans")).push(Player("hugo"))
+      var newPls = new Players().push(new Player("hans")).push(new Player("hugo"))
         .setColors("ab".toCharArray.toList)
       newPls.getAllPossibleColorsFromAllPlayers should be(List())
       newPls = newPls.setAllStonesTo(1)

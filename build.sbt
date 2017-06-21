@@ -1,7 +1,7 @@
 name          := "htwg-scala-seed"
 organization  := "de.htwg.se"
 version       := "0.0.1"
-scalaVersion  := "2.11.8"
+scalaVersion := "2.11.0"
 scalacOptions := Seq("-unchecked", "-feature", "-deprecation", "-encoding", "utf8")
 
 resolvers += Resolver.jcenterRepo
@@ -28,3 +28,9 @@ libraryDependencies += "com.google.inject.extensions" % "guice-assistedinject" %
 libraryDependencies += "com.google.inject" % "guice" % "4.0"
 
 libraryDependencies += "net.codingwell" %% "scala-guice" % "4.1.0"
+
+libraryDependencies += "com.typesafe.play" %% "play-json" % "2.5.15"
+
+libraryDependencies += "com.google.code.gson" % "gson" % "2.8.1"
+
+libraryDependencies += "com.owlike" % "genson-scala_2.11" % "1.4"

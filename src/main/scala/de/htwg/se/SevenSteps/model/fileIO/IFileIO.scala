@@ -1,7 +1,8 @@
 package de.htwg.se.SevenSteps.model.fileIO
 
-/**
-  * Created by acer1 on 16.06.2017.
-  */
+import de.htwg.se.SevenSteps.controller.basicImpl.ControllerState
+
 trait IFileIO {
+  def save(cState: ControllerState): Unit
+  def load: ControllerState
 }

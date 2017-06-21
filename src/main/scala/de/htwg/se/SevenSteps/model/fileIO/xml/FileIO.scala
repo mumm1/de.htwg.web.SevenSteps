@@ -1,22 +1,10 @@
-package de.htwg.se.SevenSteps.model.fileIoComponent.fileIoXmlImpl
+package de.htwg.se.SevenSteps.model.fileIO.xml
 
-/**
-  * Created by acer1 on 16.06.2017.
-  */
-
+import de.htwg.se.SevenSteps.controller.basicImpl.ControllerState
 import de.htwg.se.SevenSteps.model.fileIO.IFileIO
-import de.htwg.se.SevenSteps.controller.IController
-import de.htwg.se.SevenSteps.model.player.IPlayer
-import scala.xml.{NodeSeq, PrettyPrinter}
 
-class FileIO extends IFileIO {
-  def allToXML(con: IController) = {
-    <controller lastCells={con.lastCells} curHeight={con.curHeight} message={con.message}>
-    </controller>
-  }
-  def playerToXML(player: IPlayer): Unit = {
-    <player points={player.points} name={player.name}
-      }
-
-
+case class FileIO() extends IFileIO {
+  var help: ControllerState = null
+  def save(cState: ControllerState): Unit = help = cState
+  def load: ControllerState = help
 }

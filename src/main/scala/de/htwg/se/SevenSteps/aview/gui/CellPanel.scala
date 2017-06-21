@@ -1,12 +1,12 @@
 package de.htwg.se.SevenSteps.aview.gui
 
-import scala.swing._
-
-import scala.swing.event._
 import de.htwg.se.SevenSteps.controller.{IController, IPrepare}
 
+import scala.swing._
+import scala.swing.event._
+
 class CellPanel(row: Int, col: Int, controller: IController) extends FlowPanel {
-  val cell = controller.grid.cell(row, col).get
+  val cell = controller.state.grid.cell(row, col).get
   val label =
     new Label {
       if (cell.color != ' ') {
@@ -18,12 +18,12 @@ class CellPanel(row: Int, col: Int, controller: IController) extends FlowPanel {
     preferredSize = new Dimension(51, 51)
     listenTo(mouse.clicks)
     self.setBackground(ColorManager.char2Color(cell.color))
-    if (!controller.gameState.isInstanceOf[IPrepare])
+    if (!controller.state.gameState.isInstanceOf[IPrepare])
     contents += label
 
     reactions += {
       case MouseClicked(src, pt, mod, clicks, pops) => {
-        if (controller.gameState.isInstanceOf[IPrepare]) {
+        if (controller.state.gameState.isInstanceOf[IPrepare]) {
           controller.setColor(row, col, ColorManager.curColer)
         }
         else {

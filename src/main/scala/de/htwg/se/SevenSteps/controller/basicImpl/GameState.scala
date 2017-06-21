@@ -5,8 +5,8 @@ import de.htwg.se.SevenSteps.util.Command
 
 import scala.util.{Failure, Try}
 
-case class Prepare(c: IController) extends IPrepare {
-  override def exploreCommand(com: Command): Try[_] = {
+case class Prepare() extends IPrepare {
+  override def exploreCommand(com: Command, c: IController): Try[_] = {
     com match {
       case _: AddPlayer => c.undoManager.doIt(com)
       case _: NewGrid => c.undoManager.doIt(com)
@@ -17,8 +17,8 @@ case class Prepare(c: IController) extends IPrepare {
   }
 }
 
-case class Play(c: IController) extends IPlay {
-  override def exploreCommand(com: Command): Try[_] = {
+case class Play() extends IPlay {
+  override def exploreCommand(com: Command, c: IController): Try[_] = {
     com match {
       case _: NextPlayer => c.undoManager.doIt(com)
       case _: SetStone => c.undoManager.doIt(com)
@@ -28,8 +28,8 @@ case class Play(c: IController) extends IPlay {
   }
 }
 
-case class Finish(c: IController) extends IFinish {
-  override def exploreCommand(com: Command): Try[_] = {
+case class Finish() extends IFinish {
+  override def exploreCommand(com: Command, c: IController): Try[_] = {
     com match {
       case _: NewGame => c.undoManager.doIt(com)
       case _ => Failure(new Exception("ILLEGAL COMMAND"))
