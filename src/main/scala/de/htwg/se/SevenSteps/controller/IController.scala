@@ -4,10 +4,13 @@ import de.htwg.se.SevenSteps.model.bag.IBag
 import de.htwg.se.SevenSteps.model.grid.IGrid
 import de.htwg.se.SevenSteps.model.player.IPlayers
 import de.htwg.se.SevenSteps.util.{Observable, UndoManager}
-
+import scala.collection.mutable
 import scala.util.Try
 
 trait IController extends Observable{
+  var message: String
+  var lastCells: mutable.Stack[(Int, Int)]
+  var curHeight: Int
   def addPlayer(name: String): Try[IController]
   def newGrid(colors: String, cols: Int): Try[IController]
   def startGame(): Try[IController]
@@ -20,7 +23,6 @@ trait IController extends Observable{
   def players: IPlayers
   def grid: IGrid
   def bag: IBag
-  var message: String
   def undoManager : UndoManager
   def newGame(): Try[IController]
 }
