@@ -1,103 +1,102 @@
-object TypeMagic {
-  // import scala.tools.scalap.scalax.rules.scalasig.MethodSymbol
-  import scala.reflect.runtime.universe._
-
-  type productable[T] = Class[T with Product]
-  val getFieldGetter = new Memoize1(makeFieldGetter)
-  implicit val mirror = runtimeMirror(getClass.getClassLoader)
-  val getFieldsOf = getFields(_)
-  def makeFieldGetter[T <: Product](clazz: productable[_]) = makeFieldGetterF(getFieldsL(clazz))
-  def getFieldsL(clazz: productable[_]) = this.synchronized {
-    {
-      val args = getType(clazz).member(nme.CONSTRUCTOR).asMethod.paramss.head
-      val argNames = for (a <- args) yield a.name.decoded
-      for {
-        field <- clazz.getDeclaredFields
-        name = field.getName
-        if argNames contains name
-      } yield (name, field)
-    }.toMap
-  }
-  def getType[T](clazz: Class[T])(implicit runtimeMirror: Mirror) =
-    runtimeMirror.classSymbol(clazz).toType
-  def makeFieldGetterF(fields: Map[String, java.lang.reflect.Field]): (Product => Map[String, Any]) =
-    (input: Product) => {
-      for {
-        (name, field) <- fields.toSeq
-        madeAccessible = field.setAccessible(true)
-        value = field.get(input)
-      }
-        yield (name, value)
-    }.toMap
-  def getFields(a: Product) = getFieldGetter(a.getClass.asInstanceOf[productable[_]])(a)
-
-  class Memoize1[-T, +R](f: T => R) extends (T => R) {
-    private[this] val vals = scala.collection.mutable.Map.empty[T, R]
-    def apply(x: T): R = vals.getOrElseUpdate(x, f(x))
-  }
-
-}
-
-object XmlPrinting {
-
-  object HeadNode {
-    implicit def headNode(nodes: Traversable[scala.xml.Node]): scala.xml.Node = nodes.head
-  }
-
-  import TypeMagic.getFieldsOf
-
-  implicit class pretty[A](a: A) {
-    def xmlString: Traversable[scala.xml.Node] = a match {
-      case list: Traversable[_] =>
-        <list>
-          {list.collect {
-          case subList: Traversable[_] => subList.xmlString
-          case item => {
-            <item>
-              {item.childXmlString}
-            </item>
-          }
-        }}
-        </list>
-      case x: Any => x.childXmlString
-    }
-    def childXmlString: Traversable[scala.xml.Node] = a match {
-      case list: Traversable[_] =>
-        for (item <- list; sub <- item.childXmlString)
-          yield sub
-      case product: Product =>
-        <node>
-          {for {
-          (title, value) <- getFieldsOf(product)
-          base = <node/>.copy(label = title)
-        } yield value match {
-          case Some(x) => base.copy(child = x.childXmlString.toSeq)
-          case None => <node xsi:nil="true"/>.copy(label = title)
-          case x => base.copy(child = x.childXmlString.toSeq)
-        }}
-        </node>.copy(label = product.productPrefix)
-      case null =>
-          <nil xsi:nil="true"/>
-      case x => scala.xml.Text(x.toString)
-    }
-  }
-
-}
+import de.htwg.se.SevenSteps.SevenStepsModule
+import de.htwg.se.SevenSteps.controller.IController
+import de.htwg.se.SevenSteps.controller.basicImpl.ControllerState
+import de.htwg.se.SevenSteps.model.bag.basicImpl.Bag
+import de.htwg.se.SevenSteps.model.grid.basicImpl.{Cell, Grid}
+import scala.collection.immutable.Map
 
 object XmlPrintingTest {
 
-  import XmlPrinting._
-  import HeadNode.headNode
+  import de.htwg.se.SevenSteps.model.player.basicImpl._
+  import de.htwg.se.SevenSteps.model.bag.basicImpl
+  import com.google.inject.Guice
+  import de.htwg.se.SevenSteps.aview.gui.SwingGui
+  import de.htwg.se.SevenSteps.aview.tui._
+  import de.htwg.se.SevenSteps.controller.IController
+  import scala.io.StdIn.readLine
 
-  val human = Human("Mr.", "Johnny", List(Coat(Option("BOSS")), Coat(None), Coat(Option("Armani"))))
-  val printer = new scala.xml.PrettyPrinter(80, 2)
-
-  case class Coat(brand: Option[String])
-
-  case class Human(title: String, name: String, coats: Seq[Coat])
-
-  println(printer.format(human.xmlString))
-  println(printer.format(List(List("a", "b"), List(5, 6), List(human, human)).xmlString))
-  println(printer.format(human.xmlString))
-  println(printer.format(List(List("a", "b"), List(5, 6), List(human, human)).xmlString))
+  val injector = Guice.createInjector(new SevenStepsModule)
+  val pl = Player("Julius", 50, None)
+  c.state.players = c.state.players.push("OLA")
+  c.state.players = c.state.players.push("Julius")
+  c.state.message = "Added Player " + "OLA"
+  c.newGrid("aabb", 2)
+  c.state.bag = c.state.bag.copy1(List('a', 'b', 'c'))
+  val pl2 = pl.setColors(List('a', 'b', 'c'))
+  val p1 = new Player("Julius", 50, None)
+  val p3 = p1.setColors(List('a', 'b', 'c'))
+  val p2 = new Player("Tobias", 50, None)
+  val p4 = p2.setColors(List('a', 'b', 'c'))
+  val pls2 = pls3.push(p3)
+  val state = ControllerState
+  1 + 2
+  var c = injector.getInstance(classOf[IController])
+  //PlayerToXML(pl2)
+  var pls3 = new Players()
+  var pls = pls2.push(p4)
+  var bag = Bag(Vector("g", "dr"), Vector("a", "b"))
+  def sooo(c: ControllerState) = {
+    <game players={PlayersToXML(c.players)}></game>
+  }
+  def PlayersToXML(players: Players) = {
+    players.players.map { entry =>
+      val pl = entry
+      <pls pls2={PlayerToXML(pl)}></pls>
+    }
+  }
+  def PlayerToXML(player: Player) = {
+    <pl points={player.points.toString} name={player.name}>
+      map=
+      {stoneMapToXML(player.map.get)}
+    </pl>
+  }
+  def stoneMapToXML(stones: Map[String, Double]) = {
+    stones.map { entry =>
+      val (key, value) = entry
+      <steine farbe={key.toString}>
+        {value.toString}
+      </steine>
+    }
+  }
+  def gridToXML(grid: Grid) = {
+    <grid rows={grid.rows.toString} col={grid.cols.toString}>
+      {grid.grid.map { entry =>
+      val cell = entry
+      <cellen celll={cellToXML(cell)}></cellen>
+    }}
+    </grid>
+  }
+  def cellToXML(cell: Cell) = {
+    <cell colorCell={cell.color.toString} height={cell.height.toString}></cell>
+  }
+  def rest(state: ControllerState) = {
+    <rest mes={state.message} cur={state.curHeight.toString} last={lastCellsToXML(state.lastCells)}>
+    </rest>
+  }
+  def lastCellsToXML(stones: Vector[(Int, Int)]) = {
+    stones.map { entry =>
+      val (row, col) = entry
+      <cell row={row.toString} col={col.toString}>
+      </cell>
+    }
+  }
+  def alles(bag: Bag) = {
+    <alles a={bagToXML(bag)} b={bagToXML2(bag)}></alles>
+  }
+  def bagToXML(bag: Bag) = {
+    bag.bag.map { entry =>
+      val bag = entry
+      <blub bag2={bag}></blub>
+    }
+  }
+  3 + 4
+  PlayersToXML(pls)
+  4 + 4
+  def bagToXML2(bag: Bag) = {
+    bag.colors.map { entry =>
+      val colors = entry
+      <bag col={colors}></bag>
+    }
+  }
+  alles(bag)
 }
