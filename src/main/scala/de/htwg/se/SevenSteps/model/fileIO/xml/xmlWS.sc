@@ -1,8 +1,12 @@
 import de.htwg.se.SevenSteps.SevenStepsModule
 import de.htwg.se.SevenSteps.controller.IController
 import de.htwg.se.SevenSteps.controller.basicImpl.ControllerState
+import de.htwg.se.SevenSteps.model.bag.IBag
 import de.htwg.se.SevenSteps.model.bag.basicImpl.Bag
+import de.htwg.se.SevenSteps.model.grid.IGrid
 import de.htwg.se.SevenSteps.model.grid.basicImpl.{Cell, Grid}
+import de.htwg.se.SevenSteps.model.player.IPlayers
+
 import scala.collection.immutable.Map
 
 object XmlPrintingTest {
@@ -36,9 +40,9 @@ object XmlPrintingTest {
   var pls = pls2.push(p4)
   var bag = Bag(Vector("g", "dr"), Vector("a", "b"))
   def sooo(c: ControllerState) = {
-    <game players={PlayersToXML(c.players)}></game>
+    <game players={PlayersToXML(c.players)} bag={bagToXML(c.bag)} grid={gridToXML(c.grid)} rest={rest(c)}></game>
   }
-  def PlayersToXML(players: Players) = {
+  def PlayersToXML(players: IPlayers) = {
     players.players.map { entry =>
       val pl = entry
       <pls pls2={PlayerToXML(pl)}></pls>
@@ -58,7 +62,7 @@ object XmlPrintingTest {
       </steine>
     }
   }
-  def gridToXML(grid: Grid) = {
+  def gridToXML(grid: IGrid) = {
     <grid rows={grid.rows.toString} col={grid.cols.toString}>
       {grid.grid.map { entry =>
       val cell = entry
@@ -80,10 +84,10 @@ object XmlPrintingTest {
       </cell>
     }
   }
-  def alles(bag: Bag) = {
-    <alles a={bagToXML(bag)} b={bagToXML2(bag)}></alles>
+  def bagToXML(bag: IBag) = {
+    <alles a={bagBagToXML(bag)} b={bagColorsToXML(bag)}></alles>
   }
-  def bagToXML(bag: Bag) = {
+  def bagBagToXML(bag: IBag) = {
     bag.bag.map { entry =>
       val bag = entry
       <blub bag2={bag}></blub>
@@ -92,11 +96,12 @@ object XmlPrintingTest {
   3 + 4
   PlayersToXML(pls)
   4 + 4
-  def bagToXML2(bag: Bag) = {
+  def bagColorsToXML(bag: IBag) = {
     bag.colors.map { entry =>
       val colors = entry
       <bag col={colors}></bag>
     }
   }
-  alles(bag)
+  1 + 1
+  sooo(c.state)
 }

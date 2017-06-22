@@ -1,9 +1,12 @@
 package de.htwg.se.SevenSteps.model.player
 
+import de.htwg.se.SevenSteps.model.player.basicImpl.Player
+
 import scala.collection.immutable.Map
 import scala.util.Try
 
 trait IPlayers {
+  var players: Vector[Player]
   def reset: IPlayers
   def push(name: String): IPlayers
   def pop(): IPlayers

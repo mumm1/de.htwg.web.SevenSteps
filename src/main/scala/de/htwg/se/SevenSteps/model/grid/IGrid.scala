@@ -1,5 +1,7 @@
 package de.htwg.se.SevenSteps.model.grid
 
+import de.htwg.se.SevenSteps.model.grid.basicImpl.Cell
+
 import scala.util.Try
 
 trait IGridFactory {
@@ -7,6 +9,7 @@ trait IGridFactory {
 }
 
 trait IGrid {
+  var grid: Vector[Cell]
   def set(row: Int, col: Int, color: Char): IGrid
   def set(row: Int, col: Int, height: Int): IGrid
   def cell(row: Int, col: Int): Try[ICell]
