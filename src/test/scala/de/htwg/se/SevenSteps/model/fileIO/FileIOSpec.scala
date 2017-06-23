@@ -6,7 +6,6 @@ import de.htwg.se.SevenSteps.controller.IController
 import de.htwg.se.SevenSteps.controller.basicImpl.{Controller, ControllerState}
 import de.htwg.se.SevenSteps.model.grid.IGridFactory
 import org.junit.runner.RunWith
-import org.scalactic.TolerantNumerics
 import org.scalatest.Matchers.{be, _}
 import org.scalatest._
 import org.scalatest.junit.JUnitRunner
@@ -19,15 +18,9 @@ trait IOBehaviors {
       fileIO.load should be(c.state)
     }
     "can save & restore a complex ControllerState" in {
-      implicit val doubleEquality = TolerantNumerics.tolerantDoubleEquality(0.01)
-      c
-        .addPlayer("Hans").get.addPlayer("Alex").get
+      c.addPlayer("Hans").get.addPlayer("Alex").get
         .newGrid("aabb", 2).get.startGame().get
       fileIO.save(c.state)
-      val c2 = fileIO.load
-      c2.players should be(c.state.players)
-      c2.bag should be(c.state.bag)
-      c2.grid should be(c.state.grid)
       fileIO.load should be(c.state)
     }
   }
