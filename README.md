@@ -60,7 +60,8 @@ class Software Engineering at the University of Applied Science HTWG Konstanz
 
 ### TUI & GUI
 
-[![Foo](https://picload.org/image/rpgigril/screenshotfrom2017-06-2311-50-.png)](https://picload.org/)
+[![Foo](https://picload.org/image/rpgigdpl/screenshotfrom2017-06-2311-50-.png)](https://picload.org/)
+[![Foo](https://picload.org/image/rpgigdow/screenshotfrom2017-06-2311-50-.png)](https://picload.org/)
 
 [1]: http://www.scalatest.org/user_guide/sharing_tests
 [2]: https://owlike.github.io/genson/
