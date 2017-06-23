@@ -2,6 +2,7 @@ package de.htwg.se.SevenSteps.controller.basicImpl
 
 import com.google.inject.Guice
 import de.htwg.se.SevenSteps.SevenStepsModule
+import de.htwg.se.SevenSteps.model.fileIO.IFileIO
 import de.htwg.se.SevenSteps.model.grid.IGridFactory
 import de.htwg.se.SevenSteps.util.Observer
 import org.junit.runner.RunWith
@@ -22,7 +23,8 @@ class ControllerStatePlaySpec extends WordSpec {
   def getController: Controller = {
     val injector = Guice.createInjector(new SevenStepsModule)
     new Controller(injector.getInstance(classOf[ControllerState]),
-      injector.getInstance(classOf[IGridFactory]))
+      injector.getInstance(classOf[IGridFactory]),
+      injector.getInstance(classOf[IFileIO]))
   }
   "A Controller in game phase play" should {
     "switch between different Players and can't undo that" in {

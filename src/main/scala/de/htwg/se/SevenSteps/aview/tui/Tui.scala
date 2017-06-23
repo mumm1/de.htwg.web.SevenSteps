@@ -16,6 +16,8 @@ class Tui(var con: IController) extends Observer {
       case "u" => con.undo()
       case "r" => con.redo()
       case "t" => con.newGame()
+      case "S" => con.save()
+      case "L" => con.load()
       case _ => processMoreParameter(input)
     }
     continue
@@ -42,7 +44,7 @@ class Tui(var con: IController) extends Observer {
     println(generateTuiText)
   }
   def generateTuiText: String = {
-    var result = "\n" + con.toString + "\nEnter command: q-Quit, u-Undo, r-Redo"
+    var result = "\n" + con.toString + "\nEnter command: q-Quit, u-Undo, r-Redo, S-save, L-load"
     if (con.state.gameState.isInstanceOf[IPrepare]) {
       result+="\n               a-AddPlayer [Name], g-Grid [ColorString] [ColsInt], s-StartGame"
     }

@@ -17,4 +17,6 @@ trait IController extends Observable{
   def redo(): Try[IController]
   def setColor(row: Int, col: Int,color:Char): Try[IController]
   def newGame(): Try[IController]
+  def save(): Unit
+  def load(): Unit
 }

@@ -5,6 +5,7 @@ import com.google.inject.Inject
 import com.owlike.genson.annotation.JsonCreator
 import de.htwg.se.SevenSteps.controller._
 import de.htwg.se.SevenSteps.model.bag.IBag
+import de.htwg.se.SevenSteps.model.fileIO.IFileIO
 import de.htwg.se.SevenSteps.model.grid.{IGrid, IGridFactory}
 import de.htwg.se.SevenSteps.model.player.{IPlayer, IPlayers}
 import de.htwg.se.SevenSteps.util.{Command, UndoManager}
@@ -27,12 +28,13 @@ case class ControllerState @JsonCreator()(var players: IPlayers,
 
 case class Controller @JsonCreator()
 (var state: ControllerState,
- var gridFactory: IGridFactory,
- var undoManager: UndoManager
+ gridFactory: IGridFactory,
+ var undoManager: UndoManager,
+ fileIO: IFileIO
 ) extends IController {
   @Inject()
-  def this(state: ControllerState, gridFactory: IGridFactory) = {
-    this(state, gridFactory, new UndoManager)
+  def this(state: ControllerState, gridFactory: IGridFactory, fileIO: IFileIO) = {
+    this(state, gridFactory, new UndoManager, fileIO)
   }
   def prepareNewPlayer(): Unit = {
     for (_ <- state.players.getCurPlayer.getStoneNumber to 6) {
@@ -109,6 +111,17 @@ case class Controller @JsonCreator()
     true
   }
   def setColor(row: Int, col: Int,color:Char): Try[Controller] = doIt(SetColor(row,col,color,this))
+  def save(): Unit = {
+    fileIO.save(state)
+    state.message = "Saved"
+    notifyObservers()
+  }
+  def load(): Unit = {
+    state = fileIO.load
+    undoManager = UndoManager()
+    state.message = "Load: " + state.message
+    notifyObservers()
+  }
   override def toString: String = {
     val text = "\n############  " + state.message + "  ############\n\n"
     val len = text.length()

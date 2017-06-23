@@ -2,10 +2,11 @@ package de.htwg.se.SevenSteps.controller.basicImpl
 
 import com.google.inject.Guice
 import de.htwg.se.SevenSteps.SevenStepsModule
+import de.htwg.se.SevenSteps.model.fileIO.IFileIO
 import de.htwg.se.SevenSteps.model.grid.IGridFactory
 import de.htwg.se.SevenSteps.model.grid.basicImpl.Grid
 import de.htwg.se.SevenSteps.model.player.basicImpl.Players
-import de.htwg.se.SevenSteps.util.Observer
+import de.htwg.se.SevenSteps.util.{Observer, UndoManager}
 import org.junit.runner.RunWith
 import org.scalatest.Matchers.{be, _}
 import org.scalatest._
@@ -16,8 +17,22 @@ class ControllerStatePrepareSpec extends WordSpec {
   def getController: Controller = {
     val injector = Guice.createInjector(new SevenStepsModule)
     new Controller(injector.getInstance(classOf[ControllerState]),
-      injector.getInstance(classOf[IGridFactory]))
+      injector.getInstance(classOf[IGridFactory]),
+      injector.getInstance(classOf[IFileIO]))
   }
+  "A Controller" should {
+    "can save and load" in {
+      val c = getController
+      val oldState = c.state.copy()
+      c.save()
+      c.addPlayer("hans").get.newGrid("aabb", 2).get.startGame()
+      c.load()
+      oldState.message = "Load: " + oldState.message
+      c.state should be(oldState)
+      c.undoManager should be(UndoManager())
+    }
+  }
+
   "A Controller in game phase prepare" should {
     "have default values" in {
       val c = getController

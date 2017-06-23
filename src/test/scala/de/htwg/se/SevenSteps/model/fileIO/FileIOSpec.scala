@@ -38,7 +38,8 @@ class FileIOSpec extends WordSpec with IOBehaviors {
   def getController: Controller = {
     val injector = Guice.createInjector(new SevenStepsModule)
     new Controller(injector.getInstance(classOf[ControllerState]),
-      injector.getInstance(classOf[IGridFactory]))
+      injector.getInstance(classOf[IGridFactory]),
+      injector.getInstance(classOf[IFileIO]))
   }
   "A json FileIO" should {
     behave like saveAndLoad(json.FileIO(), getController)
