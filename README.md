@@ -58,10 +58,9 @@ class Software Engineering at the University of Applied Science HTWG Konstanz
 * The Game ends when all players can't set on height 0 anymore.
 * The Player with the most points wins the game.
 
-### GUI & Tui
+### TUI & GUI
 
-(Update Image)
-[![Foo](http://www.google.com.au/images/nav_logo7.png)](http://google.com.au/)
+[![Foo](https://picload.org/image/rpgigril/screenshotfrom2017-06-2311-50-.png)](https://picload.org/)
 
 [1]: http://www.scalatest.org/user_guide/sharing_tests
 [2]: https://owlike.github.io/genson/
