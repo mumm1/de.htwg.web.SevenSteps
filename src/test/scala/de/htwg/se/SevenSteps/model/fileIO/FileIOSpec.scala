@@ -38,4 +38,15 @@ class FileIOSpec extends WordSpec {
       fileIO.load should be(c.state)
     }
   }
+  "A FileIO" should {
+    val fileIO = xml.FileIO()
+    "can save & restore the default ControllerState" ignore {
+      val c = getController
+      fileIO.save(c.state)
+      fileIO.load should be(c.state)
+    }
+  }
+
+
+
 }

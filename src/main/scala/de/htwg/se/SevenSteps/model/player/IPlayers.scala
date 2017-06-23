@@ -6,7 +6,7 @@ import scala.collection.immutable.Map
 import scala.util.Try
 
 trait IPlayers {
-  var players: Vector[Player]
+  def players: Vector[Player]
   def reset: IPlayers
   def push(name: String): IPlayers
   def pop(): IPlayers

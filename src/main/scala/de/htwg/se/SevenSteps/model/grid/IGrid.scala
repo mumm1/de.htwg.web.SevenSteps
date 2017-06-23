@@ -9,7 +9,7 @@ trait IGridFactory {
 }
 
 trait IGrid {
-  var grid: Vector[Cell]
+  def grid: Vector[Cell]
   def set(row: Int, col: Int, color: Char): IGrid
   def set(row: Int, col: Int, height: Int): IGrid
   def cell(row: Int, col: Int): Try[ICell]

@@ -1,6 +1,8 @@
 package de.htwg.se.SevenSteps.model.player.mockImpl
 
+import de.htwg.se.SevenSteps.model.player.basicImpl.Player
 import de.htwg.se.SevenSteps.model.player.{IPlayer, IPlayers}
+
 
 import scala.collection.immutable.Map
 import scala.util.{Success, Try}
@@ -19,6 +21,7 @@ case class Players() extends IPlayers {
   def haveNoStones: Boolean = false
   def getAllPossibleColorsFromAllPlayers: List[Char] = List()
   def reset: IPlayers = this
+  def players: Vector[Player] = Vector()
 }
 
 case class Player() extends IPlayer {

@@ -9,4 +9,6 @@ case class BagMock() extends IBag {
   def copy1(newColors: List[Char]): IBag = this
   def getStoneNumber: Int = 0
   def reset: IBag = this
+  def bag: Vector[String] = Vector()
+  def colors: Vector[String] = Vector()
 }
