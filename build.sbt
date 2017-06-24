@@ -34,3 +34,7 @@ libraryDependencies += "com.typesafe.play" %% "play-json" % "2.5.15"
 libraryDependencies += "com.google.code.gson" % "gson" % "2.8.1"
 
 libraryDependencies += "com.owlike" % "genson-scala_2.11" % "1.4"
+
+libraryDependencies += "ch.qos.logback" % "logback-classic" % "1.1.7"
+
+libraryDependencies += "com.typesafe.scala-logging" %% "scala-logging" % "3.5.0"

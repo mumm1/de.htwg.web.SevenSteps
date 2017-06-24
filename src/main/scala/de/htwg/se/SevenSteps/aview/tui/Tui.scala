@@ -1,9 +1,10 @@
 package de.htwg.se.SevenSteps.aview.tui
 
+import com.typesafe.scalalogging.LazyLogging
 import de.htwg.se.SevenSteps.controller._
 import de.htwg.se.SevenSteps.util.Observer
 
-class Tui(var con: IController) extends Observer {
+class Tui(var con: IController) extends Observer with LazyLogging {
   con.add(this)
   val DEFAULT_GRID_COLS = 5
   printTui()
@@ -38,11 +39,7 @@ class Tui(var con: IController) extends Observer {
     }
   }
   override def update(): Unit = printTui()
-  def printTui(): Unit = {
-    //    val c: Char=0x1B
-    //    print("%c[%d;%df".format(,c,10,10))
-    println(generateTuiText)
-  }
+  def printTui(): Unit = logger.info(generateTuiText)
   def generateTuiText: String = {
     var result = "\n" + con.toString + "\nEnter command: q-Quit, u-Undo, r-Redo, S-save, L-load"
     if (con.state.gameState.isInstanceOf[IPrepare]) {
