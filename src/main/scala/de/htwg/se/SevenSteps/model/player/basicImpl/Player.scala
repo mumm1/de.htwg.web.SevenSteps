@@ -60,6 +60,12 @@ case class Players @JsonCreator()(curPlayer: Int, players: Vector[Player]) exten
     }
     copy(players=newPlayers)
   }
+  def toXML(): Vector[scala.xml.Elem] = {
+    players.map { entry =>
+      val pl = entry
+      <pls pls2={pl.toXML()}></pls>
+    }
+  }
   override def toString: String = {
     var text = ""
     for (player <- players) {
@@ -136,6 +142,21 @@ case class Player @JsonCreator()(name: String, points: Int, map: Option[Map[Stri
         }
     }
     true
+  }
+  def toXML(): scala.xml.Elem = {
+    <pl points={points.toString} name={name}>
+      map=
+      {if (map != None)
+      stoneMapToXML(map.get)}
+    </pl>
+  }
+  def stoneMapToXML(stones: Map[String, Double]) = {
+    stones.map { entry =>
+      val (key, value) = entry
+      <steine farbe={key.toString}>
+        {value.toString}
+      </steine>
+    }
   }
   override def toString: String = {
     val sb = new StringBuilder

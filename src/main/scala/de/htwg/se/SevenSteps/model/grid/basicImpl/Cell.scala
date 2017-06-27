@@ -11,5 +11,8 @@ case class Cell @JsonCreator()(color: Char = ' ', height: Int = 0) extends ICell
       "   "
     }
   }
+  def toXML(): scala.xml.Elem = {
+    <cell colorCell={color.toString} height={height.toString}></cell>
+  }
 }
 

@@ -25,6 +25,12 @@ class PlayerSpec extends WordSpec {
       val p2 = p.setColors(List('a', 'b'))
       p2.toString should be("Julius: a=0.0, b=0.0, Points=50")
     }
+    "toXML with a map look like" in {
+      val p2 = p.setColors(List('a', 'b'))
+      p2.toXML().toString() should be("<pl points=\"50\" name=\"Julius\">\n      map=\n      " +
+        "<steine farbe=\"a\">\n        0.0\n      </steine><steine farbe=\"b\">\n" +
+        "        0.0\n      </steine>\n    </pl>")
+    }
     "can get more points" in {
       val p2 = p.incPoints(10)
       p2.points should be(60)
@@ -97,6 +103,16 @@ class PlayerSpec extends WordSpec {
       val pls2 = pls.push(pl3)
       pls2.haveNoStones should be(false)
     }
+    "have a toXML function" in {
+      val player1 = pls.getCurPlayer
+      val pl2 = player1.setColors(List('a', 'b'))
+      val pl3 = pl2.incColor('a', 5)
+      val pls2 = pls.push(pl3)
+      pls2.toXML().toString() should be("Vector(<pls pls2='<pl points=\"50\" name=\"Julius\">\n      map=\n      \n" +
+        "    </pl>'></pls>, <pls pls2='<pl points=\"50\" name=\"Tobias\">\n      map=\n      \n    </pl>'></pls>," +
+        " <pls pls2='<pl points=\"50\" name=\"Tobias\">\n      map=\n      <steine farbe=\"a\">\n        5.0\n" +
+        "      </steine><steine farbe=\"b\">\n        0.0\n      </steine>\n    </pl>'></pls>)")
+    }
     "have an update function" in {
       val iplayer = new Player("Peter")
       val pls2 = pls.updateCurPlayer(iplayer)
@@ -107,7 +123,7 @@ class PlayerSpec extends WordSpec {
       new Players()
         .push(new Player("Hans", 3, None))
         .push(new Player("Alex", 2, None))
-        .reset  should be(new Players().push("Hans").push("Alex"))
+        .reset should be(new Players().push("Hans").push("Alex"))
     }
     "have a players list" in {
       pls.players.isEmpty should be(false)

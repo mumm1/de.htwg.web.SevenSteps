@@ -16,6 +16,10 @@ class GridSpec extends WordSpec {
     "generate a string of the form" in {
       grid.toString should be("\n+---+\n|   |\n+---+\n")
     }
+    "generate a XML of the form" in {
+      grid.toXML().toString() should be("<grid rows=\"1\" col=\"1\">\n      <cellen celll='<cell" +
+        " colorCell=\" \" height=\"0\"></cell>'></cellen>\n    </grid>")
+    }
     "set a color to the cell" in {
       grid.set(0, 0, 'b').cell(0, 0).get.color should be('b')
     }
@@ -59,7 +63,7 @@ class GridSpec extends WordSpec {
       grid.set(0, 0, 1).getColorsWithHeight0 should be(List('b', 'c', 'd'))
     }
     "can reset the heights" in {
-      grid.set(0,0,1).resetHeights should be(grid)
+      grid.set(0, 0, 1).resetHeights should be(grid)
     }
   }
 }
