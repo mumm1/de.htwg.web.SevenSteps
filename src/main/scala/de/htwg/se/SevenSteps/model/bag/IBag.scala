@@ -10,4 +10,5 @@ trait IBag {
   def copy1(newColors: List[Char]): IBag
   def getStoneNumber: Int
   def reset: IBag
+  def toXML: scala.xml.Elem
 }

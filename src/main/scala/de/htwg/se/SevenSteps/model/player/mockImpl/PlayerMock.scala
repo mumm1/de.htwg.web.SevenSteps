@@ -4,6 +4,7 @@ import de.htwg.se.SevenSteps.model.player.{IPlayer, IPlayers}
 
 import scala.collection.immutable.Map
 import scala.util.{Success, Try}
+import scala.xml.Elem
 
 case class Players() extends IPlayers {
   def push(name: String): IPlayers = this
@@ -19,6 +20,8 @@ case class Players() extends IPlayers {
   def haveNoStones: Boolean = false
   def getAllPossibleColorsFromAllPlayers: List[Char] = List()
   def reset: IPlayers = this
+  def toXML: Vector[Elem] = Vector(<el el=""></el>)
+
 }
 
 case class Player() extends IPlayer {
@@ -30,4 +33,6 @@ case class Player() extends IPlayer {
   def points: Int = 10
   def map: Option[Map[String, Double]] = None
   def haveNoStones: Boolean = true
+  def toXML: Elem = <el el=""></el>
+
 }

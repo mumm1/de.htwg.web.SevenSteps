@@ -1,7 +1,9 @@
 package de.htwg.se.SevenSteps.model.grid.mockImpl
 
 import de.htwg.se.SevenSteps.model.grid.{ICell, IGrid}
+
 import scala.util._
+import scala.xml.Elem
 
 case class GridMock() extends IGrid {
   def set(row: Int, col: Int, color: Char): IGrid = this
@@ -15,5 +17,7 @@ case class GridMock() extends IGrid {
   def rows: Int = 2
   def cols: Int = 2
   def resetHeights: IGrid = this
+  def toXML: Elem = <el el=""></el>
+
 }
 

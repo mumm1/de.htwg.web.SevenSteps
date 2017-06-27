@@ -18,4 +18,5 @@ trait IGrid {
   def rows: Int
   def cols: Int
   def resetHeights: IGrid
+  def toXML(): scala.xml.Elem
 }

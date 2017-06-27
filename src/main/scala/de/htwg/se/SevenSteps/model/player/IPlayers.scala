@@ -17,6 +17,7 @@ trait IPlayers {
   def apply(i: Int): IPlayer
   def haveNoStones: Boolean
   def getAllPossibleColorsFromAllPlayers: List[Char]
+  def toXML(): Vector[scala.xml.Elem]
 }
 
 trait IPlayer {
@@ -28,4 +29,5 @@ trait IPlayer {
   def points: Int
   def map: Option[Map[String, Double]]
   def haveNoStones: Boolean
+  def toXML(): scala.xml.Elem
 }
