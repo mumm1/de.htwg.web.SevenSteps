@@ -18,5 +18,9 @@ class CellSpec extends WordSpec {
     "generate a string in the form" in {
       cell.toString should be("a 2")
     }
+    "have a toXML function in the form" in {
+      cell.toXML().toString() should be("<cell colorCell=\"a\" height=\"2\"></cell>")
+
+    }
   }
 }

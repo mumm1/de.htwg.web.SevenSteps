@@ -4,7 +4,6 @@ import org.junit.runner.RunWith
 import org.scalatest.Matchers._
 import org.scalatest._
 import org.scalatest.junit.JUnitRunner
-
 import scala.collection.mutable.ListBuffer
 
 @RunWith(classOf[JUnitRunner])
@@ -38,6 +37,14 @@ class BagSpecs extends WordSpec {
       bag.getStoneNumber should be(0)
       bag.insert('a')
       bag.getStoneNumber should be(1)
+    }
+    "have a toXML functions" in {
+      val bag = getBag
+      bag.insert('a')
+      bag.insert('b')
+      bag.insert('c')
+      bag.toXML().toString() should be("<alles a='<blub bag2=\"a\"></blub><blub bag2=\"b\"></blub><blub" +
+        " bag2=\"c\"></blub>' b='<bag col=\"a\"></bag><bag col=\"b\"></bag>'></alles>")
     }
   }
 }

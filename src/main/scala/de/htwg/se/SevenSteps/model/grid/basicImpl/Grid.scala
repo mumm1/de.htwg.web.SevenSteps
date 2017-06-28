@@ -23,6 +23,11 @@ case class Grid @JsonCreator()(rows: Int, cols: Int, grid: Vector[Cell]) extends
   def nonEmpty: Boolean = {
     cellsToString().replaceAll(" ", "").nonEmpty
   }
+  def cellsToString(): String = {
+    var text = ""
+    grid.foreach(cell => text += cell.color.toString)
+    text
+  }
   override def toString: String = {
     val linesep = "+---" * cols + "+\n"
     val line = "|XXX" * cols + "|\n"
@@ -35,18 +40,15 @@ case class Grid @JsonCreator()(rows: Int, cols: Int, grid: Vector[Cell]) extends
     }
     strGrid
   }
-  def set(row: Int, col: Int, color: Char): Grid = {
-    copy(grid = grid.updated(getIndex(row, col), cell(row, col).get.copy(color = color)))
-  }
-  def set(row: Int, col: Int, height: Int): Grid = {
-    copy(grid = grid.updated(getIndex(row, col), cell(row, col).get.copy(height = height)))
-  }
   private def getIndex(row: Int, col: Int): Int = {
     if (row >= rows || col >= cols) {
       -1
     } else {
       cols * row + col
     }
+  }
+  def set(row: Int, col: Int, color: Char): Grid = {
+    copy(grid = grid.updated(getIndex(row, col), cell(row, col).get.copy(color = color)))
   }
   def cell(row: Int, col: Int): Try[Cell] = {
     try {
@@ -55,6 +57,9 @@ case class Grid @JsonCreator()(rows: Int, cols: Int, grid: Vector[Cell]) extends
       case e: IndexOutOfBoundsException => Failure(e)
     }
   }
+  def set(row: Int, col: Int, height: Int): Grid = {
+    copy(grid = grid.updated(getIndex(row, col), cell(row, col).get.copy(height = height)))
+  }
   def getColors: List[Char] = {
     var list: ListBuffer[Char] = ListBuffer()
     cellsToString().foreach(c => if (!list.contains(c) & c != ' ') {
@@ -62,10 +67,13 @@ case class Grid @JsonCreator()(rows: Int, cols: Int, grid: Vector[Cell]) extends
     })
     list.toList
   }
-  def cellsToString(): String = {
-    var text = ""
-    grid.foreach(cell => text += cell.color.toString)
-    text
+  def toXML(): scala.xml.Elem = {
+    <grid rows={rows.toString} col={cols.toString}>
+      {grid.map { entry =>
+      val cell = entry
+      <cellen celll={cell.toXML()}></cellen>
+    }}
+    </grid>
   }
   def getHeights: List[Int] = {
     var list: ListBuffer[Int] = ListBuffer()

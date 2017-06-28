@@ -33,6 +33,21 @@ case class Bag @JsonCreator()(var bag: Vector[String],
   def getStoneNumber: Int = bag.length
   def reset: Bag = new Bag()
   def this() = this(Vector[String](), Vector[String]())
+  def toXML(): scala.xml.Elem = {
+    <alles a={bagBagToXML} b={bagColorsToXML}></alles>
+  }
+  def bagBagToXML(): Vector[scala.xml.Elem] = {
+    bag.map { entry =>
+      val bag = entry
+      <blub bag2={bag}></blub>
+    }
+  }
+  def bagColorsToXML(): Vector[scala.xml.Elem] = {
+    colors.map { entry =>
+      val colors = entry
+      <bag col={colors}></bag>
+    }
+  }
   def copy1(newColors: List[Char]): Bag = {
     val newList = for (c <- newColors) yield {
       c.toString
