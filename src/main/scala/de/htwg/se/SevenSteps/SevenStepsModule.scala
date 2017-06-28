@@ -15,7 +15,7 @@ class SevenStepsModule extends AbstractModule with ScalaModule {
     bind[IPlayers].to[player.basicImpl.Players]
     bind[IBag].to[bag.basicImpl.Bag]
     bind[IController].to[controller.basicImpl.Controller]
-    bind[IFileIO].to[fileIO.json.JsonIO]
+    bind[IFileIO].to[fileIO.json.Json]
     install(new FactoryModuleBuilder()
       .implement(classOf[IGrid], classOf[grid.basicImpl.Grid])
       .build(classOf[IGridFactory]))

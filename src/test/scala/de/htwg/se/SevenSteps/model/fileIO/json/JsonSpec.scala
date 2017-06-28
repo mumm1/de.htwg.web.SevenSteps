@@ -8,6 +8,6 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class JsonSpec extends WordSpec with FileIOSpec {
   "A json FileIO" should {
-    behave like saveAndLoad(JsonIO())
+    behave like saveAndLoad(Json())
   }
 }

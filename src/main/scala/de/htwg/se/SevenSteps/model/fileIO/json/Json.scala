@@ -18,7 +18,7 @@ object CustomGenson {
   )
 }
 
-case class JsonIO() extends IFileIO {
+case class Json() extends IFileIO {
 
   import CustomGenson.customGenson._
 
