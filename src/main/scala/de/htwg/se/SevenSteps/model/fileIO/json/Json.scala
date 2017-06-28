@@ -3,6 +3,7 @@ package de.htwg.se.SevenSteps.model.fileIO.json
 import com.owlike.genson.{GensonBuilder, ScalaBundle, ScalaGenson}
 import de.htwg.se.SevenSteps.controller.basicImpl.ControllerState
 import de.htwg.se.SevenSteps.model.fileIO.IFileIO
+
 import scala.io.Source
 
 object CustomGenson {
@@ -17,7 +18,7 @@ object CustomGenson {
   )
 }
 
-case class FileIO() extends IFileIO {
+case class JsonIO() extends IFileIO {
 
   import CustomGenson.customGenson._
 
